@@ -122,16 +122,18 @@
     </div>
   </div>
 
-  <!-- ================= AUTHENTICATION MODAL: LOGIN / SIGN UP / CLOUD SETUP ================= -->
-  <div id="authModal" class="fixed inset-0 z-40 bg-[#070a12]/98 backdrop-blur-xl flex flex-col justify-center items-center px-4 overflow-y-auto hidden">
+  <!-- ================= AUTHENTICATION MODAL ================= -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-[#070a12]/95 backdrop-blur-xl flex flex-col justify-center items-center px-4 overflow-y-auto hidden">
     <div class="w-full max-w-sm glass-card p-6 rounded-3xl border border-slate-700/80 shadow-2xl relative my-auto">
-      <div class="flex justify-center mb-3">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/30">
+      <div class="flex justify-between items-center mb-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-base shadow-lg shadow-indigo-500/30">
           <i class="fa-solid fa-cloud-arrow-up"></i>
         </div>
+        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
-      <!-- Segmented Sign In vs Sign Up Tabs -->
       <div class="bg-slate-900/90 p-1 rounded-2xl flex border border-slate-800 mb-4">
         <button type="button" id="tabAuthSignIn" onclick="setAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-indigo-600 shadow cursor-pointer">
           Sign In
@@ -141,10 +143,8 @@
         </button>
       </div>
 
-      <!-- Notification Banner -->
       <div id="authBanner" class="hidden mb-3.5 p-3 rounded-xl text-xs font-semibold flex items-center gap-2"></div>
 
-      <!-- Auth Form -->
       <form id="cloudAuthForm" onsubmit="handleCloudAuth(event)" class="space-y-3.5">
         <div id="fieldAuthName" class="hidden">
           <label class="block text-[11px] font-semibold text-slate-300 mb-1">Your Full Name</label>
@@ -166,10 +166,9 @@
         </button>
       </form>
 
-      <!-- Local & Firebase Setup Links -->
       <div class="mt-4 pt-3.5 border-t border-slate-800 text-center space-y-2">
         <button type="button" onclick="continueInLocalMode()" class="w-full py-2 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer">
-          <i class="fa-solid fa-mobile-screen text-indigo-400 mr-1"></i> Continue in Local / Offline Mode
+          <i class="fa-solid fa-mobile-screen text-indigo-400 mr-1"></i> Continue in Local Mode
         </button>
         <button type="button" onclick="openFirebaseConfigModal()" class="text-[11px] text-cyan-400 hover:underline inline-block">
           <i class="fa-solid fa-sliders text-[10px]"></i> Configure Firebase Database Keys
@@ -178,7 +177,7 @@
     </div>
   </div>
 
-  <!-- ================= FIREBASE CONFIG MODAL (PASTE FREE FIREBASE KEYS ONCE) ================= -->
+  <!-- ================= FIREBASE CONFIG MODAL ================= -->
   <div id="firebaseConfigModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-modal w-full max-w-sm rounded-3xl p-5 border border-slate-700/80 space-y-3.5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
@@ -192,7 +191,7 @@
       </div>
 
       <p class="text-[11px] text-slate-300 leading-relaxed">
-        Paste your Firebase Web credentials (from Firebase Console ➔ Project Settings). This connects your app to free multi-device cloud storage.
+        Paste credentials from your Firebase Console (Project Settings ➔ General ➔ Web App) to enable multi-device sync.
       </p>
 
       <form id="firebaseConfigForm" onsubmit="saveFirebaseConfig(event)" class="space-y-2.5">
@@ -215,8 +214,8 @@
     </div>
   </div>
 
-  <!-- ================= TOP APP BAR WITH PRIMARY FLOW: SPENDS -> PLANNER -> DEBT ================= -->
-  <header class="sticky top-0 z-30 bg-app-bg/95 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 safe-top">
+  <!-- ================= TOP APP BAR ================= -->
+  <header class="sticky top-0 z-20 bg-app-bg/95 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 safe-top">
     <div class="max-w-md mx-auto space-y-2.5">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
@@ -234,17 +233,17 @@
         
         <div class="flex items-center gap-2">
           <!-- Cloud Status Indicator -->
-          <button type="button" onclick="openAuthModal()" id="cloudStatusBtn" class="px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-[10px] font-bold text-slate-300 hover:text-white transition flex items-center gap-1" title="Cloud Sync Account">
+          <button type="button" onclick="openAuthModal()" id="cloudStatusBtn" class="px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-[10px] font-bold text-slate-300 hover:text-white transition flex items-center gap-1 cursor-pointer" title="Cloud Sync Account">
             <i class="fa-solid fa-cloud text-slate-500" id="cloudStatusIcon"></i>
             <span id="cloudStatusLabel">Offline</span>
           </button>
-          <button type="button" onclick="openSettingsModal()" class="w-8 h-8 rounded-full bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95" title="Settings & Passcode">
+          <button type="button" onclick="openSettingsModal()" class="w-8 h-8 rounded-full bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95 cursor-pointer" title="Settings & Passcode">
             <i class="fa-solid fa-gear text-xs"></i>
           </button>
         </div>
       </div>
 
-      <!-- MASTER HARDWARE-STYLE TRI-MODE SWITCHER KEY (SPENDS -> PLANNER -> DEBT) -->
+      <!-- MASTER TRI-MODE SWITCHER (SPENDS -> PLANNER -> DEBT) -->
       <div class="bg-slate-900/95 p-1 rounded-2xl flex border border-slate-800 shadow-inner gap-1">
         <button type="button" id="btnModeDaily" onclick="toggleAppMode('daily')" class="flex-1 py-2 text-[11px] font-extrabold rounded-xl transition text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/25 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
           <i class="fa-solid fa-wallet text-xs"></i> Spends
@@ -262,12 +261,8 @@
   <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
   <main class="max-w-md mx-auto w-full px-4 pt-3 flex-1">
 
-    <!-- ************************************************************* -->
-    <!-- MODULE 1: DAILY SPENDS (LANDING VIEW)                         -->
-    <!-- ************************************************************* -->
+    <!-- MODULE 1: DAILY SPENDS -->
     <div id="dailyModuleContainer" class="space-y-4">
-
-      <!-- SPENDS VIEW 1: DEDICATED FULL-PAGE TRANSACTION FEED -->
       <section id="dailyEntryScreen" class="daily-screen space-y-3.5">
         <div class="glass-card rounded-2xl p-3 border border-slate-800 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 flex-1">
@@ -292,7 +287,7 @@
         <div id="expenseHistoryContainer" class="space-y-2.5 pb-6"></div>
       </section>
 
-      <!-- SPENDS VIEW 2: SUMMARY DASHBOARD WITH MONTH SELECTOR & LIVE BALANCES -->
+      <!-- SPENDS VIEW 2: SUMMARY DASHBOARD -->
       <section id="dailySummaryScreen" class="daily-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -304,7 +299,6 @@
           </div>
         </div>
 
-        <!-- Net Wealth Card -->
         <div class="glass-card rounded-3xl p-5 shadow-xl relative overflow-hidden border border-emerald-500/30">
           <div class="flex justify-between items-center mb-1">
             <span class="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Net Liquid Wealth</span>
@@ -335,7 +329,6 @@
           </div>
         </div>
 
-        <!-- Today, Week, Month Spent Cards -->
         <div class="space-y-1.5">
           <div class="flex justify-between items-center px-1">
             <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -363,7 +356,6 @@
           </div>
         </div>
 
-        <!-- Live Account Balances Scorecard -->
         <div class="glass-card rounded-3xl p-4 border border-slate-800 space-y-3">
           <div class="flex justify-between items-center">
             <div>
@@ -379,7 +371,6 @@
           <div id="liveAccountBalancesContainer" class="grid grid-cols-2 gap-2.5"></div>
         </div>
 
-        <!-- Category Spend Breakdown -->
         <div class="glass-card rounded-3xl p-4 border border-slate-800">
           <div class="flex justify-between items-center mb-3">
             <span class="text-xs font-bold text-white uppercase tracking-wider">Top Spending Categories</span>
@@ -389,7 +380,7 @@
         </div>
       </section>
 
-      <!-- SPENDS VIEW 3: DEDICATED TRENDS & DEEP-DIVE CHARTS -->
+      <!-- SPENDS VIEW 3: DEDICATED TRENDS -->
       <section id="dailyTrendsScreen" class="daily-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -426,7 +417,6 @@
           <div class="h-56 relative flex items-center justify-center"><canvas id="dailyCategoryDoughnutChart"></canvas></div>
         </div>
 
-        <!-- MoM Drilldown Card -->
         <div class="glass-card rounded-3xl p-4 border border-indigo-500/40 space-y-3">
           <div class="flex justify-between items-center">
             <div>
@@ -449,7 +439,7 @@
         </div>
       </section>
 
-      <!-- SPENDS VIEW 4: INTERACTIVE CALENDAR SPEND MATRIX -->
+      <!-- SPENDS VIEW 4: CALENDAR MATRIX -->
       <section id="dailyCalendarScreen" class="daily-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -481,15 +471,10 @@
           <div id="calendarDayItemsList" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></div>
         </div>
       </section>
-
     </div>
 
-    <!-- ************************************************************* -->
-    <!-- MODULE 2: MONTHLY BUDGET PLANNER                              -->
-    <!-- ************************************************************* -->
+    <!-- MODULE 2: PLANNER -->
     <div id="plannerModuleContainer" class="hidden space-y-4">
-
-      <!-- PLANNER VIEW 1: TARGETS SETUP & INPUT (AUTO CARRY-FORWARD) -->
       <section id="plannerInputScreen" class="planner-screen space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -534,7 +519,6 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 2: MONTH STATUS & VARIANCE DASHBOARD -->
       <section id="plannerDashboardScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -581,7 +565,6 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 3: MULTI-MONTH PROGRESS / HISTORY -->
       <section id="plannerHistoryScreen" class="planner-screen hidden space-y-4">
         <div class="px-1">
           <h2 class="text-base font-bold text-white">Multi-Month Budget Progress</h2>
@@ -611,15 +594,10 @@
           </div>
         </div>
       </section>
-
     </div>
 
-    <!-- ************************************************************* -->
-    <!-- MODULE 3: DEBT & EMI MANAGER (AUTOMATIC AMORTIZED ROLL-FORWARD) -->
-    <!-- ************************************************************* -->
+    <!-- MODULE 3: DEBT & EMI -->
     <div id="debtModuleContainer" class="hidden space-y-4">
-      
-      <!-- DEBT VIEW 1: COMMITMENTS FEED / HISTORY -->
       <section id="entryScreen" class="debt-screen space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -644,7 +622,6 @@
         <div id="historyTableContainer" class="space-y-2.5 pb-6"></div>
       </section>
 
-      <!-- DEBT VIEW 2: EXECUTIVE SUMMARY -->
       <section id="dashboardScreen" class="debt-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -704,7 +681,6 @@
         </div>
       </section>
 
-      <!-- DEBT VIEW 3: TRENDS -->
       <section id="trendsScreen" class="debt-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -732,7 +708,6 @@
         </div>
       </section>
 
-      <!-- DEBT VIEW 4: PAYOFF PLANNER -->
       <section id="plannerScreen" class="debt-screen hidden space-y-4">
         <div class="space-y-2.5">
           <div class="flex items-center justify-between px-1">
@@ -821,20 +796,19 @@
           <div id="plannerListContainer" class="space-y-2.5"></div>
         </div>
       </section>
-
     </div>
 
   </main>
 
   <!-- ================= FLOATING ACTION BUTTON (+ ADD ENTRY) ================= -->
-  <div class="fixed bottom-20 right-4 z-40 max-w-md mx-auto">
+  <div class="fixed bottom-20 right-4 z-30 max-w-md mx-auto">
     <button type="button" onclick="triggerFloatingAdd()" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-white shadow-2xl shadow-emerald-500/40 border border-white/20 flex items-center justify-center text-2xl transition-transform active:scale-90 cursor-pointer" title="Add Entry">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
 
   <!-- ================= DYNAMIC BOTTOM NAVIGATION BAR ================= -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-app-card/95 backdrop-blur-lg border-t border-slate-800/80 safe-bottom">
+  <nav class="fixed bottom-0 left-0 right-0 z-30 bg-app-card/95 backdrop-blur-lg border-t border-slate-800/80 safe-bottom">
     <div id="bottomNavRow" class="max-w-md mx-auto flex items-center justify-around py-2 px-1"></div>
   </nav>
 
@@ -909,8 +883,8 @@
         </div>
 
         <div class="relative">
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Note / Description (strict prefix autocomplete)</label>
-          <input type="text" id="expNote" autocomplete="off" oninput="handleNotePrefixInput(this.value)" placeholder="e.g. mobile recharge, grocery, fuel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Note / Description (auto-suggests prefix match)</label>
+          <input type="text" id="expNote" autocomplete="off" oninput="handleNotePrefixInput(this.value)" placeholder="e.g. mobile recharge, grocery, fuel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
           <div id="noteSuggestionBox" class="absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-48 overflow-y-auto hidden divide-y divide-slate-800"></div>
         </div>
 
@@ -1029,7 +1003,6 @@
         </button>
       </div>
 
-      <!-- Cloud Sync Account Card -->
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -1040,16 +1013,15 @@
         </div>
         <p id="settingsAccountEmail" class="text-[11px] text-slate-400 leading-relaxed truncate">No account linked yet.</p>
         <div class="flex gap-2 pt-1">
-          <button type="button" onclick="openAuthModal()" class="flex-1 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold active:scale-95 transition">
+          <button type="button" onclick="openAuthModal()" class="flex-1 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold active:scale-95 transition cursor-pointer">
             Account / Login
           </button>
-          <button type="button" onclick="handleSignOutCloud()" id="btnSignOutCloud" class="hidden py-1.5 px-3 rounded-xl bg-slate-800 text-rose-400 text-xs font-semibold active:scale-95 transition border border-rose-500/20">
+          <button type="button" onclick="handleSignOutCloud()" id="btnSignOutCloud" class="hidden py-1.5 px-3 rounded-xl bg-slate-800 text-rose-400 text-xs font-semibold active:scale-95 transition border border-rose-500/20 cursor-pointer">
             Sign Out
           </button>
         </div>
       </div>
 
-      <!-- 4-Digit Passcode Card -->
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -1060,33 +1032,32 @@
         </div>
         <p class="text-[11px] text-slate-400 leading-relaxed">Protect your financial records with a PIN on startup.</p>
         <div class="flex gap-2">
-          <button type="button" onclick="promptSetPasscode()" class="flex-1 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold active:scale-95 transition">
+          <button type="button" onclick="promptSetPasscode()" class="flex-1 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold active:scale-95 transition cursor-pointer">
             Set / Change PIN
           </button>
-          <button type="button" onclick="removePasscode()" class="py-1.5 px-3 rounded-xl bg-slate-800 text-rose-400 text-xs font-semibold active:scale-95 transition border border-rose-500/20">
+          <button type="button" onclick="removePasscode()" class="py-1.5 px-3 rounded-xl bg-slate-800 text-rose-400 text-xs font-semibold active:scale-95 transition border border-rose-500/20 cursor-pointer">
             Remove
           </button>
         </div>
       </div>
 
-      <!-- Backup Status & Export -->
       <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-white block">Daily Auto-Backup</span>
           <span id="autoBackupStatusText" class="text-[10px] text-emerald-400 font-semibold font-mono">Active</span>
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="exportToCSV()" class="py-2 rounded-xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition">
+          <button type="button" onclick="exportToCSV()" class="py-2 rounded-xl bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition cursor-pointer">
             <i class="fa-solid fa-file-excel text-xs"></i> Export CSV
           </button>
-          <button type="button" onclick="exportJSONBackup()" class="py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition">
+          <button type="button" onclick="exportJSONBackup()" class="py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition cursor-pointer">
             <i class="fa-solid fa-cloud-arrow-down text-xs"></i> Backup JSON
           </button>
         </div>
       </div>
 
       <div class="pt-1">
-        <button type="button" onclick="closeSettingsModal()" class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Done</button>
+        <button type="button" onclick="closeSettingsModal()" class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold cursor-pointer">Done</button>
       </div>
     </div>
   </div>
@@ -1274,7 +1245,7 @@
     // Firebase & Cloud Sync State
     let firebaseUser = null;
     let firestoreDB = null;
-    let authMode = 'login'; // 'login' | 'signup'
+    let authMode = 'login';
 
     // Passcode Security
     let storedPin = localStorage.getItem('app_security_pin') || null;
@@ -1294,7 +1265,7 @@
     let expenseRecords = JSON.parse(localStorage.getItem('expense_records')) || DEFAULT_EXPENSE_DATA;
     let monthlyBudgets = JSON.parse(localStorage.getItem('monthly_budgets_v1')) || {};
 
-    // Chart References
+    // Chart Handles
     let debtChart = null, emiChart = null, doughnutChart = null;
     let dailyWeeklyBarChart = null, dailyMonthlyCompareChart = null;
     let dailyCategoryDoughnutChart = null;
@@ -1318,8 +1289,26 @@
     }
 
     // -------------------------------------------------------------
-    // CLOUD SYNC & FIREBASE CONTROLLER (MULTI-DEVICE & AUTO-BACKUP)
+    // NON-DESTRUCTIVE CLOUD SYNC & MERGE ENGINE
     // -------------------------------------------------------------
+    function mergeRecordArrays(localArr, cloudArr) {
+      if (!Array.isArray(cloudArr) || cloudArr.length === 0) return localArr || [];
+      if (!Array.isArray(localArr) || localArr.length === 0) return cloudArr || [];
+
+      const map = new Map();
+      // Keep all local first
+      localArr.forEach(item => {
+        if (item && item.id !== undefined) map.set(String(item.id), item);
+      });
+      // Add any non-existing cloud items
+      cloudArr.forEach(item => {
+        if (item && item.id !== undefined && !map.has(String(item.id))) {
+          map.set(String(item.id), item);
+        }
+      });
+      return Array.from(map.values());
+    }
+
     function initFirebaseClient() {
       const storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null');
       if (storedConfig && storedConfig.apiKey) {
@@ -1332,6 +1321,7 @@
             if (user) {
               firebaseUser = user;
               updateCloudStatusUI(true, user.email);
+              closeAuthModal();
               syncWithCloudDatabase(user.uid);
             } else {
               firebaseUser = null;
@@ -1355,8 +1345,8 @@
       const signOutBtn = document.getElementById('btnSignOutCloud');
 
       if (isOnline) {
-        icon.className = "fa-solid fa-cloud text-emerald-400";
-        label.innerText = "Synced";
+        if (icon) icon.className = "fa-solid fa-cloud text-emerald-400";
+        if (label) label.innerText = "Synced";
         if (badge) {
           badge.innerText = "Cloud Online";
           badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
@@ -1364,8 +1354,8 @@
         if (emailLabel) emailLabel.innerText = email;
         if (signOutBtn) signOutBtn.classList.remove('hidden');
       } else {
-        icon.className = "fa-solid fa-cloud text-slate-500";
-        label.innerText = "Offline";
+        if (icon) icon.className = "fa-solid fa-cloud text-slate-500";
+        if (label) label.innerText = "Offline";
         if (badge) {
           badge.innerText = "Local Storage";
           badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-400";
@@ -1426,7 +1416,6 @@
       const pass = document.getElementById('authPasswordInput').value;
       const name = document.getElementById('authNameInput').value.trim();
 
-      // Check if Firebase is configured
       if (!firebase.apps.length || !firestoreDB) {
         showAuthBanner("Please click 'Configure Firebase Database Keys' below first to connect your database.");
         return;
@@ -1438,12 +1427,12 @@
           if (name && cred.user) {
             await cred.user.updateProfile({ displayName: name });
           }
-          notify("Account created & synced!");
           closeAuthModal();
+          notify("Account created & synced!");
         } else {
           await firebase.auth().signInWithEmailAndPassword(email, pass);
-          notify("Signed in! Syncing data...");
           closeAuthModal();
+          notify("Signed in! Syncing data...");
         }
       } catch (err) {
         showAuthBanner(err.message || "Authentication error.");
@@ -1493,59 +1482,76 @@
       initFirebaseClient();
     }
 
-    // BIDIRECTIONAL SYNC & DAILY AUTO-BACKUP CONTROLLER (REQUIREMENT 1, 2, 3)
+    // SAFE NON-DESTRUCTIVE BIDIRECTIONAL SYNC
     async function syncWithCloudDatabase(uid) {
-      if (!firestoreDB) return;
+      if (!firestoreDB || !uid) return;
+
+      // 1. Snapshot local state for safety
+      try {
+        localStorage.setItem('pre_sync_safe_backup', JSON.stringify({
+          expenseRecords, debtRecords, monthlyBudgets, expenseCategories, incomeCategories, accountsList, categories, date: new Date().toISOString()
+        }));
+      } catch (e) {}
+
       try {
         const docRef = firestoreDB.collection('users').doc(uid).collection('portfolio').doc('main');
         const docSnap = await docRef.get();
 
         if (docSnap.exists) {
           const cloudData = docSnap.data();
-          // Merge / Adopt Cloud Data
-          if (cloudData.expenseRecords && Array.isArray(cloudData.expenseRecords)) {
-            expenseRecords = cloudData.expenseRecords;
+
+          // Non-destructive smart merge: Never erase local with empty arrays
+          expenseRecords = mergeRecordArrays(expenseRecords, cloudData.expenseRecords);
+          debtRecords = mergeRecordArrays(debtRecords, cloudData.debtRecords);
+
+          if (cloudData.monthlyBudgets && typeof cloudData.monthlyBudgets === 'object') {
+            monthlyBudgets = { ...monthlyBudgets, ...cloudData.monthlyBudgets };
           }
-          if (cloudData.debtRecords && Array.isArray(cloudData.debtRecords)) {
-            debtRecords = cloudData.debtRecords;
+          if (Array.isArray(cloudData.expenseCategories) && cloudData.expenseCategories.length > 0) {
+            expenseCategories = Array.from(new Set([...expenseCategories, ...cloudData.expenseCategories]));
           }
-          if (cloudData.monthlyBudgets) {
-            monthlyBudgets = cloudData.monthlyBudgets;
+          if (Array.isArray(cloudData.incomeCategories) && cloudData.incomeCategories.length > 0) {
+            incomeCategories = Array.from(new Set([...incomeCategories, ...cloudData.incomeCategories]));
           }
-          if (cloudData.expenseCategories) {
-            expenseCategories = cloudData.expenseCategories;
+          if (Array.isArray(cloudData.categories) && cloudData.categories.length > 0) {
+            categories = Array.from(new Set([...categories, ...cloudData.categories]));
           }
-          if (cloudData.incomeCategories) {
-            incomeCategories = cloudData.incomeCategories;
-          }
-          if (cloudData.accountsList) {
-            accountsList = cloudData.accountsList;
-          }
-          if (cloudData.categories) {
-            categories = cloudData.categories;
+          if (Array.isArray(cloudData.accountsList) && cloudData.accountsList.length > 0) {
+            const accNames = new Set(accountsList.map(a => a.name));
+            cloudData.accountsList.forEach(ca => {
+              if (!accNames.has(ca.name)) accountsList.push(ca);
+            });
           }
 
-          // Cache locally
-          saveExpenseStorage();
-          saveDebtStorage();
-          saveMonthlyBudgetStorage();
-          notify("Portfolio synced from Cloud!");
-        } else {
-          // First time cloud sync: UPLOAD ALL EXISTING LOCAL DATA DIRECTLY TO CLOUD!
+          // Save merged data locally
+          saveExpenseStorage(false);
+          saveDebtStorage(false);
+          saveMonthlyBudgetStorage(false);
+
+          // Push merged data back to Cloud so Cloud is immediately updated!
           await pushAllDataToCloud(uid);
-          notify("Existing records safely backed up to Cloud!");
+          notify("Portfolio synced with Cloud!");
+        } else {
+          // Cloud doc does not exist yet: Upload all local records to Cloud
+          await pushAllDataToCloud(uid);
+          notify("Existing local data uploaded to Cloud!");
         }
 
-        // Trigger Automated Daily Backup (Requirement 3)
+        // Daily Auto-Backup
         await performAutomatedDailyBackup(uid);
-
-        // Re-render active screens
+      } catch (err) {
+        console.warn("Cloud sync warning:", err);
+        if (err.code === 'permission-denied') {
+          notify("Firestore permission locked. Please update Rules in Firebase.");
+        }
+      } finally {
+        // Ensure UI elements and selects are refreshed
+        populateCategoryElements();
+        populateExpenseElements();
         renderExpenseHistoryTable();
         renderDailySummary();
         renderBudgetPlanner();
         renderDashboard();
-      } catch (err) {
-        console.error("Cloud sync error:", err);
       }
     }
 
@@ -1567,7 +1573,7 @@
         };
         await firestoreDB.collection('users').doc(targetUid).collection('portfolio').doc('main').set(payload, { merge: true });
       } catch (err) {
-        console.warn("Cloud push error:", err);
+        console.warn("Cloud push notice:", err);
       }
     }
 
@@ -1588,18 +1594,15 @@
           categories
         };
 
-        // 1. Local Emergency Snapshot
         localStorage.setItem(`daily_backup_${todayStr}`, JSON.stringify(backupSnapshot));
         localStorage.setItem('last_auto_backup_date', todayStr);
 
-        // 2. Cloud Snapshot (Requirement 3)
         const targetUid = uid || (firebaseUser ? firebaseUser.uid : null);
         if (firestoreDB && targetUid) {
           try {
             await firestoreDB.collection('users').doc(targetUid).collection('daily_backups').doc(todayStr).set(backupSnapshot);
-            console.log("Daily cloud backup created for", todayStr);
           } catch (e) {
-            console.warn("Cloud backup write failed:", e);
+            console.warn("Cloud backup write notice:", e);
           }
         }
 
@@ -1609,7 +1612,241 @@
     }
 
     // -------------------------------------------------------------
-    // PART 2: MONTHLY BUDGET PLANNER CONTROLLER (AUTO CARRY-FORWARD)
+    // PASSCODE SECURITY
+    // -------------------------------------------------------------
+    function checkSecurityOnLaunch() {
+      if (storedPin) {
+        document.getElementById('pinLockOverlay').classList.remove('hidden');
+        updatePinDots();
+      }
+    }
+
+    function handlePinInput(digit) {
+      if (enteredPin.length < 4) {
+        enteredPin += digit;
+        updatePinDots();
+        if (enteredPin.length === 4) {
+          setTimeout(() => {
+            if (enteredPin === storedPin) {
+              document.getElementById('pinLockOverlay').classList.add('hidden');
+              enteredPin = '';
+              notify("Unlocked!");
+            } else {
+              notify("Incorrect Passcode!");
+              clearPinInput();
+            }
+          }, 150);
+        }
+      }
+    }
+
+    function clearPinInput() {
+      enteredPin = '';
+      updatePinDots();
+    }
+
+    function backspacePinInput() {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`pinDot${i}`);
+        if (dot) {
+          if (i < enteredPin.length) {
+            dot.className = "w-3.5 h-3.5 rounded-full bg-indigo-500 border-2 border-indigo-500 shadow-md shadow-indigo-500/50 scale-110 transition-all";
+          } else {
+            dot.className = "w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all";
+          }
+        }
+      }
+    }
+
+    function promptSetPasscode() {
+      const pin = prompt("Enter a 4-digit numeric passcode:");
+      if (pin) {
+        if (/^\d{4}$/.test(pin)) {
+          storedPin = pin;
+          localStorage.setItem('app_security_pin', pin);
+          updatePinStatusBadge();
+          notify("Passcode enabled successfully!");
+        } else {
+          alert("Passcode must be exactly 4 numbers!");
+        }
+      }
+    }
+
+    function removePasscode() {
+      if (confirm("Disable passcode security?")) {
+        storedPin = null;
+        localStorage.removeItem('app_security_pin');
+        updatePinStatusBadge();
+        notify("Passcode disabled.");
+      }
+    }
+
+    function updatePinStatusBadge() {
+      const badge = document.getElementById('pinStatusBadge');
+      if (badge) {
+        badge.innerText = storedPin ? 'Active' : 'Disabled';
+        badge.className = storedPin 
+          ? "text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+          : "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-400";
+      }
+    }
+
+    function openSettingsModal() {
+      updatePinStatusBadge();
+      document.getElementById('settingsPopupModal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsPopupModal').classList.add('hidden');
+    }
+
+    // -------------------------------------------------------------
+    // TRI-MODE SWITCHER (SPENDS -> PLANNER -> DEBT)
+    // -------------------------------------------------------------
+    function toggleAppMode(mode) {
+      activeModule = mode;
+      const btnDebt = document.getElementById('btnModeDebt');
+      const btnPlanner = document.getElementById('btnModePlanner');
+      const btnDaily = document.getElementById('btnModeDaily');
+
+      const debtContainer = document.getElementById('debtModuleContainer');
+      const plannerContainer = document.getElementById('plannerModuleContainer');
+      const dailyContainer = document.getElementById('dailyModuleContainer');
+
+      [btnDebt, btnPlanner, btnDaily].forEach(btn => {
+        btn.className = "flex-1 py-2 text-[11px] font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer flex items-center justify-center gap-1.5 active:scale-95";
+      });
+
+      debtContainer.classList.add('hidden');
+      plannerContainer.classList.add('hidden');
+      dailyContainer.classList.add('hidden');
+
+      if (mode === 'daily') {
+        btnDaily.className = "flex-1 py-2 text-[11px] font-extrabold rounded-xl transition text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/25 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95";
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-400 flex items-center justify-center text-white font-bold text-base shadow-lg shadow-emerald-500/25";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-wallet"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Daily Spends <span class="text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Live Feed</span>';
+        document.getElementById('appSubtitleText').innerText = 'Income, expenses, transfers & trends';
+
+        dailyContainer.classList.remove('hidden');
+        renderBottomNav('daily');
+        switchDailyScreen('dailyEntryScreen');
+      } else if (mode === 'planner') {
+        btnPlanner.className = "flex-1 py-2 text-[11px] font-extrabold rounded-xl transition text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-md shadow-indigo-600/30 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95";
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white font-bold text-base shadow-lg shadow-indigo-500/30";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-bullseye"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Monthly Budget Planner <span class="text-[10px] font-semibold bg-purple-500/15 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">Targets</span>';
+        document.getElementById('appSubtitleText').innerText = 'Plan budget & track actual spend balance';
+
+        plannerContainer.classList.remove('hidden');
+        renderBottomNav('planner');
+        switchPlannerScreen('plannerInputScreen');
+      } else {
+        btnDebt.className = "flex-1 py-2 text-[11px] font-extrabold rounded-xl transition text-white bg-gradient-to-r from-amber-500 to-rose-500 shadow-md shadow-rose-500/20 cursor-pointer flex items-center justify-center gap-1.5 active:scale-95";
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 flex items-center justify-center text-white font-bold text-base shadow-lg shadow-rose-500/25";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Debt & EMI Manager <span class="text-[10px] font-semibold bg-amber-500/15 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">Commitments</span>';
+        document.getElementById('appSubtitleText').innerText = 'Long-term liabilities & predictions';
+
+        debtContainer.classList.remove('hidden');
+        renderBottomNav('debt');
+        switchDebtScreen('entryScreen');
+      }
+    }
+
+    function renderBottomNav(mode) {
+      const container = document.getElementById('bottomNavRow');
+      if (mode === 'daily') {
+        container.innerHTML = `
+          <button type="button" onclick="switchDailyScreen('dailyEntryScreen')" id="nav-dailyEntryScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 active-nav transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-list-check text-base"></i>
+            <span class="text-[10px] font-semibold">Feed</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailySummaryScreen')" id="nav-dailySummaryScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-chart-pie text-base"></i>
+            <span class="text-[10px] font-semibold">Summary</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailyTrendsScreen')" id="nav-dailyTrendsScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-chart-line text-base"></i>
+            <span class="text-[10px] font-semibold">Trends</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailyCalendarScreen')" id="nav-dailyCalendarScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-regular fa-calendar-days text-base"></i>
+            <span class="text-[10px] font-semibold">Calendar</span>
+          </button>
+          <button type="button" onclick="openAccountModal()" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-building-columns text-base"></i>
+            <span class="text-[10px] font-semibold">Accounts</span>
+          </button>
+        `;
+      } else if (mode === 'planner') {
+        container.innerHTML = `
+          <button type="button" onclick="switchPlannerScreen('plannerInputScreen')" id="nav-plannerInputScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 active-nav transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-pen-ruler text-base"></i>
+            <span class="text-[10px] font-semibold">Targets</span>
+          </button>
+          <button type="button" onclick="switchPlannerScreen('plannerDashboardScreen')" id="nav-plannerDashboardScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-gauge-high text-base"></i>
+            <span class="text-[10px] font-semibold">Status</span>
+          </button>
+          <button type="button" onclick="switchPlannerScreen('plannerHistoryScreen')" id="nav-plannerHistoryScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-chart-column text-base"></i>
+            <span class="text-[10px] font-semibold">Progress</span>
+          </button>
+          <button type="button" onclick="openExpenseCategoryModal()" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-tags text-base"></i>
+            <span class="text-[10px] font-semibold">Categories</span>
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button type="button" onclick="switchDebtScreen('entryScreen')" id="nav-entryScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 active-nav transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-list-ul text-base"></i>
+            <span class="text-[10px] font-semibold">Loans</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('dashboardScreen')" id="nav-dashboardScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-gauge-high text-base"></i>
+            <span class="text-[10px] font-semibold">Summary</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('trendsScreen')" id="nav-trendsScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-chart-line text-base"></i>
+            <span class="text-[10px] font-semibold">Trends</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('plannerScreen')" id="nav-plannerScreen" class="nav-item flex flex-col items-center gap-1 text-slate-400 transition flex-1 py-1 cursor-pointer">
+            <i class="fa-solid fa-bullseye text-base"></i>
+            <span class="text-[10px] font-semibold">Payoff</span>
+          </button>
+        `;
+      }
+    }
+
+    function triggerFloatingAdd() {
+      if (activeModule === 'daily') {
+        openSpendPopupModal();
+      } else if (activeModule === 'planner') {
+        switchPlannerScreen('plannerInputScreen');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('budgetCatNameInput').focus();
+      } else {
+        openDebtPopupModal();
+      }
+    }
+
+    function openContextModal() {
+      if (activeModule === 'daily' || activeModule === 'planner') {
+        openExpenseCategoryModal();
+      } else {
+        openCategoryModal();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // PART 2: MONTHLY BUDGET PLANNER (CARRY-FORWARD ENGINE)
     // -------------------------------------------------------------
     function switchPlannerScreen(screenId) {
       document.querySelectorAll('.planner-screen').forEach(el => el.classList.add('hidden'));
@@ -1644,18 +1881,16 @@
       renderPlannerDashboard();
     }
 
-    function saveMonthlyBudgetStorage() {
+    function saveMonthlyBudgetStorage(pushCloud = true) {
       localStorage.setItem('monthly_budgets_v1', JSON.stringify(monthlyBudgets));
-      pushAllDataToCloud();
+      if (pushCloud) pushAllDataToCloud();
     }
 
-    // CASCADING BUDGET CARRY-FORWARD HELPER (PRESERVES STORED VALUES ACROSS MONTHS)
     function getOrInitializeMonthBudget(monthKey) {
       if (monthlyBudgets[monthKey] && monthlyBudgets[monthKey].length > 0) {
         return monthlyBudgets[monthKey];
       }
 
-      // Query the latest previously configured month
       const priorMonths = Object.keys(monthlyBudgets).filter(m => m < monthKey).sort();
       if (priorMonths.length > 0) {
         const lastMonth = priorMonths[priorMonths.length - 1];
@@ -1664,7 +1899,7 @@
         monthlyBudgets[monthKey] = JSON.parse(JSON.stringify(DEFAULT_BUDGET_TEMPLATES));
       }
 
-      saveMonthlyBudgetStorage();
+      saveMonthlyBudgetStorage(true);
       return monthlyBudgets[monthKey];
     }
 
@@ -1914,7 +2149,7 @@
     }
 
     // -------------------------------------------------------------
-    // PART 3: DAILY SPENDS & FULL-PAGE POPUP CONTROLLER
+    // PART 3: DAILY SPENDS CONTROLLER & FULL-PAGE MODAL
     // -------------------------------------------------------------
     function openSpendPopupModal() {
       resetExpenseFormToNew();
@@ -1972,7 +2207,6 @@
         rowNormal.classList.add('hidden');
         rowTransfer.classList.remove('hidden');
 
-        // Prevent HTML5 hidden validation freeze
         expCatSelect.removeAttribute('required');
         expAccSelect.removeAttribute('required');
         trfFromSelect.setAttribute('required', 'required');
@@ -2043,12 +2277,12 @@
       renderDailySummary();
     }
 
-    function saveExpenseStorage() {
+    function saveExpenseStorage(pushCloud = true) {
       localStorage.setItem('expense_categories', JSON.stringify(expenseCategories));
       localStorage.setItem('income_categories', JSON.stringify(incomeCategories));
       localStorage.setItem('expense_accounts', JSON.stringify(accountsList));
       localStorage.setItem('expense_records', JSON.stringify(expenseRecords));
-      pushAllDataToCloud();
+      if (pushCloud) pushAllDataToCloud();
     }
 
     function populateExpenseElements() {
@@ -2123,7 +2357,7 @@
       }
 
       if (editId) {
-        const idx = expenseRecords.findIndex(r => r.id == editId);
+        const idx = expenseRecords.findIndex(r => String(r.id) === String(editId));
         if (idx !== -1) {
           expenseRecords[idx] = { ...expenseRecords[idx], type: currentTransactionType, date, amount, category, account, toAccount, note };
           notify("Updated transaction");
@@ -2133,7 +2367,6 @@
         expenseRecords.push(newRecord);
         notify(`Recorded ${currentTransactionType}: ${formatINR(amount)}`);
 
-        // Auto-add new category in spends to Planner
         if (currentTransactionType === 'Expense' && category) {
           const monthKey = date ? date.slice(0, 7) : new Date().toISOString().slice(0, 7);
           getOrInitializeMonthBudget(monthKey);
@@ -2154,7 +2387,7 @@
     }
 
     function editExpense(id) {
-      const item = expenseRecords.find(r => r.id == id);
+      const item = expenseRecords.find(r => String(r.id) === String(id));
       if (!item) return;
 
       openSpendPopupModal();
@@ -2184,7 +2417,7 @@
 
     function deleteExpense(id) {
       if (confirm("Delete this transaction entry?")) {
-        expenseRecords = expenseRecords.filter(r => r.id != id);
+        expenseRecords = expenseRecords.filter(r => String(r.id) !== String(id));
         saveExpenseStorage();
         renderExpenseHistoryTable();
         renderDailySummary();
@@ -2259,10 +2492,10 @@
           </div>
           <div class="flex items-center gap-2 text-right">
             <div>${amountDisplay}</div>
-            <button type="button" onclick="editExpense(${row.id})" class="text-indigo-400 hover:text-indigo-300 p-1.5 cursor-pointer" title="Edit">
+            <button type="button" onclick="editExpense('${row.id}')" class="text-indigo-400 hover:text-indigo-300 p-1.5 cursor-pointer" title="Edit">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button type="button" onclick="deleteExpense(${row.id})" class="text-slate-500 hover:text-rose-400 p-1.5 cursor-pointer" title="Delete">
+            <button type="button" onclick="deleteExpense('${row.id}')" class="text-slate-500 hover:text-rose-400 p-1.5 cursor-pointer" title="Delete">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -2623,7 +2856,6 @@
       }
 
       const uniqueNotes = [...new Set(expenseRecords.map(r => r.note).filter(Boolean))];
-      // STRICT FILTER: STARTS WITH ONLY
       const matchingNotes = uniqueNotes.filter(n => n.toLowerCase().startsWith(q));
 
       if (matchingNotes.length === 0) {
@@ -2878,7 +3110,755 @@
       });
     }
 
-    // Export & Backup
+    // -------------------------------------------------------------
+    // PART 1 CONTROLLER: DEBT & EMI (DYNAMIC REDUCING AMORTIZATION)
+    // -------------------------------------------------------------
+    function openDebtPopupModal() {
+      resetDebtFormToNew();
+      document.getElementById('debtModalTitle').innerText = 'Log Commitment';
+      document.getElementById('debtPopupModal').classList.remove('hidden');
+      document.getElementById('fMetric').focus();
+    }
+
+    function closeDebtPopupModal() {
+      document.getElementById('debtPopupModal').classList.add('hidden');
+    }
+
+    function onDebtDashMonthChanged() {
+      renderDashboard();
+    }
+
+    function onDebtViewMonthChanged() {
+      renderHistoryTable();
+    }
+
+    function computeMonthsFromAmortization() {
+      const P = parseFloat(document.getElementById('fBalance').value);
+      const E = parseFloat(document.getElementById('fEmi').value);
+      const ratePct = parseFloat(document.getElementById('fRate').value) || 0;
+      const feedback = document.getElementById('amortizationFeedback');
+
+      if (isNaN(P) || P <= 0 || isNaN(E) || E <= 0) {
+        notify("Please enter valid Balance and EMI first!");
+        return;
+      }
+
+      const r = (ratePct / 100) / 12;
+
+      if (r === 0) {
+        const n = Math.ceil(P / E);
+        document.getElementById('fMonthsLeft').value = n;
+        feedback.innerText = `At 0% interest, remaining duration is ${n} months.`;
+        feedback.className = "text-[10px] text-emerald-400 px-1 font-medium";
+        notify(`Calculated: ${n} months left`);
+        return;
+      }
+
+      const monthlyInterestCharge = P * r;
+      if (E <= monthlyInterestCharge) {
+        feedback.innerText = `Warning: Monthly interest (₹${Math.round(monthlyInterestCharge)}) ≥ EMI (₹${E}). Loan will never amortize at this EMI!`;
+        feedback.className = "text-[10px] text-rose-400 px-1 font-semibold";
+        notify("EMI is less than monthly interest!");
+        return;
+      }
+
+      const ratio = 1 - (P * r / E);
+      const n = Math.ceil(-Math.log(ratio) / Math.log(1 + r));
+
+      document.getElementById('fMonthsLeft').value = n;
+      feedback.innerText = `Reducing balance tenure: exactly ${n} months (${(n/12).toFixed(1)} years).`;
+      feedback.className = "text-[10px] text-emerald-400 px-1 font-medium";
+      notify(`Calculated: ${n} months left`);
+    }
+
+    function computeBalanceFromAmortization() {
+      const E = parseFloat(document.getElementById('fEmi').value);
+      const n = parseInt(document.getElementById('fMonthsLeft').value);
+      const ratePct = parseFloat(document.getElementById('fRate').value) || 0;
+      const feedback = document.getElementById('amortizationFeedback');
+
+      if (isNaN(E) || E <= 0 || isNaN(n) || n <= 0) {
+        notify("Please enter valid EMI and Months Left first!");
+        return;
+      }
+
+      const r = (ratePct / 100) / 12;
+      let P = 0;
+
+      if (r === 0) {
+        P = Math.round(E * n);
+      } else {
+        P = Math.round(E * (1 - Math.pow(1 + r, -n)) / r);
+      }
+
+      document.getElementById('fBalance').value = P;
+      feedback.innerText = `At ${ratePct}% APR over ${n} months, principal balance is ${formatINR(P)}.`;
+      feedback.className = "text-[10px] text-cyan-300 px-1 font-medium";
+      notify(`Calculated Balance: ${formatINR(P)}`);
+    }
+
+    function saveDebtStorage(pushCloud = true) {
+      localStorage.setItem('debt_categories', JSON.stringify(categories));
+      localStorage.setItem('debt_records', JSON.stringify(debtRecords));
+      if (pushCloud) pushAllDataToCloud();
+    }
+
+    function switchDebtScreen(screenId) {
+      document.querySelectorAll('.debt-screen').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(screenId);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active-nav'));
+      const activeNavBtn = document.getElementById('nav-' + screenId);
+      if (activeNavBtn) activeNavBtn.classList.add('active-nav');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (screenId === 'entryScreen') renderHistoryTable();
+      if (screenId === 'dashboardScreen') renderDashboard();
+      if (screenId === 'trendsScreen') renderCharts();
+      if (screenId === 'plannerScreen') renderPredictionsView();
+    }
+
+    function populateCategoryElements() {
+      const fCat = document.getElementById('fCategory');
+      if (fCat) {
+        const cur = fCat.value;
+        fCat.innerHTML = '';
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          fCat.appendChild(opt);
+        });
+        if (cur && categories.includes(cur)) fCat.value = cur;
+      }
+
+      ['logCategoryFilter', 'trendsCategorySelect'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const val = el.value;
+        el.innerHTML = '<option value="ALL">All Categories</option>';
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          el.appendChild(opt);
+        });
+        if (val && (val === 'ALL' || categories.includes(val))) el.value = val;
+      });
+
+      renderCategoryPills();
+      renderCategoryBadges();
+    }
+
+    function renderCategoryPills() {
+      const container = document.getElementById('categoryPillBar');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.type = "button";
+      allBtn.className = `px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer active:scale-95 ${
+        activeDashboardCategory === 'ALL' 
+          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
+          : 'bg-slate-800 text-slate-400 hover:text-white border border-slate-700/60'
+      }`;
+      allBtn.innerText = 'All';
+      allBtn.onclick = () => {
+        activeDashboardCategory = 'ALL';
+        renderCategoryPills();
+        renderDashboard();
+      };
+      container.appendChild(allBtn);
+
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.type = "button";
+        const isActive = activeDashboardCategory === cat;
+        btn.className = `px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer active:scale-95 ${
+          isActive 
+            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
+            : 'bg-slate-800 text-slate-400 hover:text-white border border-slate-700/60'
+        }`;
+        btn.innerText = cat;
+        btn.onclick = () => {
+          activeDashboardCategory = cat;
+          renderCategoryPills();
+          renderDashboard();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function renderCategoryBadges() {
+      const container = document.getElementById('categoryBadgeContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const countEl = document.getElementById('catModalCount');
+      if (countEl) countEl.innerText = categories.length;
+
+      categories.forEach((cat, idx) => {
+        const isCore = DEFAULT_DEBT_CATEGORIES.includes(cat);
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300 font-medium";
+        row.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-slate-500 font-mono text-[10px] w-4">${idx + 1}.</span>
+            <span class="font-bold text-white">${cat}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="moveDebtCategory(${idx}, 'top')" title="Move to Top" class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:text-white cursor-pointer text-[10px]">
+              ⏫
+            </button>
+            <button type="button" onclick="moveDebtCategory(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Up" class="w-6 h-6 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer">
+              ▲
+            </button>
+            <button type="button" onclick="moveDebtCategory(${idx}, 1)" ${idx === categories.length - 1 ? 'disabled' : ''} title="Move Down" class="w-6 h-6 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white disabled:opacity-30 cursor-pointer">
+              ▼
+            </button>
+            ${!isCore ? `<button type="button" onclick="deleteCustomCategory('${cat}')" class="text-rose-400 hover:text-rose-300 ml-1.5 cursor-pointer"><i class="fa-solid fa-trash-can text-xs"></i></button>` : ''}
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function openCategoryModal() {
+      document.getElementById('categoryModal').classList.remove('hidden');
+      renderCategoryBadges();
+      document.getElementById('newCatInput').focus();
+    }
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.add('hidden');
+    }
+    function handleNewDebtCategory(e) {
+      e.preventDefault();
+      const input = document.getElementById('newCatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      if (categories.some(c => c.toLowerCase() === val.toLowerCase())) {
+        notify("Category already exists!");
+        return;
+      }
+      categories.push(val);
+      saveDebtStorage();
+      populateCategoryElements();
+      input.value = '';
+      notify(`Added "${val}"`);
+    }
+    function deleteCustomCategory(name) {
+      if (confirm(`Remove custom category "${name}"?`)) {
+        categories = categories.filter(c => c !== name);
+        if (activeDashboardCategory === name) activeDashboardCategory = 'ALL';
+        saveDebtStorage();
+        populateCategoryElements();
+        renderDashboard();
+        notify(`Removed "${name}"`);
+      }
+    }
+
+    // AUTOMATIC AMORTIZATION ROLL-FORWARD ENGINE
+    function getDebtDatasetForMonth(monthKey, cat = 'ALL') {
+      const source = (cat === 'ALL') ? debtRecords : debtRecords.filter(d => d.category === cat);
+      const exactMonthItems = source.filter(d => d.month === monthKey);
+
+      if (exactMonthItems.length > 0) {
+        return { items: exactMonthItems, isProjected: false };
+      }
+
+      const priorMonths = [...new Set(source.map(d => d.month))].filter(m => m < monthKey).sort();
+      if (priorMonths.length === 0) {
+        return { items: [], isProjected: false };
+      }
+
+      const lastMonth = priorMonths[priorMonths.length - 1];
+      const baseItems = source.filter(d => d.month === lastMonth);
+
+      const [y1, m1] = lastMonth.split('-').map(Number);
+      const [y2, m2] = monthKey.split('-').map(Number);
+      const elapsed = (y2 - y1) * 12 + (m2 - m1);
+
+      if (elapsed <= 0) return { items: baseItems, isProjected: false };
+
+      const projected = baseItems.map(item => {
+        let bal = item.balance;
+        let left = item.monthsLeft || 12;
+        const r = ((item.rate || 0) / 100) / 12;
+
+        for (let step = 0; step < elapsed; step++) {
+          if (bal > 0) {
+            const monthlyInterest = bal * r;
+            const principal = Math.min(bal, Math.max(0, item.emi - monthlyInterest));
+            bal = Math.max(0, bal - principal);
+            left = Math.max(0, left - 1);
+          }
+        }
+
+        return {
+          ...item,
+          id: `proj_${item.id}_${monthKey}`,
+          month: monthKey,
+          balance: Math.round(bal),
+          monthsLeft: left,
+          isAutoProjected: true
+        };
+      });
+
+      return { items: projected, isProjected: true };
+    }
+
+    function renderDashboard() {
+      const selectedMonth = document.getElementById('debtDashMonthSelector').value || new Date().toISOString().slice(0, 7);
+      const { items: latestItems } = getDebtDatasetForMonth(selectedMonth, activeDashboardCategory);
+
+      const [y, m] = selectedMonth.split('-').map(Number);
+      const prevMonthKey = new Date(y, m - 2, 1).toISOString().slice(0, 7);
+      const { items: prevItems } = getDebtDatasetForMonth(prevMonthKey, activeDashboardCategory);
+
+      const dObj = new Date(selectedMonth + '-01');
+      document.getElementById('dashMonthBadge').innerText = dObj.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+
+      if (latestItems.length === 0) {
+        document.getElementById('kpiTotalDebt').innerText = '₹0';
+        document.getElementById('kpiTotalEmi').innerText = '₹0';
+        document.getElementById('kpiActiveCount').innerText = '0 Loans';
+        document.getElementById('kpiReductionText').innerText = 'No records for this month';
+        document.getElementById('activeListCount').innerText = '0 Items';
+        document.getElementById('liabilitiesListContainer').innerHTML = `
+          <div class="glass-card rounded-2xl p-6 text-center text-slate-500 text-xs">
+            No commitments recorded for this month.
+          </div>
+        `;
+        return;
+      }
+
+      const totalBalance = latestItems.reduce((acc, c) => acc + c.balance, 0);
+      const totalEmi = latestItems.reduce((acc, c) => acc + c.emi, 0);
+      const prevTotal = prevItems.reduce((acc, c) => acc + c.balance, 0);
+
+      document.getElementById('kpiTotalDebt').innerText = formatINR(totalBalance);
+      document.getElementById('kpiTotalEmi').innerText = formatINR(totalEmi);
+      document.getElementById('kpiActiveCount').innerText = `${latestItems.length} Loans`;
+      document.getElementById('activeListCount').innerText = `${latestItems.length} Active`;
+
+      if (prevTotal > 0) {
+        const diff = prevTotal - totalBalance;
+        const pct = ((diff / prevTotal) * 100).toFixed(1);
+        if (diff >= 0) {
+          document.getElementById('kpiReductionRow').className = "flex items-center gap-1.5 mt-2 text-xs font-semibold text-emerald-400";
+          document.getElementById('kpiReductionRow').innerHTML = `<i class="fa-solid fa-circle-arrow-down text-xs"></i> <span>${formatINR(diff)} reduced vs last month (${pct}%)</span>`;
+        } else {
+          document.getElementById('kpiReductionRow').className = "flex items-center gap-1.5 mt-2 text-xs font-semibold text-rose-400";
+          document.getElementById('kpiReductionRow').innerHTML = `<i class="fa-solid fa-circle-arrow-up text-xs"></i> <span>${formatINR(Math.abs(diff))} balance increase</span>`;
+        }
+      } else {
+        document.getElementById('kpiReductionRow').className = "flex items-center gap-1.5 mt-2 text-xs font-medium text-slate-400";
+        document.getElementById('kpiReductionRow').innerHTML = `<i class="fa-solid fa-clock text-xs"></i> <span>Initial benchmark month</span>`;
+      }
+
+      const avgRate = latestItems.reduce((acc, c) => acc + (c.rate || 0), 0) / latestItems.length;
+      document.getElementById('kpiAvgRate').innerText = `Avg ${avgRate.toFixed(1)}% APR`;
+
+      const container = document.getElementById('liabilitiesListContainer');
+      container.innerHTML = '';
+
+      const sorted = [...latestItems].sort((a, b) => b.balance - a.balance);
+      sorted.forEach(item => {
+        const prev = prevItems.find(p => p.metric.toLowerCase() === item.metric.toLowerCase());
+        let deltaHtml = '';
+        if (prev) {
+          const delta = prev.balance - item.balance;
+          if (delta > 0) deltaHtml = `<span class="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">↓ ${formatINR(delta)}</span>`;
+          else if (delta < 0) deltaHtml = `<span class="text-[10px] text-rose-400 font-semibold bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">↑ ${formatINR(Math.abs(delta))}</span>`;
+        }
+
+        const mLeft = item.monthsLeft || 'N/A';
+
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-4 border border-slate-800 hover:border-slate-700 transition";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-white tracking-tight">${item.metric}</span>
+                <span class="text-[9px] uppercase font-semibold px-1.5 py-0.5 rounded border ${item.priority === 'High' ? 'bg-rose-500/15 text-rose-300 border-rose-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}">${item.priority}</span>
+                ${item.isAutoProjected ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">Auto-Amortized</span>` : ''}
+              </div>
+              <span class="text-[11px] text-slate-400 font-medium">${item.category} • ${item.rate ? item.rate + '% APR' : '0%'} • <b class="text-amber-300">${mLeft} mos left</b></span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-extrabold text-white block">${formatINR(item.balance)}</span>
+              ${deltaHtml}
+            </div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex justify-between items-center text-[11px]">
+            <span class="text-slate-400">Monthly EMI: <b class="text-slate-200 font-semibold">${formatINR(item.emi)}</b></span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="editDebtItemDirect('${item.metric}', ${item.balance}, ${item.emi}, ${item.rate || 0}, ${item.monthsLeft || 0}, '${item.category}', '${item.priority}')" class="text-indigo-400 hover:text-indigo-300 p-1 font-semibold flex items-center gap-1 text-[11px] cursor-pointer">
+                <i class="fa-solid fa-pen-to-square"></i> Edit / Lock-in
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function editDebtItemDirect(metric, balance, emi, rate, monthsLeft, category, priority) {
+      openDebtPopupModal();
+      const currentMonth = document.getElementById('debtDashMonthSelector').value || document.getElementById('debtViewMonthSelector').value || new Date().toISOString().slice(0, 7);
+      document.getElementById('fMonth').value = currentMonth;
+      document.getElementById('fMetric').value = metric;
+      document.getElementById('fCategory').value = category;
+      document.getElementById('fBalance').value = balance;
+      document.getElementById('fEmi').value = emi;
+      document.getElementById('fRate').value = rate;
+      document.getElementById('fMonthsLeft').value = monthsLeft;
+      document.getElementById('fPriority').value = priority || 'Normal';
+    }
+
+    function handleDebtSubmission(e) {
+      e.preventDefault();
+      const m = document.getElementById('fMonth').value;
+      const metric = document.getElementById('fMetric').value.trim();
+      const cat = document.getElementById('fCategory').value;
+      const bal = parseFloat(document.getElementById('fBalance').value) || 0;
+      const emi = parseFloat(document.getElementById('fEmi').value) || 0;
+      const rate = parseFloat(document.getElementById('fRate').value) || 0;
+      let monthsLeft = parseInt(document.getElementById('fMonthsLeft').value);
+
+      if (isNaN(monthsLeft) || monthsLeft <= 0) {
+        const r = (rate / 100) / 12;
+        if (r === 0) {
+          monthsLeft = emi > 0 ? Math.ceil(bal / emi) : 1;
+        } else if (emi > bal * r) {
+          monthsLeft = Math.ceil(-Math.log(1 - (bal * r / emi)) / Math.log(1 + r));
+        } else {
+          monthsLeft = 120;
+        }
+      }
+
+      const priority = document.getElementById('fPriority').value;
+      const notes = document.getElementById('fNotes').value.trim();
+
+      const existingIdx = debtRecords.findIndex(r => r.metric.toLowerCase() === metric.toLowerCase() && r.month === m);
+      if (existingIdx !== -1) {
+        debtRecords[existingIdx] = { ...debtRecords[existingIdx], month: m, metric, category: cat, balance: bal, emi, rate, monthsLeft, priority, notes };
+        notify(`Updated "${metric}" for ${m}`);
+      } else {
+        const newRecord = { id: Date.now(), month: m, metric, category: cat, balance: bal, emi, rate, monthsLeft, priority, notes };
+        debtRecords.push(newRecord);
+        notify(`Saved "${metric}" for ${m}`);
+      }
+
+      saveDebtStorage();
+      closeDebtPopupModal();
+      renderHistoryTable();
+      renderDashboard();
+    }
+
+    function editDebtItem(id) {
+      const item = debtRecords.find(r => String(r.id) === String(id));
+      if (!item) return;
+
+      openDebtPopupModal();
+      document.getElementById('debtModalTitle').innerText = `Edit: ${item.metric}`;
+      document.getElementById('editEntryId').value = item.id;
+      document.getElementById('fMonth').value = item.month;
+      document.getElementById('fMetric').value = item.metric;
+      document.getElementById('fCategory').value = item.category;
+      document.getElementById('fBalance').value = item.balance;
+      document.getElementById('fEmi').value = item.emi;
+      document.getElementById('fRate').value = item.rate || '';
+      document.getElementById('fMonthsLeft').value = item.monthsLeft || '';
+      document.getElementById('fPriority').value = item.priority || 'Normal';
+      document.getElementById('fNotes').value = item.notes || '';
+    }
+
+    function resetDebtFormToNew() {
+      document.getElementById('editEntryId').value = '';
+      document.getElementById('debtForm').reset();
+      document.getElementById('fMonth').value = document.getElementById('debtViewMonthSelector').value || new Date().toISOString().slice(0, 7);
+      document.getElementById('amortizationFeedback').innerText = `Formula: n = -ln(1 - P·r/E) / ln(1+r)`;
+      document.getElementById('amortizationFeedback').className = "text-[10px] text-slate-500 px-1 italic";
+    }
+
+    function deleteDebtEntry(id) {
+      if (confirm("Delete this loan commitment?")) {
+        debtRecords = debtRecords.filter(r => String(r.id) !== String(id));
+        saveDebtStorage();
+        renderHistoryTable();
+        renderDashboard();
+        notify("Entry deleted.");
+      }
+    }
+
+    function renderHistoryTable() {
+      const container = document.getElementById('historyTableContainer');
+      container.innerHTML = '';
+
+      const search = document.getElementById('logSearch').value.toLowerCase();
+      const filterCat = document.getElementById('logCategoryFilter').value;
+      const selectedMonth = document.getElementById('debtViewMonthSelector').value || new Date().toISOString().slice(0, 7);
+
+      const { items: datasetItems } = getDebtDatasetForMonth(selectedMonth, filterCat);
+
+      let filtered = datasetItems.filter(r => {
+        const matchesSearch = !search || 
+          r.metric.toLowerCase().includes(search) || 
+          r.category.toLowerCase().includes(search) || 
+          r.month.includes(search);
+        return matchesSearch;
+      });
+
+      filtered.sort((a, b) => b.month.localeCompare(a.month) || (b.id ? String(b.id).localeCompare(String(a.id)) : 0));
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-slate-500 text-xs">No records found for this month. Tap Log Loan to add.</div>';
+        return;
+      }
+
+      filtered.forEach(row => {
+        const mLeft = row.monthsLeft || 'N/A';
+        const itemEl = document.createElement('div');
+        itemEl.className = "glass-card rounded-2xl p-3.5 border border-slate-800 flex justify-between items-center text-xs";
+        
+        itemEl.innerHTML = `
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-white text-xs">${row.metric}</span>
+              <span class="text-[10px] text-slate-400 font-mono">(${row.month})</span>
+              ${row.isAutoProjected ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">Auto-Amortized</span>` : ''}
+            </div>
+            <span class="text-[10px] text-slate-400">${row.category} • EMI: ${formatINR(row.emi)} • <b class="text-amber-300">${mLeft} mos left</b></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-black text-slate-100 text-sm mr-1">${formatINR(row.balance)}</span>
+            <button type="button" onclick="editDebtItemDirect('${row.metric}', ${row.balance}, ${row.emi}, ${row.rate || 0}, ${row.monthsLeft || 0}, '${row.category}', '${row.priority}')" class="text-indigo-400 hover:text-indigo-300 p-1.5 cursor-pointer" title="Edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            ${!row.isAutoProjected ? `
+            <button type="button" onclick="deleteDebtEntry('${row.id}')" class="text-slate-500 hover:text-rose-400 p-1.5 cursor-pointer" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>` : ''}
+          </div>
+        `;
+        container.appendChild(itemEl);
+      });
+    }
+
+    function renderCharts() {
+      const cat = document.getElementById('trendsCategorySelect').value;
+      const source = (cat === 'ALL') ? debtRecords : debtRecords.filter(d => d.category === cat);
+      const months = [...new Set(source.map(d => d.month))].sort();
+      const balances = [], emis = [];
+
+      months.forEach(m => {
+        const mItems = source.filter(d => d.month === m);
+        balances.push(mItems.reduce((acc, c) => acc + c.balance, 0));
+        emis.push(mItems.reduce((acc, c) => acc + c.emi, 0));
+      });
+
+      if (debtChart) debtChart.destroy();
+      const ctx1 = document.getElementById('debtTrendChart').getContext('2d');
+      debtChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            data: balances,
+            borderColor: '#f43f5e',
+            backgroundColor: 'rgba(244, 63, 94, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: (v) => '₹' + (v >= 100000 ? (v/100000).toFixed(1) + 'L' : (v/1000).toFixed(0) + 'k') } }
+          }
+        }
+      });
+
+      if (emiChart) emiChart.destroy();
+      const ctx2 = document.getElementById('emiTrendChart').getContext('2d');
+      emiChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [{ data: emis, backgroundColor: '#f59e0b', borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: (v) => '₹' + (v/1000).toFixed(0) + 'k' } }
+          }
+        }
+      });
+
+      const { items: latestItems } = getDebtDatasetForMonth(new Date().toISOString().slice(0, 7), 'ALL');
+      const catMap = {};
+      latestItems.forEach(i => catMap[i.category] = (catMap[i.category] || 0) + i.balance);
+
+      if (doughnutChart) doughnutChart.destroy();
+      const ctx3 = document.getElementById('categoryDoughnutChart').getContext('2d');
+      doughnutChart = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catMap),
+          datasets: [{
+            data: Object.values(catMap),
+            backgroundColor: ['#f59e0b', '#06b6d4', '#10b981', '#6366f1', '#ec4899', '#8b5cf6', '#3b82f6'],
+            borderWidth: 2, borderColor: '#070a12'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 10 } } } }
+        }
+      });
+    }
+
+    function renderPredictionsView() {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const { items: latestItems } = getDebtDatasetForMonth(currentMonth, 'ALL');
+      const currentBalance = latestItems.reduce((sum, item) => sum + item.balance, 0);
+
+      const baseDate = new Date(currentMonth + '-01');
+      const fiveMonthTrajectory = [];
+
+      for (let m = 1; m <= 5; m++) {
+        const nextMonthKey = new Date(baseDate.getFullYear(), baseDate.getMonth() + m, 1).toISOString().slice(0, 7);
+        const { items: projItems } = getDebtDatasetForMonth(nextMonthKey, 'ALL');
+        const totalBal = projItems.reduce((s, it) => s + it.balance, 0);
+        const totalEmi = projItems.reduce((s, it) => s + it.emi, 0);
+        const dObj = new Date(nextMonthKey + '-01');
+        fiveMonthTrajectory.push({
+          month: dObj.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+          totalOutstanding: totalBal,
+          totalEmi: totalEmi,
+          activeLoans: projItems.filter(it => it.balance > 0).length
+        });
+      }
+
+      const tbody = document.getElementById('forecast5MonthsTbody');
+      tbody.innerHTML = '';
+
+      fiveMonthTrajectory.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.className = index % 2 === 0 ? "bg-slate-900/30" : "bg-transparent";
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 font-bold text-white">${row.month}</td>
+          <td class="py-2.5 px-2.5 text-right font-extrabold text-slate-100">${formatINR(row.totalOutstanding)}</td>
+          <td class="py-2.5 px-2.5 text-right text-indigo-300 font-semibold">${formatINR(row.totalEmi)}</td>
+          <td class="py-2.5 px-2.5 text-center">
+            <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 border border-slate-700">${row.activeLoans}</span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const m6Key = new Date(baseDate.getFullYear(), baseDate.getMonth() + 6, 1).toISOString().slice(0, 7);
+      const m12Key = new Date(baseDate.getFullYear(), baseDate.getMonth() + 12, 1).toISOString().slice(0, 7);
+      const { items: m6Items } = getDebtDatasetForMonth(m6Key, 'ALL');
+      const { items: m12Items } = getDebtDatasetForMonth(m12Key, 'ALL');
+
+      const m6Bal = m6Items.reduce((s, it) => s + it.balance, 0);
+      const m6Emi = m6Items.reduce((s, it) => s + it.emi, 0);
+      const m12Bal = m12Items.reduce((s, it) => s + it.balance, 0);
+      const m12Emi = m12Items.reduce((s, it) => s + it.emi, 0);
+
+      document.getElementById('forecastDate6M').innerText = new Date(m6Key + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      document.getElementById('forecastDebt6M').innerText = formatINR(m6Bal);
+      document.getElementById('forecastEmi6M').innerText = formatINR(m6Emi);
+      const drop6 = currentBalance > 0 ? (((currentBalance - m6Bal) / currentBalance) * 100).toFixed(1) : 0;
+      document.getElementById('forecastDrop6M').innerText = `↓ ${drop6}% drop from today`;
+
+      document.getElementById('forecastDate1Y').innerText = new Date(m12Key + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      document.getElementById('forecastDebt1Y').innerText = formatINR(m12Bal);
+      document.getElementById('forecastEmi1Y').innerText = formatINR(m12Emi);
+      const drop12 = currentBalance > 0 ? (((currentBalance - m12Bal) / currentBalance) * 100).toFixed(1) : 0;
+      document.getElementById('forecastDrop1Y').innerText = `↓ ${drop12}% drop from today`;
+
+      if (latestItems.length > 0) {
+        const totalNormalEmi = latestItems.reduce((acc, c) => acc + c.emi, 0);
+        if (totalNormalEmi > 0) {
+          const baseMonths = Math.ceil(currentBalance / totalNormalEmi);
+          const accMonths = Math.ceil(currentBalance / (totalNormalEmi + 5000));
+          const saved = Math.max(0, baseMonths - accMonths);
+          document.getElementById('simMonthsSaved').innerText = `${saved} Months Faster`;
+          const finish = new Date();
+          finish.setMonth(finish.getMonth() + accMonths);
+          document.getElementById('simNewFinishDate').innerText = finish.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        }
+      }
+
+      renderPayoffList();
+    }
+
+    function renderPayoffList() {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const { items: latestItems } = getDebtDatasetForMonth(currentMonth, 'ALL');
+      const container = document.getElementById('plannerListContainer');
+      container.innerHTML = '';
+
+      if (latestItems.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-500 text-center py-4">No active loans found.</div>';
+        return;
+      }
+
+      const sorted = [...latestItems].sort((a,b) => (b.rate || 0) - (a.rate || 0));
+      sorted.forEach(item => {
+        const monthsLeft = item.monthsLeft || 1;
+        let targetDate = 'N/A';
+        if (typeof monthsLeft === 'number' && monthsLeft < 600) {
+          const d = new Date();
+          d.setMonth(d.getMonth() + monthsLeft);
+          targetDate = d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        }
+
+        let strategyTag = item.rate >= 11
+          ? `<span class="text-[10px] text-rose-300 font-bold bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-full">🔥 Top Avalanche (${item.rate}% APR)</span>`
+          : `<span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">${item.rate}% APR</span>`;
+
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-4 border border-slate-800 space-y-2";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-bold text-white block">${item.metric}</span>
+              <span class="text-[11px] text-slate-400">${item.category} • Balance: <b class="text-slate-200">${formatINR(item.balance)}</b></span>
+            </div>
+            ${strategyTag}
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-[11px]">
+            <div>
+              <span class="text-[10px] text-slate-500 block uppercase">Monthly EMI</span>
+              <span class="font-bold text-emerald-400">${formatINR(item.emi)}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block uppercase">Tenor Left</span>
+              <span class="font-bold text-slate-200">${monthsLeft} mos</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-500 block uppercase">Debt-Free Date</span>
+              <span class="font-bold text-indigo-400">${targetDate}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
     function exportToCSV() {
       if (debtRecords.length === 0 && expenseRecords.length === 0) return notify("No data to export!");
       let csv = 'Module,DateOrMonth,Title,Category,Amount,Account,Rate,TenorLeft,Notes\r\n';
@@ -2923,7 +3903,7 @@
     }
 
     // -------------------------------------------------------------
-    // INITIALIZATION (DEFAULT LANDING: SPENDS MODULE WITH FEED)
+    // INITIALIZATION (LANDING ON SPENDS WITH LIVE DATA RESTORATION)
     // -------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
       const currentMonth = new Date().toISOString().slice(0, 7);
@@ -2940,16 +3920,10 @@
       populateCategoryElements();
       populateExpenseElements();
 
-      // Check passcode
       checkSecurityOnLaunch();
-
-      // Connect Firebase / Cloud sync if keys exist
       initFirebaseClient();
-
-      // Trigger automatic backup verification
       performAutomatedDailyBackup();
 
-      // LANDING PAGE: SPENDS MODULE
       toggleAppMode('daily');
     });
   </script>
