@@ -73,6 +73,7 @@
       position: relative;
     }
 
+    /* Ambient Aurora Canvas */
     .aurora-bg {
       position: fixed;
       inset: 0;
@@ -114,28 +115,42 @@
       100% { transform: translate(-30px, -40px) scale(0.95); }
     }
 
+    /* 3D Page Turn & Perspective Transition System */
     .view-stage {
       perspective: 1200px;
       transform-style: preserve-3d;
     }
     
     .page-turn-in {
-      animation: pageTurnForward 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: pageTurnForward 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .page-turn-back {
-      animation: pageTurnBackward 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: pageTurnBackward 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes pageTurnForward {
-      0% { opacity: 0; transform: rotateY(-16deg) translateX(30px) scale(0.97); }
-      100% { opacity: 1; transform: rotateY(0deg) translateX(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: rotateY(-18deg) translateX(35px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) translateX(0) scale(1);
+      }
     }
 
     @keyframes pageTurnBackward {
-      0% { opacity: 0; transform: rotateY(16deg) translateX(-30px) scale(0.97); }
-      100% { opacity: 1; transform: rotateY(0deg) translateX(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: rotateY(18deg) translateX(-35px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) translateX(0) scale(1);
+      }
     }
 
+    /* Tactile Glass & Bento Surfaces */
     .glass-card {
       background: linear-gradient(145deg, rgba(17, 28, 48, 0.65) 0%, rgba(9, 15, 28, 0.88) 100%);
       backdrop-filter: blur(24px);
@@ -175,6 +190,7 @@
       100% { transform: translateX(240%) rotate(28deg); }
     }
 
+    /* Kinetic Tiles */
     .bento-tile-emerald {
       background: linear-gradient(130deg, rgba(6, 78, 59, 0.45) 0%, rgba(13, 23, 38, 0.92) 75%);
       border: 1px solid rgba(16, 185, 129, 0.32);
@@ -211,6 +227,7 @@
       opacity: 0.12;
     }
 
+    /* FABs System */
     .fab-btn-shadow {
       box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 20px -3px rgba(99, 102, 241, 0.45);
     }
@@ -226,17 +243,28 @@
     .safe-top { padding-top: max(0.9rem, env(safe-area-inset-top)); }
     .safe-bottom { padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); }
 
+    /* Frosted Bottom Nav Floating Dock */
     .active-nav-dock {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.25) 100%);
       border: 1px solid rgba(165, 180, 252, 0.45);
       box-shadow: 0 6px 18px -4px rgba(99, 102, 241, 0.4);
       color: #ffffff !important;
     }
-    .active-nav-dock i { color: #c7d2fe !important; }
+    .active-nav-dock i {
+      color: #c7d2fe !important;
+    }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.debug('SW Notice:', err));
+      });
+    }
+  </script>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white pb-28">
 
@@ -316,8 +344,12 @@
   <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
   <main class="max-w-md mx-auto w-full px-4 pt-3 flex-1 view-stage">
 
-    <!-- MODULE 0: ASYMMETRIC BENTO HUB -->
+    <!-- ************************************************************* -->
+    <!-- MODULE 0: ASYMMETRIC BENTO HUB                                -->
+    <!-- ************************************************************* -->
     <div id="hubViewContainer" class="space-y-3.5 page-turn-in">
+      
+      <!-- HERO BENTO VAULT: NET LIQUID CAPITAL -->
       <div onclick="openLiquidAccountsBreakdown()" class="bento-hero-vault rounded-[28px] p-5">
         <div class="flex justify-between items-center mb-1.5">
           <div class="flex items-center gap-2">
@@ -335,6 +367,7 @@
           <span class="text-[11px] text-indigo-300/80 font-medium">Live Balance</span>
         </div>
 
+        <!-- 3 Color-Coded Metric Capsules -->
         <div class="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-white/[0.08]">
           <div class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-500/25">
             <div class="flex items-center gap-1 text-[9px] text-emerald-400 uppercase font-bold">
@@ -361,6 +394,8 @@
 
       <!-- BENTO COMMAND TILES -->
       <div class="grid grid-cols-12 gap-3.5">
+        
+        <!-- TILE 1: DAILY SPENDS -->
         <div onclick="navigateToModule('daily')" class="col-span-12 bento-tile-emerald rounded-[26px] p-4.5 cursor-pointer group glass-card">
           <i class="fa-solid fa-wallet tile-watermark text-emerald-400"></i>
           <div class="flex items-center justify-between relative z-10 p-1">
@@ -386,6 +421,7 @@
           </div>
         </div>
 
+        <!-- TILE 2: BUDGET PLANNER -->
         <div onclick="navigateToModule('planner')" class="col-span-7 bento-tile-purple rounded-[28px] p-4 flex flex-col justify-between min-h-[195px] cursor-pointer group glass-card">
           <i class="fa-solid fa-bullseye tile-watermark text-purple-400"></i>
           <div class="flex justify-between items-start relative z-10">
@@ -412,6 +448,7 @@
           </div>
         </div>
 
+        <!-- TILE 3: DEBT & COMMITMENTS -->
         <div onclick="navigateToModule('debt')" class="col-span-5 bento-tile-amber rounded-[28px] p-4 flex flex-col justify-between min-h-[195px] cursor-pointer group glass-card">
           <i class="fa-solid fa-scale-balanced tile-watermark text-amber-400"></i>
           <div class="flex justify-between items-start relative z-10">
@@ -438,6 +475,7 @@
           </div>
         </div>
 
+        <!-- TILE 4: CONFIGURATION -->
         <div onclick="openConfigModal()" class="col-span-12 bento-tile-cyan rounded-[24px] p-3.5 cursor-pointer group glass-card">
           <div class="flex items-center justify-between px-1">
             <div class="flex items-center gap-3">
@@ -455,10 +493,13 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- MODULE 1: DAILY SPENDS -->
+    <!-- ************************************************************* -->
+    <!-- MODULE 1: DAILY SPENDS WORKSPACE                              -->
+    <!-- ************************************************************* -->
     <div id="dailyModuleContainer" class="hidden space-y-3.5">
       <section id="dailyEntryScreen" class="daily-screen space-y-3.5">
         <div class="glass-card rounded-2xl p-3 flex items-center justify-between gap-2">
@@ -624,10 +665,12 @@
       </section>
     </div>
 
-    <!-- MODULE 2: PLANNER WORKSPACE -->
+    <!-- ************************************************************* -->
+    <!-- MODULE 2: PLANNER WORKSPACE (WITH HORIZONS & ARREARS)         -->
+    <!-- ************************************************************* -->
     <div id="plannerModuleContainer" class="hidden space-y-3.5">
       
-      <!-- PLANNER VIEW 1: TARGETS -->
+      <!-- PLANNER VIEW 1: TARGETS (REQUIRED VS PLANNED) -->
       <section id="plannerInputScreen" class="planner-screen space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -668,7 +711,7 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 2: STATUS & CUMULATIVE ROLL-FORWARD -->
+      <!-- PLANNER VIEW 2: DASHBOARD (WITH CUMULATIVE ARREARS) -->
       <section id="plannerDashboardScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -695,12 +738,12 @@
 
           <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10">
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] text-slate-400 uppercase font-bold block">Paid (Actual)</span>
-              <span id="kpiPlannerTotalActualSpent" class="text-base font-black mt-0.5 block font-mono-val">₹0</span>
+              <span class="text-[9px] text-amber-400 uppercase font-bold block">Paid (Actual)</span>
+              <span id="kpiPlannerTotalActualSpent" class="text-base font-black text-amber-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] text-slate-400 uppercase font-bold block">Net Planned Buffer / Lag</span>
-              <span id="kpiPlannerTotalRemainingBuffer" class="text-base font-black mt-0.5 block font-mono-val">₹0</span>
+              <span class="text-[9px] text-emerald-400 uppercase font-bold block">Net Planned Buffer / Lag</span>
+              <span id="kpiPlannerTotalRemainingBuffer" class="text-base font-black text-emerald-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
           </div>
         </div>
@@ -711,7 +754,33 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 3: HORIZONS (QUARTERLY, HALF-YEARLY, ANNUALLY) -->
+      <!-- PLANNER VIEW 3: MULTI-MONTH HISTORY -->
+      <section id="plannerHistoryScreen" class="planner-screen hidden space-y-4">
+        <div class="glass-card rounded-3xl p-4">
+          <span class="text-xs font-bold text-slate-200 block mb-2">Planned Target vs. Actual Outflow</span>
+          <div class="h-48 relative"><canvas id="plannerMultiMonthChart"></canvas></div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-4 space-y-3">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider">Historical Monthly Summary</h3>
+          <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900/80 text-[10px] uppercase font-semibold text-slate-400 border-b border-white/10">
+                <tr>
+                  <th class="py-2.5 px-2.5">Month</th>
+                  <th class="py-2.5 px-2.5 text-right">Planned</th>
+                  <th class="py-2.5 px-2.5 text-right">Paid</th>
+                  <th class="py-2.5 px-2.5 text-right">Variance</th>
+                  <th class="py-2.5 px-2.5 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="plannerMultiMonthTableBody" class="divide-y divide-white/[0.06] font-medium font-mono-val"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLANNER VIEW 4: HORIZONS (QUARTERLY, HALF-YEARLY, ANNUALLY) -->
       <section id="plannerHorizonScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -725,6 +794,7 @@
           </select>
         </div>
 
+        <!-- Period KPI -->
         <div class="bento-tile-purple rounded-3xl p-5 shadow-xl relative overflow-hidden glass-card">
           <div class="flex justify-between items-center mb-1">
             <span class="text-[10px] font-extrabold tracking-widest text-purple-200/80 uppercase" id="horizonKpiTitle">Quarterly Horizon View</span>
@@ -750,40 +820,17 @@
         <div class="space-y-2.5">
           <div class="flex justify-between items-center px-1">
             <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Flexible Horizon Plans</h3>
-            <span class="text-[10px] text-indigo-300 font-medium">Automatic proportional multipliers active</span>
+            <span class="text-[10px] text-indigo-300 font-medium">Pay any amount in any month</span>
           </div>
           <div id="plannerHorizonListContainer" class="space-y-2.5"></div>
         </div>
       </section>
 
-      <!-- PLANNER VIEW 4: MULTI-MONTH -->
-      <section id="plannerHistoryScreen" class="planner-screen hidden space-y-4">
-        <div class="glass-card rounded-3xl p-4">
-          <span class="text-xs font-bold text-slate-200 block mb-2">Planned Target vs. Actual Outflow</span>
-          <div class="h-48 relative"><canvas id="plannerMultiMonthChart"></canvas></div>
-        </div>
-
-        <div class="glass-card rounded-3xl p-4 space-y-3">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider">Historical Monthly Summary</h3>
-          <div class="overflow-x-auto no-scrollbar">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/80 text-[10px] uppercase font-semibold text-slate-400 border-b border-white/10">
-                <tr>
-                  <th class="py-2.5 px-2.5">Month</th>
-                  <th class="py-2.5 px-2.5 text-right">Planned</th>
-                  <th class="py-2.5 px-2.5 text-right">Paid</th>
-                  <th class="py-2.5 px-2.5 text-right">Variance</th>
-                  <th class="py-2.5 px-2.5 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody id="plannerMultiMonthTableBody" class="divide-y divide-white/[0.06] font-medium font-mono-val"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <!-- MODULE 3: DEBT & EMI -->
+    <!-- ************************************************************* -->
+    <!-- MODULE 3: DEBT & EMI WORKSPACE                                -->
+    <!-- ************************************************************* -->
     <div id="debtModuleContainer" class="hidden space-y-3.5">
       <section id="entryScreen" class="debt-screen space-y-4">
         <div class="flex items-center justify-between px-1">
@@ -928,170 +975,486 @@
   </main>
 
   <!-- ================= TACTILE FLOATING BUTTONS ================= -->
+  
+  <!-- LEFT: HOME NAVIGATION BUTTON -->
   <div id="floatingHomeBtnContainer" class="fixed bottom-24 left-5 z-40 max-w-md mx-auto pointer-events-auto">
     <button type="button" onclick="navigateToHub()" class="w-14 h-14 rounded-[22px] bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-800 hover:from-indigo-900 hover:to-slate-700 text-indigo-300 hover:text-white fab-btn-shadow border border-indigo-400/30 flex items-center justify-center text-xl transition-all duration-200 active:scale-90 cursor-pointer" title="Go to Hub">
       <i class="fa-solid fa-house"></i>
     </button>
   </div>
 
+  <!-- RIGHT: QUICK ACTION ADD BUTTON -->
   <div id="floatingAddBtnContainer" class="fixed bottom-24 right-5 z-40 max-w-md mx-auto pointer-events-auto">
     <button type="button" onclick="triggerFloatingAdd()" class="w-14 h-14 rounded-[22px] bg-gradient-to-tr from-rose-500 via-pink-600 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white fab-add-shadow border border-white/30 flex items-center justify-center text-2xl transition-all duration-200 active:scale-90 cursor-pointer" title="Add Entry">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
 
-  <!-- FLOATING DOCK -->
+  <!-- ================= FLOATING ISLAND BOTTOM NAVIGATION DOCK ================= -->
   <nav id="bottomNavBar" class="fixed bottom-3 left-4 right-4 z-30 max-w-md mx-auto bg-[#0b1322]/90 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl px-2 py-1.5 hidden">
     <div id="bottomNavRow" class="flex items-center justify-around gap-1"></div>
   </nav>
 
-  <!-- FILE IMPORTER MODAL (APPEND VS OVERWRITE) -->
-  <div id="importStrategyModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-16 glass-card rounded-3xl p-5 space-y-4 border border-indigo-500/30">
+  <!-- ================= HIDDEN IMPORT FILE INPUT ================= -->
+  <input type="file" id="universalFileInput" accept=".json,.csv" onchange="handleImportFileSelected(event)" class="hidden">
+
+  <!-- ================= MODALS & POPUPS ================= -->
+  <div id="titleDetailModal" class="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
+    <div class="max-w-sm mx-auto my-auto mt-16 glass-card rounded-3xl p-5 space-y-4">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-file-shield text-indigo-400 text-lg"></i>
-          <h3 class="text-sm font-black text-white">Import Strategy</h3>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">System Architecture</h3>
+            <p class="text-[11px] text-slate-400">Executive Finance Hub v2.9</p>
+          </div>
         </div>
-        <button type="button" onclick="hideModal('importStrategyModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
+        <button type="button" onclick="hideModal('titleDetailModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-xs"></i>
         </button>
       </div>
 
-      <p class="text-xs text-slate-300 leading-relaxed">
-        Choose how you want to restore the selected backup file into FinTrack:
-      </p>
-
-      <div class="space-y-2.5">
-        <button type="button" onclick="executeChosenImport('APPEND')" class="w-full p-3.5 rounded-2xl bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-400/40 text-left transition active:scale-98">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black text-indigo-200">Append Data (Safe Merge)</span>
-            <i class="fa-solid fa-plus text-indigo-300 text-xs"></i>
-          </div>
-          <p class="text-[10px] text-slate-400 mt-1">Keeps all current transactions and configurations intact; adds new non-duplicate records.</p>
-        </button>
-
-        <button type="button" onclick="executeChosenImport('OVERWRITE')" class="w-full p-3.5 rounded-2xl bg-rose-600/20 hover:bg-rose-600/35 border border-rose-500/40 text-left transition active:scale-98">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black text-rose-300">Overwrite All (Clean Restore)</span>
-            <i class="fa-solid fa-rotate text-rose-400 text-xs"></i>
-          </div>
-          <p class="text-[10px] text-slate-400 mt-1">Replaces existing local records entirely with the imported backup file state.</p>
-        </button>
+      <div class="space-y-2 text-xs text-slate-300">
+        <p class="leading-relaxed">FinTrack coordinates your total net liquid capital, multi-period flexible budget horizons, cumulative arrears reconciliation, and amortization schedules.</p>
       </div>
+
+      <button type="button" onclick="hideModal('titleDetailModal')" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">
+        Dismiss
+      </button>
     </div>
   </div>
 
-  <!-- POPUP: ACCOUNT SPECIFIC TRANSACTION DRILLDOWN LEDGER -->
-  <div id="accountTransactionsModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-md mx-auto my-auto mt-8 glass-card rounded-3xl p-5 space-y-4 border border-cyan-500/30 shadow-2xl">
+  <!-- POPUP: NET LIQUID CAPITAL ACCOUNT-WISE LEDGER -->
+  <div id="liquidAccountsModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
+    <div class="max-w-md mx-auto my-auto mt-10 glass-card rounded-3xl p-5 space-y-4 border border-indigo-500/30 shadow-2xl">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
-          <button type="button" onclick="hideModal('accountTransactionsModal'); showModal('liquidAccountsModal');" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-            <i class="fa-solid fa-arrow-left text-xs"></i>
-          </button>
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 text-lg">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
           <div>
-            <h3 id="acctLedgerModalTitle" class="text-sm font-black text-white">Account Transactions</h3>
-            <p id="acctLedgerModalSubtitle" class="text-[11px] text-slate-400">Ledger history</p>
+            <h3 class="text-sm font-black text-white">Liquid Capital Distribution</h3>
+            <p class="text-[11px] text-slate-400">Real-time balances across all institutions</p>
           </div>
         </div>
-        <button type="button" onclick="hideModal('accountTransactionsModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
+        <button type="button" onclick="hideModal('liquidAccountsModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
-      <div class="p-3 bg-black/40 rounded-2xl border border-white/[0.08] flex justify-between items-center">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Current Live Balance</span>
-        <span id="acctLedgerBalanceVal" class="text-base font-black text-white font-mono-val">₹0</span>
+      <div class="p-3.5 bg-black/40 rounded-2xl border border-white/[0.08] flex justify-between items-center">
+        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Net Liquid</span>
+        <span id="modalTotalLiquidVal" class="text-lg font-black text-white font-mono-val">₹0</span>
       </div>
 
-      <div id="acctLedgerItemsContainer" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar"></div>
+      <div id="liquidModalAccountsList" class="space-y-2.5 max-h-72 overflow-y-auto no-scrollbar"></div>
 
-      <div class="pt-2 border-t border-white/10 flex justify-end">
-        <button type="button" onclick="hideModal('accountTransactionsModal')" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl cursor-pointer">
+      <div class="pt-2 border-t border-white/10 flex justify-between items-center">
+        <button type="button" onclick="hideModal('liquidAccountsModal'); openAccountModal();" class="text-xs text-cyan-400 hover:underline flex items-center gap-1 font-semibold cursor-pointer">
+          <i class="fa-solid fa-pen-to-square"></i> Manage Accounts
+        </button>
+        <button type="button" onclick="hideModal('liquidAccountsModal')" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl cursor-pointer">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURATION MODAL -->
+  <div id="configModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
+    <div class="max-w-md mx-auto w-full space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3 pt-1">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeConfigModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+          </button>
+          <h2 class="text-base font-black text-white tracking-tight">Configuration</h2>
+        </div>
+        <button type="button" onclick="saveAppConfiguration()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold active:scale-95 transition cursor-pointer">
           Done
         </button>
       </div>
+
+      <div class="space-y-1">
+        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Category Setup</span>
+        <div class="glass-card rounded-2xl divide-y divide-white/[0.06] overflow-hidden text-xs">
+          <div onclick="openExpenseCategoryModal('Income')" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
+            <span class="text-slate-200">Income Category Setup</span>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
+          </div>
+          <div onclick="openExpenseCategoryModal('Expense')" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
+            <span class="text-slate-200">Expense Category Setup</span>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
+          </div>
+          <div onclick="closeConfigModal(); navigateToModule('planner');" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
+            <span class="text-slate-200">Budget Targets & Horizons</span>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Preferences</span>
+        <div class="glass-card rounded-2xl divide-y divide-white/[0.06] overflow-hidden text-xs">
+          <div class="p-3.5 flex justify-between items-center">
+            <span class="text-slate-200">Main Currency</span>
+            <select id="cfgMainCurrency" onchange="updateAppConfigField('mainCurrency', this.value)" class="bg-transparent text-indigo-400 font-bold outline-none cursor-pointer text-right">
+              <option value="INR" class="bg-slate-900 text-white">INR (₹)</option>
+              <option value="USD" class="bg-slate-900 text-white">USD ($)</option>
+              <option value="EUR" class="bg-slate-900 text-white">EUR (€)</option>
+              <option value="GBP" class="bg-slate-900 text-white">GBP (£)</option>
+            </select>
+          </div>
+          <div class="p-3.5 flex justify-between items-center">
+            <span class="text-slate-200">Monthly Carry-Over</span>
+            <button type="button" onclick="toggleConfigItem('carryOver')" id="cfgCarryOverBadge" class="text-xs font-bold text-indigo-400">ON</button>
+          </div>
+          <div class="p-3.5 flex justify-between items-center">
+            <span class="text-slate-200">Security Passcode</span>
+            <button type="button" onclick="promptSetPasscode()" id="cfgPasscodeBadge" class="text-xs font-bold text-indigo-400">OFF</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP: EDIT PLANNER ALLOCATION (FULL MODAL) -->
-  <div id="editBudgetAllocationModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-14 glass-card rounded-3xl p-5 space-y-4 border border-purple-500/30 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-pen-ruler text-purple-400"></i>
-          <h3 class="text-sm font-black text-white">Edit Monthly Allocation</h3>
+  <!-- AUTHENTICATION MODAL -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
+    <div class="w-full max-w-sm glass-card p-6 rounded-3xl mx-auto my-auto mt-12 border border-white/10">
+      <div class="flex justify-between items-center mb-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-base shadow-lg">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
         </div>
-        <button type="button" onclick="hideModal('editBudgetAllocationModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-xs"></i>
+        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <form onsubmit="handleSaveEditedBudgetAllocation(event)" class="space-y-3">
-        <input type="hidden" id="editBudgetIdKey">
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category</label>
-          <input type="text" id="editBudgetNameInput" readonly class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white opacity-80 cursor-not-allowed">
+      <div class="bg-slate-900 p-1 rounded-2xl flex border border-white/10 mb-3">
+        <button type="button" id="tabAuthSignIn" onclick="setAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-indigo-600 shadow cursor-pointer">
+          Sign In
+        </button>
+        <button type="button" id="tabAuthSignUp" onclick="setAuthMode('signup')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">
+          Sign Up
+        </button>
+      </div>
+
+      <form id="cloudAuthForm" onsubmit="handleCloudAuth(event)" class="space-y-3">
+        <div id="fieldAuthName" class="hidden">
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Full Name</label>
+          <input type="text" id="authNameInput" placeholder="e.g. Suneel Kumar" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Compulsory Required (₹) *</label>
-          <input type="number" id="editBudgetReqInput" step="any" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold font-mono-val focus:border-purple-500">
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Email</label>
+          <input type="email" id="authEmailInput" required placeholder="name@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-purple-300 mb-1">Planned Goal (₹) *</label>
-          <input type="number" id="editBudgetPlanInput" step="any" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold font-mono-val focus:border-purple-500">
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Password</label>
+          <input type="password" id="authPasswordInput" required minlength="6" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+        </div>
+        <button type="submit" id="btnAuthSubmit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-98 shadow-md mt-1 cursor-pointer">
+          Sign In to Cloud
+        </button>
+      </form>
+
+      <div class="mt-3.5 pt-3 border-t border-white/10 text-center">
+        <button type="button" onclick="continueInLocalMode()" class="w-full py-2 px-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-xs font-semibold text-slate-300 cursor-pointer">
+          Continue in Local Mode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settingsPopupModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2.5">
+        <div>
+          <h3 class="text-sm font-black text-white">Settings & Data Hub</h3>
+          <p class="text-[11px] text-slate-400">Backups, export & security</p>
+        </div>
+        <button type="button" onclick="closeSettingsModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2.5">
+        <span class="text-xs font-bold text-white block">Portfolio Import & Export</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="triggerImportFileInput()" class="py-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer">
+            <i class="fa-solid fa-file-import text-xs"></i> Import File
+          </button>
+          <button type="button" onclick="exportJSONBackup()" class="py-2.5 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer">
+            <i class="fa-solid fa-file-code text-xs"></i> Export JSON
+          </button>
+          <button type="button" onclick="exportToCSV()" class="col-span-2 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600/30 to-teal-600/30 border border-emerald-500/50 text-emerald-200 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer">
+            <i class="fa-solid fa-file-excel text-xs text-emerald-400"></i> Export All to CSV (.csv)
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-1">
+        <button type="button" onclick="closeSettingsModal()" class="w-full py-2.5 rounded-xl bg-white/10 text-slate-200 text-xs font-semibold cursor-pointer">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DEBT CATEGORIES -->
+  <div id="categoryModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <div>
+          <h3 class="text-sm font-black text-white">Debt Categories</h3>
+          <p class="text-[11px] text-slate-400">Priorities and order</p>
+        </div>
+        <button type="button" onclick="closeCategoryModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleNewDebtCategory(event)" class="flex gap-2">
+        <input type="text" id="newCatInput" placeholder="e.g. Loan against FD" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1 cursor-pointer">
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
+      </form>
+
+      <div>
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">Order Priority (<span id="catModalCount">0</span>)</span>
+        <div id="categoryBadgeContainer" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar p-1"></div>
+      </div>
+
+      <div class="pt-2 border-t border-white/10 flex justify-end">
+        <button type="button" onclick="closeCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EXPENSE & INCOME CATEGORIES -->
+  <div id="expenseCatModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <div>
+          <h3 class="text-sm font-black text-white">Categories Manager</h3>
+          <p class="text-[11px] text-slate-400">Separated Incomes and Expenses</p>
+        </div>
+        <button type="button" onclick="closeExpenseCategoryModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="bg-slate-900 p-1 rounded-2xl flex border border-white/10 gap-1">
+        <button type="button" id="tabModalCatExpense" onclick="switchCategoryModalType('Expense')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-white bg-amber-600 shadow cursor-pointer">Expense Categories</button>
+        <button type="button" id="tabModalCatIncome" onclick="switchCategoryModalType('Income')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white cursor-pointer">Income Categories</button>
+      </div>
+
+      <form onsubmit="handleNewExpenseCategory(event)" class="flex gap-2">
+        <input type="text" id="newExpenseCatInput" placeholder="Add category..." required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1 cursor-pointer">
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
+      </form>
+
+      <div>
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2" id="lblCatModalCount">Categories (0)</span>
+        <div id="expenseCategoryBadgeContainer" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar p-1"></div>
+      </div>
+
+      <div class="pt-2 border-t border-white/10 flex justify-end">
+        <button type="button" onclick="closeExpenseCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ACCOUNTS & BALANCES -->
+  <div id="accountModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <div>
+          <h3 class="text-sm font-black text-white">Accounts & Starting Balances</h3>
+          <p class="text-[11px] text-slate-400">Order and initial capital</p>
+        </div>
+        <button type="button" onclick="closeAccountModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleNewAccount(event)" class="space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="newAccountName" placeholder="Account Name (e.g. Axis)" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+          <input type="number" id="newAccountInitial" step="any" placeholder="Initial Balance (₹)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+        </div>
+        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+          <i class="fa-solid fa-plus"></i> Add Account
+        </button>
+      </form>
+
+      <div>
+        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-2">Accounts Order</span>
+        <div id="accountDetailedListContainer" class="space-y-2 max-h-52 overflow-y-auto no-scrollbar"></div>
+      </div>
+
+      <div class="pt-2 border-t border-white/10 flex justify-end">
+        <button type="button" onclick="closeAccountModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-indigo-500/40 text-white text-xs px-4 py-2.5 rounded-2xl shadow-2xl hidden z-50 flex items-center gap-2">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <!-- POPUP: LOG TRANSACTION -->
+  <div id="spendPopupModal" class="fixed inset-0 z-50 bg-[#030712]/98 backdrop-blur-2xl overflow-y-auto p-4 safe-top safe-bottom" style="display: none;">
+    <div class="max-w-md mx-auto w-full space-y-4">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3 pt-1">
+        <div>
+          <h3 id="spendModalTitle" class="text-base font-black text-white">Log Transaction</h3>
+          <p class="text-xs text-slate-400">Record expense, income, or transfer</p>
+        </div>
+        <button type="button" onclick="closeSpendPopupModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer active:scale-95">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="expenseForm" onsubmit="handleExpenseSubmission(event)" class="space-y-4">
+        <input type="hidden" id="editExpenseId" value="">
+
+        <div>
+          <div class="bg-slate-900 p-1 rounded-2xl flex border border-white/10 gap-1">
+            <button type="button" id="tabTypeExpense" onclick="setTransactionType('Expense')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-amber-600 shadow cursor-pointer">💸 Expense</button>
+            <button type="button" id="tabTypeIncome" onclick="setTransactionType('Income')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">💰 Income</button>
+            <button type="button" id="tabTypeTransfer" onclick="setTransactionType('Transfer')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">🔄 Transfer</button>
+          </div>
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-xs transition active:scale-98 cursor-pointer mt-2">
-          Save Changes
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Date *</label>
+            <input type="date" id="expDate" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none cursor-pointer">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Amount (₹) *</label>
+            <input type="number" id="expAmount" step="any" min="0.01" placeholder="₹2,500" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-mono-val">
+          </div>
+        </div>
+
+        <div id="rowCategoryAndAccount" class="grid grid-cols-2 gap-3">
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label id="lblCategory" class="block text-[11px] font-semibold text-slate-400">Category *</label>
+              <button type="button" onclick="openExpenseCategoryModal(currentTransactionType)" class="text-[10px] text-indigo-400 font-semibold cursor-pointer">+ Edit</button>
+            </div>
+            <select id="expCategory" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none"></select>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label id="lblAccount" class="block text-[11px] font-semibold text-slate-400">Account *</label>
+              <button type="button" onclick="openAccountModal()" class="text-[10px] text-cyan-400 font-semibold cursor-pointer">+ Edit</button>
+            </div>
+            <select id="expAccount" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none"></select>
+          </div>
+        </div>
+
+        <div id="rowTransferAccounts" class="hidden grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-400 mb-1">From Account (Sender) *</label>
+            <select id="expTransferFrom" class="w-full bg-slate-900 border border-amber-500/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-emerald-400 mb-1">To Account (Receiver) *</label>
+            <select id="expTransferTo" class="w-full bg-slate-900 border border-emerald-500/40 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none"></select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Note / Description</label>
+          <input type="text" id="expNote" autocomplete="off" placeholder="e.g. Dinner, EMI payment" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
+        </div>
+
+        <button type="submit" id="btnExpenseSubmit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer mt-4">
+          <i class="fa-solid fa-plus text-xs"></i> Record Expense
         </button>
       </form>
     </div>
   </div>
 
-  <!-- POPUP: EDIT HORIZON GOAL (FULL MODAL) -->
-  <div id="editHorizonGoalModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-14 glass-card rounded-3xl p-5 space-y-4 border border-purple-500/30 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-arrows-split-up-and-left text-purple-400"></i>
-          <h3 class="text-sm font-black text-white">Adjust Horizon Goal</h3>
+  <!-- POPUP: LOG DEBT / COMMITMENT -->
+  <div id="debtPopupModal" class="fixed inset-0 z-50 bg-[#030712]/98 backdrop-blur-2xl overflow-y-auto p-4 safe-top safe-bottom" style="display: none;">
+    <div class="max-w-md mx-auto w-full space-y-4">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3 pt-1">
+        <div>
+          <h3 id="debtModalTitle" class="text-base font-black text-white">Log Commitment</h3>
+          <p class="text-xs text-slate-400">Record loan or tenor progress</p>
         </div>
-        <button type="button" onclick="hideModal('editHorizonGoalModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-xs"></i>
+        <button type="button" onclick="closeDebtPopupModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer active:scale-95">
+          <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
-      <form onsubmit="handleSaveEditedHorizonGoal(event)" class="space-y-3">
-        <input type="hidden" id="editHorizonCategoryInput">
-        <input type="hidden" id="editHorizonSpanTypeInput">
+      <form id="debtForm" onsubmit="handleDebtSubmission(event)" class="space-y-3.5">
+        <input type="hidden" id="editEntryId" value="">
 
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category & Horizon</label>
-          <div id="editHorizonCategoryLabel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold">Category</div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Month *</label>
+            <input type="month" id="fMonth" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none cursor-pointer">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Priority</label>
+            <select id="fPriority" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+              <option value="High">🔥 High</option>
+              <option value="Normal" selected>🔹 Normal</option>
+              <option value="Low">🌱 Low</option>
+            </select>
+          </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Baseline Multiply Requirement (₹)</label>
-          <input type="number" id="editHorizonBaselineReqDisplay" readonly class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-400 font-mono-val cursor-not-allowed">
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Loan / Commitment Name *</label>
+          <input type="text" id="fMetric" placeholder="e.g. Car Loan, Gold Loan" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
         </div>
 
-        <div>
-          <label class="block text-[11px] font-semibold text-purple-300 mb-1">Total Horizon Planned Goal (₹) *</label>
-          <input type="number" id="editHorizonPlannedGoalInput" step="any" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold font-mono-val focus:border-purple-500">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category *</label>
+            <select id="fCategory" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">APR (% p.a.)</label>
+            <input type="number" id="fRate" step="0.05" min="0" max="100" placeholder="e.g. 9.5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-mono-val">
+          </div>
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl text-xs transition active:scale-98 cursor-pointer mt-2">
-          Update Horizon Goal
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Balance (₹) *</label>
+            <input type="number" id="fBalance" step="any" min="0" placeholder="50000" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-mono-val">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">EMI (₹) *</label>
+            <input type="number" id="fEmi" step="any" min="0" placeholder="5000" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-mono-val">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-indigo-300 mb-1">Months Left</label>
+            <input type="number" id="fMonthsLeft" min="1" max="600" placeholder="12" class="w-full bg-slate-900 border border-indigo-500/40 rounded-xl px-2 py-2 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-semibold font-mono-val">
+          </div>
+        </div>
+
+        <button type="submit" id="formSubmitBtn" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer">
+          <i class="fa-solid fa-floppy-disk text-xs"></i> Save Commitment
         </button>
       </form>
     </div>
   </div>
-<script>
-    // =============================================================
-    // PERSISTENT DATA FOUNDATION & RESILIENT FALLBACKS
-    // =============================================================
+
+  <!-- ================= APP CONTROLLER SCRIPT ================= -->
+  <script>
     const DEFAULT_DEBT_CATEGORIES = [
       "Gold loan", "Vehicle loan", "Personal loan", "Home loan",
       "Electronics", "Furniture", "Gadgets", "Credit card", "Others"
@@ -1156,15 +1519,7 @@
       carryOver: true
     };
 
-    function safeLoadArray(key, fallback) {
-      try {
-        const stored = JSON.parse(localStorage.getItem(key));
-        if (Array.isArray(stored) && stored.length > 0) return stored;
-      } catch (e) {}
-      return fallback;
-    }
-
-    // Application State Variables
+    // State Variables
     let activeModule = 'hub';
     let currentTransactionType = 'Expense';
     let currentCatModalType = 'Expense';
@@ -1180,6 +1535,14 @@
 
     let appConfig = JSON.parse(localStorage.getItem('fintrack_app_config')) || DEFAULT_APP_CONFIG;
 
+    function safeLoadArray(key, fallback) {
+      try {
+        const stored = JSON.parse(localStorage.getItem(key));
+        if (Array.isArray(stored) && stored.length > 0) return stored;
+      } catch (e) {}
+      return fallback;
+    }
+
     let categories = safeLoadArray('debt_categories', DEFAULT_DEBT_CATEGORIES);
     let debtRecords = safeLoadArray('debt_records', DEFAULT_DEBT_DATA);
     let activeDashboardCategory = 'ALL';
@@ -1192,10 +1555,9 @@
     }
     let expenseRecords = safeLoadArray('expense_records', DEFAULT_EXPENSE_DATA);
     let monthlyBudgets = JSON.parse(localStorage.getItem('monthly_budgets_v1')) || {};
-    let horizonBudgets = JSON.parse(localStorage.getItem('horizon_budgets_v1')) || {};
 
-    let pendingImportPayload = null;
-    let pendingImportFormat = 'JSON';
+    // Multi-Period Horizon Planned Overrides
+    let horizonBudgets = JSON.parse(localStorage.getItem('horizon_budgets_v1')) || {};
 
     // Chart Handles
     let debtChart = null, emiChart = null;
@@ -1233,9 +1595,9 @@
       showModal('titleDetailModal');
     }
 
-    // =============================================================
-    // 1. LIQUID CAPITAL LEDGER & ACCOUNT TRANSACTIONS DRILLDOWN
-    // =============================================================
+    // -------------------------------------------------------------
+    // INTERACTIVE LIQUID CAPITAL BREAKDOWN POPUP
+    // -------------------------------------------------------------
     function openLiquidAccountsBreakdown() {
       history.pushState({ modal: 'liquidAccounts' }, '');
       const balanceMap = calculateAccountBalances();
@@ -1252,24 +1614,20 @@
         const pct = totalLiquid > 0 ? Math.max(0, ((bal / totalLiquid) * 100)).toFixed(1) : 0;
         
         const card = document.createElement('div');
-        card.className = "p-3 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex justify-between items-center cursor-pointer hover:border-cyan-400/40 transition active:scale-98";
-        card.onclick = () => openAccountTransactionsView(acc.name);
+        card.className = "p-3 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex justify-between items-center";
         card.innerHTML = `
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-xs text-cyan-300 font-bold">
+            <div class="w-9 h-9 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-xs text-indigo-300 font-bold">
               <i class="fa-solid fa-wallet"></i>
             </div>
             <div>
-              <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                ${acc.name}
-                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-cyan-400/70"></i>
-              </span>
+              <span class="text-xs font-bold text-white block">${acc.name}</span>
               <span class="text-[10px] text-slate-400 font-mono-val">${pct}% of liquid capital</span>
             </div>
           </div>
           <div class="text-right">
             <span class="text-xs font-black ${bal >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-mono-val block">${formatINR(bal)}</span>
-            <span class="text-[9px] text-cyan-300 font-medium">View Transactions →</span>
+            <span class="text-[9px] text-slate-500 font-medium">Reconciled</span>
           </div>
         `;
         listContainer.appendChild(card);
@@ -1278,71 +1636,1153 @@
       showModal('liquidAccountsModal');
     }
 
-    function openAccountTransactionsView(accountName) {
-      hideModal('liquidAccountsModal');
-      history.pushState({ modal: 'accountTransactions', account: accountName }, '');
+    // -------------------------------------------------------------
+    // APK & WEBVIEW SWIPE ENGINE
+    // -------------------------------------------------------------
+    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
 
-      document.getElementById('acctLedgerModalTitle').innerText = `${accountName} Transactions`;
-      document.getElementById('acctLedgerModalSubtitle').innerText = `Filtered ledger history for ${accountName}`;
+    window.addEventListener('touchstart', e => {
+      if (e.touches && e.touches[0]) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchEndX = touchStartX;
+        touchEndY = touchStartY;
+      }
+    }, { passive: true });
 
+    window.addEventListener('touchmove', e => {
+      if (e.touches && e.touches[0]) {
+        touchEndX = e.touches[0].clientX;
+        touchEndY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    function handleResolvedSwipe() {
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) > 65 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
+        if (deltaX > 0) {
+          if (history.state) {
+            history.back();
+          } else if (activeModule !== 'hub') {
+            navigateToHub();
+          }
+        } else {
+          cycleTabsForward();
+        }
+      }
+    }
+
+    window.addEventListener('touchend', handleResolvedSwipe, { passive: true });
+    window.addEventListener('touchcancel', handleResolvedSwipe, { passive: true });
+
+    function cycleTabsForward() {
+      if (activeModule === 'daily') {
+        const screens = ['dailyEntryScreen', 'dailySummaryScreen', 'dailyTrendsScreen', 'dailyCalendarScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchDailyScreen(screens[curIdx + 1]);
+      } else if (activeModule === 'planner') {
+        const screens = ['plannerInputScreen', 'plannerDashboardScreen', 'plannerHorizonScreen', 'plannerHistoryScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchPlannerScreen(screens[curIdx + 1]);
+      } else if (activeModule === 'debt') {
+        const screens = ['entryScreen', 'dashboardScreen', 'trendsScreen', 'plannerScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchDebtScreen(screens[curIdx + 1]);
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      const openModals = [
+        'titleDetailModal', 'liquidAccountsModal', 'configModal', 'spendPopupModal', 
+        'debtPopupModal', 'authModal', 'settingsPopupModal', 'categoryModal', 
+        'expenseCatModal', 'accountModal'
+      ];
+      for (const mId of openModals) {
+        const el = document.getElementById(mId);
+        if (el && el.style.display !== 'none' && !el.classList.contains('hidden')) {
+          el.style.display = 'none';
+          return;
+        }
+      }
+
+      if (activeModule !== 'hub') {
+        navigateToHub(false);
+      }
+    });
+
+    // -------------------------------------------------------------
+    // NAVIGATION ROUTER: HUB <-> WORKSPACES
+    // -------------------------------------------------------------
+    function navigateToHub(pushHistory = true) {
+      activeModule = 'hub';
+      if (pushHistory) history.pushState({ page: 'hub' }, '');
+
+      const hubContainer = document.getElementById('hubViewContainer');
+      hubContainer.className = "space-y-3.5 page-turn-back";
+      hubContainer.classList.remove('hidden');
+
+      document.getElementById('dailyModuleContainer').classList.add('hidden');
+      document.getElementById('plannerModuleContainer').classList.add('hidden');
+      document.getElementById('debtModuleContainer').classList.add('hidden');
+      document.getElementById('bottomNavBar').classList.add('hidden');
+
+      document.getElementById('appTitleText').innerHTML = 'Finance Hub <span class="text-[9px] font-extrabold bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded-full border border-indigo-400/30">Executive</span>';
+      document.getElementById('appSubtitleText').innerText = 'Wealth & Liability Command';
+      document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-compass"></i>';
+      document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white font-bold text-base shadow-lg";
+
+      renderHubOverview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function navigateToModule(moduleName, pushHistory = true) {
+      activeModule = moduleName;
+      if (pushHistory) history.pushState({ page: 'module', module: moduleName }, '');
+
+      document.getElementById('hubViewContainer').classList.add('hidden');
+      document.getElementById('bottomNavBar').classList.remove('hidden');
+
+      const debtContainer = document.getElementById('debtModuleContainer');
+      const plannerContainer = document.getElementById('plannerModuleContainer');
+      const dailyContainer = document.getElementById('dailyModuleContainer');
+
+      debtContainer.classList.add('hidden');
+      plannerContainer.classList.add('hidden');
+      dailyContainer.classList.add('hidden');
+
+      if (moduleName === 'daily') {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-bolt"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Daily Spends <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Live Feed</span>';
+        document.getElementById('appSubtitleText').innerText = 'Inflow, outflow & accounts';
+
+        dailyContainer.className = "space-y-3.5 page-turn-in";
+        dailyContainer.classList.remove('hidden');
+        renderBottomNav('daily');
+        switchDailyScreen('dailyEntryScreen');
+      } else if (moduleName === 'planner') {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-chart-pie"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Budget Planner <span class="text-[9px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">Targets</span>';
+        document.getElementById('appSubtitleText').innerText = 'Planned targets, Arrears & Horizons';
+
+        plannerContainer.className = "space-y-3.5 page-turn-in";
+        plannerContainer.classList.remove('hidden');
+        renderBottomNav('planner');
+        switchPlannerScreen('plannerInputScreen');
+      } else {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-600 flex items-center justify-center text-slate-950 font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Debt & EMI <span class="text-[9px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">Commitments</span>';
+        document.getElementById('appSubtitleText').innerText = 'Tenor, APR & amortizations';
+
+        debtContainer.className = "space-y-3.5 page-turn-in";
+        debtContainer.classList.remove('hidden');
+        renderBottomNav('debt');
+        switchDebtScreen('entryScreen');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // -------------------------------------------------------------
+    // FINANCIAL COLOR THRESHOLDING LOGIC
+    // -------------------------------------------------------------
+    function renderHubOverview() {
       const balanceMap = calculateAccountBalances();
-      document.getElementById('acctLedgerBalanceVal').innerText = formatINR(balanceMap[accountName] || 0);
+      let totalLiquid = 0;
+      Object.values(balanceMap).forEach(b => totalLiquid += b);
 
-      const container = document.getElementById('acctLedgerItemsContainer');
-      container.innerHTML = '';
+      const totalOutflow = expenseRecords.filter(r => r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const totalInflow = expenseRecords.filter(r => r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const surplus = totalInflow - totalOutflow;
 
-      const accTransactions = expenseRecords.filter(r => r.account === accountName || r.toAccount === accountName);
-      accTransactions.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || 0) - (a.id || 0));
+      document.getElementById('hubNetLiquid').innerText = formatINR(totalLiquid);
+      document.getElementById('hubMonthInflow').innerText = formatINR(totalInflow);
+      document.getElementById('hubMonthOutflow').innerText = formatINR(totalOutflow);
+      document.getElementById('hubMonthSurplus').innerText = formatINR(surplus);
+      document.getElementById('tileSpendThisMonth').innerText = formatINR(totalOutflow);
 
-      if (accTransactions.length === 0) {
+      const surplusValEl = document.getElementById('hubMonthSurplus');
+      const surplusBox = document.getElementById('hubSurplusBox');
+
+      if (surplus < 0) {
+        surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-rose-400";
+        surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40";
+      } else if (totalInflow > 0) {
+        const surplusRatio = (surplus / totalInflow) * 100;
+        if (surplusRatio < 50) {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-emerald-300";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-400/30";
+        } else if (surplusRatio >= 50 && surplusRatio <= 99) {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-amber-500";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-600/40";
+        } else {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-rose-500";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40";
+        }
+      } else {
+        surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-slate-300";
+        surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-white/10";
+      }
+
+      // Planner target & completion
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const plannedList = getOrInitializeMonthBudget(currentMonth);
+      const totalPlanned = plannedList.reduce((s, it) => s + (parseFloat(it.plannedAmount) || 0), 0);
+      const completionPct = totalPlanned > 0 ? ((totalOutflow / totalPlanned) * 100).toFixed(0) : 0;
+      document.getElementById('tilePlannerTarget').innerText = formatINR(totalPlanned);
+      document.getElementById('tilePlannerSpent').innerText = `${formatINR(totalOutflow)} (${completionPct}%)`;
+      document.getElementById('tilePlannerPctBadge').innerText = `${completionPct}% Used`;
+
+      // Debt Tile
+      const { items: debtItems } = getDebtDatasetForMonth('ALL', 'ALL');
+      const totalDebtEmi = debtItems.reduce((s, it) => s + (parseFloat(it.emi) || 0), 0);
+      const totalDebtPending = debtItems.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+      document.getElementById('tileDebtEmi').innerText = `${formatINR(totalDebtEmi)}/mo`;
+      document.getElementById('tileDebtTotalPending').innerText = formatINR(totalDebtPending);
+    }
+
+    function renderBottomNav(mode) {
+      const container = document.getElementById('bottomNavRow');
+      if (!container) return;
+      if (mode === 'daily') {
         container.innerHTML = `
-          <div class="p-6 text-center text-xs text-slate-500 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-            No transactions logged under ${accountName}.
-          </div>
+          <button type="button" onclick="switchDailyScreen('dailyEntryScreen')" id="nav-dailyEntryScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 active-nav-dock transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-list-check text-sm"></i>
+            <span class="text-[10px] font-bold">Feed</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailySummaryScreen')" id="nav-dailySummaryScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-chart-pie text-sm"></i>
+            <span class="text-[10px] font-bold">Summary</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailyTrendsScreen')" id="nav-dailyTrendsScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-chart-line text-sm"></i>
+            <span class="text-[10px] font-bold">Trends</span>
+          </button>
+          <button type="button" onclick="switchDailyScreen('dailyCalendarScreen')" id="nav-dailyCalendarScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-regular fa-calendar-days text-sm"></i>
+            <span class="text-[10px] font-bold">Calendar</span>
+          </button>
+        `;
+      } else if (mode === 'planner') {
+        container.innerHTML = `
+          <button type="button" onclick="switchPlannerScreen('plannerInputScreen')" id="nav-plannerInputScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 active-nav-dock transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-pen-ruler text-sm"></i>
+            <span class="text-[10px] font-bold">Targets</span>
+          </button>
+          <button type="button" onclick="switchPlannerScreen('plannerDashboardScreen')" id="nav-plannerDashboardScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-gauge-high text-sm"></i>
+            <span class="text-[10px] font-bold">Status</span>
+          </button>
+          <button type="button" onclick="switchPlannerScreen('plannerHorizonScreen')" id="nav-plannerHorizonScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-arrows-split-up-and-left text-sm"></i>
+            <span class="text-[10px] font-bold">Horizons</span>
+          </button>
+          <button type="button" onclick="switchPlannerScreen('plannerHistoryScreen')" id="nav-plannerHistoryScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-chart-column text-sm"></i>
+            <span class="text-[10px] font-bold">Progress</span>
+          </button>
         `;
       } else {
-        accTransactions.forEach(item => {
-          const isSender = item.account === accountName;
-          let deltaClass = 'text-amber-400';
-          let sign = '-';
+        container.innerHTML = `
+          <button type="button" onclick="switchDebtScreen('entryScreen')" id="nav-entryScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 active-nav-dock transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-list-ul text-sm"></i>
+            <span class="text-[10px] font-bold">Loans</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('dashboardScreen')" id="nav-dashboardScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-gauge-high text-sm"></i>
+            <span class="text-[10px] font-bold">Summary</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('trendsScreen')" id="nav-trendsScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-chart-line text-sm"></i>
+            <span class="text-[10px] font-bold">Trends</span>
+          </button>
+          <button type="button" onclick="switchDebtScreen('plannerScreen')" id="nav-plannerScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-bullseye text-sm"></i>
+            <span class="text-[10px] font-bold">Payoff</span>
+          </button>
+        `;
+      }
+    }
 
-          if (item.type === 'Income') {
-            deltaClass = 'text-emerald-400';
-            sign = '+';
-          } else if (item.type === 'Transfer') {
-            if (!isSender) {
-              deltaClass = 'text-emerald-400';
-              sign = '+';
+    function triggerFloatingAdd() {
+      history.pushState({ modal: 'add' }, '');
+      if (activeModule === 'debt') {
+        openDebtPopupModal();
+      } else {
+        openSpendPopupModal();
+      }
+    }
+
+    function openConfigModal() {
+      history.pushState({ modal: 'config' }, '');
+      showModal('configModal');
+      updateConfigUI();
+    }
+
+    function closeConfigModal() {
+      hideModal('configModal');
+    }
+
+    function updateConfigUI() {
+      document.getElementById('cfgCarryOverBadge').innerText = appConfig.carryOver ? 'ON' : 'OFF';
+      document.getElementById('cfgPasscodeBadge').innerText = storedPin ? 'ON' : 'OFF';
+      document.getElementById('cfgMainCurrency').value = appConfig.mainCurrency;
+      document.getElementById('cfgStartScreen').value = appConfig.startScreen;
+    }
+
+    function toggleConfigItem(key) {
+      appConfig[key] = !appConfig[key];
+      localStorage.setItem('fintrack_app_config', JSON.stringify(appConfig));
+      updateConfigUI();
+      notify(`Preference saved`);
+    }
+
+    function updateAppConfigField(key, val) {
+      appConfig[key] = val;
+      localStorage.setItem('fintrack_app_config', JSON.stringify(appConfig));
+      updateConfigUI();
+      renderHubOverview();
+    }
+
+    function saveAppConfiguration() {
+      closeConfigModal();
+      notify("Configurations applied!");
+    }
+
+    // -------------------------------------------------------------
+    // CLOUD FIREBASE SYNC CONTROLLER
+    // -------------------------------------------------------------
+    function openAuthModal() {
+      history.pushState({ modal: 'auth' }, '');
+      showModal('authModal');
+    }
+
+    function closeAuthModal() {
+      hideModal('authModal');
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const bIn = document.getElementById('tabAuthSignIn');
+      const bUp = document.getElementById('tabAuthSignUp');
+      const fName = document.getElementById('fieldAuthName');
+      const submitBtn = document.getElementById('btnAuthSubmit');
+
+      if (mode === 'signup') {
+        bUp.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-indigo-600 shadow cursor-pointer";
+        bIn.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer";
+        fName.classList.remove('hidden');
+        submitBtn.innerText = "Create Cloud Account";
+      } else {
+        bIn.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-indigo-600 shadow cursor-pointer";
+        bUp.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer";
+        fName.classList.add('hidden');
+        submitBtn.innerText = "Sign In to Cloud";
+      }
+    }
+
+    async function handleCloudAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmailInput').value.trim();
+      const pass = document.getElementById('authPasswordInput').value;
+      const name = document.getElementById('authNameInput').value.trim();
+
+      const stored = JSON.parse(localStorage.getItem('firebase_web_config') || '{}');
+      if (!stored.apiKey) {
+        return alert("Firebase config keys required in code or storage!");
+      }
+
+      try {
+        if (authMode === 'signup') {
+          const cred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+          if (name && cred.user) await cred.user.updateProfile({ displayName: name });
+        } else {
+          await firebase.auth().signInWithEmailAndPassword(email, pass);
+        }
+        closeAuthModal();
+        notify("Authenticated & synchronized!");
+      } catch (err) {
+        alert(err.message || "Authentication error.");
+      }
+    }
+
+    function continueInLocalMode() {
+      closeAuthModal();
+      notify("Using device storage.");
+    }
+
+    function initFirebaseClient() {
+      const storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null');
+      if (storedConfig && storedConfig.apiKey) {
+        try {
+          if (!firebase.apps.length) firebase.initializeApp(storedConfig);
+          firestoreDB = firebase.firestore();
+          firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+              firebaseUser = user;
+              updateCloudStatusUI(true, user.email);
+              syncWithCloudDatabase(user.uid);
             } else {
-              deltaClass = 'text-indigo-400';
-              sign = '-';
+              firebaseUser = null;
+              updateCloudStatusUI(false);
             }
+          });
+        } catch (err) {
+          updateCloudStatusUI(false);
+        }
+      } else {
+        updateCloudStatusUI(false);
+      }
+    }
+
+    function updateCloudStatusUI(isOnline, email = '') {
+      const icon = document.getElementById('cloudStatusIcon');
+      const label = document.getElementById('cloudStatusLabel');
+      if (isOnline) {
+        if (icon) icon.className = "fa-solid fa-cloud text-emerald-400";
+        if (label) label.innerText = "Synced";
+      } else {
+        if (icon) icon.className = "fa-solid fa-cloud text-slate-500";
+        if (label) label.innerText = "Offline";
+      }
+    }
+
+    async function syncWithCloudDatabase(uid) {
+      if (!firestoreDB || !uid) return;
+      try {
+        const docRef = firestoreDB.collection('users').doc(uid).collection('portfolio').doc('main');
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+          const cloudData = docSnap.data();
+          if (cloudData) importJSONContent(JSON.stringify(cloudData));
+        } else {
+          await pushAllDataToCloud(uid);
+        }
+      } catch (err) {}
+    }
+
+    async function pushAllDataToCloud(uid = null) {
+      if (!firestoreDB) return;
+      const targetUid = uid || (firebaseUser ? firebaseUser.uid : null);
+      if (!targetUid) return;
+      try {
+        const payload = {
+          expenseRecords,
+          debtRecords,
+          monthlyBudgets,
+          horizonBudgets,
+          expenseCategories,
+          incomeCategories,
+          accountsList,
+          categories,
+          lastUpdated: new Date().toISOString()
+        };
+        await firestoreDB.collection('users').doc(targetUid).collection('portfolio').doc('main').set(payload, { merge: true });
+      } catch (err) {}
+    }
+
+    // -------------------------------------------------------------
+    // DAILY SPENDS RECENT HISTORY & DATE GROUPING
+    // -------------------------------------------------------------
+    function onFeedRangeFilterChanged() {
+      feedTimeRange = document.getElementById('feedTimeRangeFilter').value;
+      renderExpenseHistoryTable();
+    }
+
+    function onDailyFeedMonthChanged() {
+      document.getElementById('feedTimeRangeFilter').value = 'CURRENT_MONTH';
+      feedTimeRange = 'CURRENT_MONTH';
+      renderExpenseHistoryTable();
+    }
+
+    function setSpendFeedFilter(type) {
+      currentSpendFeedFilter = type;
+      ['ALL', 'Expense', 'Income', 'Transfer'].forEach(t => {
+        const btn = document.getElementById('feedFilter-' + t);
+        if (btn) {
+          btn.className = (t === type)
+            ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md cursor-pointer"
+            : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white cursor-pointer border border-white/10";
+        }
+      });
+      renderExpenseHistoryTable();
+    }
+
+    function renderExpenseHistoryTable() {
+      const container = document.getElementById('expenseHistoryContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const search = document.getElementById('expenseLogSearch').value.toLowerCase();
+      const filterType = currentSpendFeedFilter;
+      const selectedMonth = document.getElementById('dailyFeedMonthSelector').value;
+
+      let filtered = expenseRecords.filter(r => {
+        if (!r || !r.date) return false;
+        let matchesRange = true;
+        if (feedTimeRange === 'CURRENT_MONTH' && selectedMonth) {
+          matchesRange = r.date.startsWith(selectedMonth);
+        }
+        const matchesType = (filterType === 'ALL' || r.type === filterType);
+        const matchesSearch = !search || 
+          (r.category && r.category.toLowerCase().includes(search)) || 
+          (r.account && r.account.toLowerCase().includes(search)) || 
+          (r.note && r.note.toLowerCase().includes(search));
+        
+        return matchesRange && matchesType && matchesSearch;
+      });
+
+      filtered.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || 0) - (a.id || 0));
+      document.getElementById('expenseLogCounter').innerText = `${filtered.length} entries`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="glass-card rounded-2xl p-6 text-center text-slate-500 text-xs space-y-1">
+            <p>No transactions found for this view.</p>
+            <button type="button" onclick="document.getElementById('feedTimeRangeFilter').value='ALL_TIME'; onFeedRangeFilterChanged();" class="text-indigo-400 font-bold underline mt-1 cursor-pointer">
+              Switch to All Records
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const groups = {};
+      filtered.forEach(item => {
+        const dKey = item.date.slice(0, 10);
+        if (!groups[dKey]) groups[dKey] = [];
+        groups[dKey].push(item);
+      });
+
+      Object.keys(groups).sort((a, b) => b.localeCompare(a)).forEach(dateKey => {
+        const dayItems = groups[dateKey];
+        const dayInflow = dayItems.filter(r => r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+        const dayOutflow = dayItems.filter(r => r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+        const parts = dateKey.split('-');
+        let dayNum = parts[2] || '01';
+        let dayName = 'Day';
+        let monthYear = `${parts[1] || '01'}.${parts[0] || '2026'}`;
+
+        try {
+          const dObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          dayName = dObj.toLocaleDateString('en-IN', { weekday: 'short' });
+        } catch (e) {}
+
+        const dateSection = document.createElement('div');
+        dateSection.className = "space-y-1.5";
+
+        dateSection.innerHTML = `
+          <div class="flex justify-between items-center px-2 py-1 text-xs border-b border-white/[0.07]">
+            <div class="flex items-center gap-2">
+              <span class="font-black text-white text-sm font-mono-val">${dayNum}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-white/[0.07] font-bold text-indigo-200 uppercase">${dayName}</span>
+              <span class="text-[10px] text-slate-500 font-mono-val">${monthYear}</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-bold font-mono-val">
+              ${dayInflow > 0 ? `<span class="text-emerald-400">+₹ ${dayInflow.toLocaleString('en-IN')}</span>` : ''}
+              <span class="${dayOutflow > 0 ? 'text-amber-400' : 'text-slate-500'}">-₹ ${dayOutflow.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+          <div class="space-y-2 date-items-list"></div>
+        `;
+
+        const listContainer = dateSection.querySelector('.date-items-list');
+
+        dayItems.forEach(row => {
+          const itemEl = document.createElement('div');
+          itemEl.className = "glass-card rounded-2xl p-3.5 flex justify-between items-center text-xs hover:border-white/20";
+          
+          let amountColor = 'text-amber-400';
+          let iconBg = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+          let prefix = '-';
+          if (row.type === 'Income') {
+            amountColor = 'text-emerald-400';
+            iconBg = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+            prefix = '+';
+          } else if (row.type === 'Transfer') {
+            amountColor = 'text-indigo-400';
+            iconBg = 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30';
+            prefix = '⇄ ';
           }
 
-          const card = document.createElement('div');
-          card.className = "p-2.5 rounded-xl bg-slate-900 border border-white/[0.06] flex justify-between items-center text-xs";
-          card.innerHTML = `
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-bold text-white text-xs">${item.note || item.category}</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-mono-val">${item.date}</span>
+          itemEl.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl ${iconBg} border flex items-center justify-center text-xs">
+                <i class="fa-solid ${row.type === 'Income' ? 'fa-arrow-down' : (row.type === 'Transfer' ? 'fa-arrow-right-arrow-left' : 'fa-receipt')}"></i>
               </div>
-              <span class="text-[10px] text-slate-400">${item.category} ${item.type === 'Transfer' ? `(⇄ ${isSender ? item.toAccount : item.account})` : ''}</span>
+              <div>
+                <span class="font-bold text-white text-xs block">${row.note || row.category}</span>
+                <span class="text-[10px] text-slate-400">${row.category} • <span class="text-indigo-200/80">${row.account}</span></span>
+              </div>
             </div>
-            <div class="text-right">
-              <span class="font-black ${deltaClass} font-mono-val block">${sign} ${formatINR(item.amount)}</span>
+            <div class="flex items-center gap-2 text-right">
+              <span class="font-black text-sm tracking-tight ${amountColor} font-mono-val">${prefix}₹ ${parseFloat(row.amount).toLocaleString('en-IN')}</span>
+              <button type="button" onclick="editExpense('${row.id}')" class="text-slate-400 hover:text-indigo-300 p-1 cursor-pointer" title="Edit">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button type="button" onclick="deleteExpense('${row.id}')" class="text-slate-500 hover:text-rose-400 p-1 cursor-pointer" title="Delete">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
             </div>
           `;
-          container.appendChild(card);
+          listContainer.appendChild(itemEl);
+        });
+
+        container.appendChild(dateSection);
+      });
+    }
+
+    function switchDailyScreen(screenId) {
+      document.querySelectorAll('.daily-screen').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.className = 'daily-screen space-y-4 page-turn-in';
+        target.classList.remove('hidden');
+      }
+
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active-nav-dock'));
+      const activeNavBtn = document.getElementById('nav-' + screenId);
+      if (activeNavBtn) activeNavBtn.classList.add('active-nav-dock');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (screenId === 'dailyEntryScreen') renderExpenseHistoryTable();
+      if (screenId === 'dailySummaryScreen') renderDailySummary();
+      if (screenId === 'dailyTrendsScreen') {
+        renderDailyTrendsCharts();
+        onDrillFilterChanged();
+      }
+      if (screenId === 'dailyCalendarScreen') renderSpendCalendarMatrix();
+    }
+
+    function openSpendPopupModal() {
+      resetExpenseFormToNew();
+      document.getElementById('spendModalTitle').innerText = 'Log Transaction';
+      showModal('spendPopupModal');
+      document.getElementById('expAmount').focus();
+    }
+
+    function closeSpendPopupModal() {
+      hideModal('spendPopupModal');
+    }
+
+    function resetExpenseFormToNew() {
+      document.getElementById('editExpenseId').value = '';
+      document.getElementById('expenseForm').reset();
+      document.getElementById('expDate').value = new Date().toISOString().slice(0, 10);
+      setTransactionType('Expense');
+    }
+
+    function handleExpenseSubmission(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editExpenseId').value;
+      const date = document.getElementById('expDate').value;
+      const amount = parseFloat(document.getElementById('expAmount').value) || 0;
+      const note = document.getElementById('expNote').value.trim();
+
+      let category = '', account = '', toAccount = '';
+      if (currentTransactionType === 'Transfer') {
+        category = 'Transfer';
+        account = document.getElementById('expTransferFrom').value;
+        toAccount = document.getElementById('expTransferTo').value;
+        if (account === toAccount) return notify("Sender and receiver accounts cannot be the same!");
+      } else {
+        category = document.getElementById('expCategory').value;
+        account = document.getElementById('expAccount').value;
+      }
+
+      if (editId) {
+        const idx = expenseRecords.findIndex(r => String(r.id) === String(editId));
+        if (idx !== -1) {
+          expenseRecords[idx] = { ...expenseRecords[idx], type: currentTransactionType, date, amount, category, account, toAccount, note };
+          notify("Updated transaction");
+        }
+      } else {
+        const newRecord = { id: Date.now(), type: currentTransactionType, date, amount, category, account, toAccount, note };
+        expenseRecords.push(newRecord);
+        notify(`Recorded ${currentTransactionType}: ${formatINR(amount)}`);
+
+        if (currentTransactionType === 'Expense' && category) {
+          const monthKey = date ? date.slice(0, 7) : new Date().toISOString().slice(0, 7);
+          getOrInitializeMonthBudget(monthKey);
+          if (!monthlyBudgets[monthKey].some(b => b.category.toLowerCase() === category.toLowerCase())) {
+            monthlyBudgets[monthKey].push({ category: category, requiredAmount: amount, plannedAmount: amount });
+            saveMonthlyBudgetStorage();
+          }
+        }
+      }
+
+      saveExpenseStorage();
+      closeSpendPopupModal();
+      renderExpenseHistoryTable();
+      renderDailySummary();
+      renderHubOverview();
+    }
+
+    function editExpense(id) {
+      const item = expenseRecords.find(r => String(r.id) === String(id));
+      if (!item) return;
+
+      history.pushState({ modal: 'editExpense' }, '');
+      document.getElementById('spendModalTitle').innerText = `Edit ${item.type}`;
+      document.getElementById('editExpenseId').value = item.id;
+      setTransactionType(item.type || 'Expense');
+
+      document.getElementById('expDate').value = item.date;
+      document.getElementById('expAmount').value = item.amount;
+      document.getElementById('expNote').value = item.note || '';
+
+      if (item.type === 'Transfer') {
+        document.getElementById('expTransferFrom').value = item.account;
+        document.getElementById('expTransferTo').value = item.toAccount;
+      } else {
+        document.getElementById('expCategory').value = item.category;
+        document.getElementById('expAccount').value = item.account;
+      }
+      showModal('spendPopupModal');
+    }
+
+    function deleteExpense(id) {
+      if (confirm("Delete this transaction entry?")) {
+        expenseRecords = expenseRecords.filter(r => String(r.id) !== String(id));
+        saveExpenseStorage();
+        renderExpenseHistoryTable();
+        renderDailySummary();
+        renderHubOverview();
+        notify("Transaction deleted.");
+      }
+    }
+
+    function setTransactionType(type) {
+      currentTransactionType = type;
+      const bExp = document.getElementById('tabTypeExpense');
+      const bInc = document.getElementById('tabTypeIncome');
+      const bTrf = document.getElementById('tabTypeTransfer');
+      const rowNormal = document.getElementById('rowCategoryAndAccount');
+      const rowTransfer = document.getElementById('rowTransferAccounts');
+      const submitBtn = document.getElementById('btnExpenseSubmit');
+
+      const expCatSelect = document.getElementById('expCategory');
+      const expAccSelect = document.getElementById('expAccount');
+      const trfFromSelect = document.getElementById('expTransferFrom');
+      const trfToSelect = document.getElementById('expTransferTo');
+
+      [bExp, bInc, bTrf].forEach(btn => {
+        btn.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer";
+      });
+
+      expCatSelect.innerHTML = '';
+
+      if (type === 'Transfer') {
+        bTrf.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-indigo-600 shadow cursor-pointer";
+        rowNormal.classList.add('hidden');
+        rowTransfer.classList.remove('hidden');
+
+        expCatSelect.removeAttribute('required');
+        expAccSelect.removeAttribute('required');
+        trfFromSelect.setAttribute('required', 'required');
+        trfToSelect.setAttribute('required', 'required');
+
+        submitBtn.className = "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer mt-4";
+        submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left text-xs"></i> Record Transfer';
+      } else {
+        rowNormal.classList.remove('hidden');
+        rowTransfer.classList.add('hidden');
+
+        expCatSelect.setAttribute('required', 'required');
+        expAccSelect.setAttribute('required', 'required');
+        trfFromSelect.removeAttribute('required');
+        trfToSelect.removeAttribute('required');
+
+        if (type === 'Income') {
+          bInc.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-emerald-600 shadow cursor-pointer";
+          document.getElementById('lblCategory').innerText = 'Category *';
+          document.getElementById('lblAccount').innerText = 'Deposit Account *';
+          submitBtn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer mt-4";
+          submitBtn.innerHTML = '<i class="fa-solid fa-plus text-xs"></i> Record Income';
+
+          incomeCategories.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            expCatSelect.appendChild(opt);
+          });
+        } else {
+          bExp.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-amber-600 shadow cursor-pointer";
+          document.getElementById('lblCategory').innerText = 'Category *';
+          document.getElementById('lblAccount').innerText = 'Payment Account *';
+          submitBtn.className = "w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer mt-4";
+          submitBtn.innerHTML = '<i class="fa-solid fa-plus text-xs"></i> Record Expense';
+
+          expenseCategories.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            expCatSelect.appendChild(opt);
+          });
+        }
+      }
+    }
+
+    function populateExpenseElements() {
+      setTransactionType(currentTransactionType);
+
+      ['expAccount', 'expTransferFrom', 'expTransferTo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const curVal = el.value;
+        el.innerHTML = '';
+        accountsList.forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.name;
+          opt.textContent = a.name;
+          el.appendChild(opt);
+        });
+        if (curVal) el.value = curVal;
+      });
+
+      renderExpenseCategoryBadges();
+      renderAccountBadges();
+    }
+
+    function saveExpenseStorage(pushCloud = true) {
+      localStorage.setItem('expense_categories', JSON.stringify(expenseCategories));
+      localStorage.setItem('income_categories', JSON.stringify(incomeCategories));
+      localStorage.setItem('expense_accounts', JSON.stringify(accountsList));
+      localStorage.setItem('expense_records', JSON.stringify(expenseRecords));
+      if (pushCloud) pushAllDataToCloud();
+    }
+
+    function calculateAccountBalances() {
+      const balanceMap = {};
+      accountsList.forEach(acc => {
+        balanceMap[acc.name] = parseFloat(acc.initialBalance) || 0;
+      });
+
+      expenseRecords.forEach(r => {
+        const amt = parseFloat(r.amount) || 0;
+        if (r.type === 'Income') {
+          if (balanceMap[r.account] !== undefined) balanceMap[r.account] += amt;
+        } else if (r.type === 'Expense') {
+          if (balanceMap[r.account] !== undefined) balanceMap[r.account] -= amt;
+        } else if (r.type === 'Transfer') {
+          if (balanceMap[r.account] !== undefined) balanceMap[r.account] -= amt;
+          if (balanceMap[r.toAccount] !== undefined) balanceMap[r.toAccount] += amt;
+        }
+      });
+
+      return balanceMap;
+    }
+
+    function onDailyDashMonthChanged() {
+      renderDailySummary();
+    }
+
+    function renderDailySummary() {
+      const selectedMonthKey = document.getElementById('dailyDashMonthSelector').value || new Date().toISOString().slice(0, 7);
+      const now = new Date();
+      const todayStr = now.toISOString().slice(0, 10);
+
+      const monthRecords = expenseRecords.filter(r => r.date && r.date.startsWith(selectedMonthKey));
+      const monthIncome = monthRecords.filter(r => r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const monthExpense = monthRecords.filter(r => r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const monthSavings = monthIncome - monthExpense;
+
+      const todayRecords = expenseRecords.filter(r => r.date === todayStr && r.type === 'Expense');
+      const todaySpent = todayRecords.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+      const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+      const weekRecords = expenseRecords.filter(r => r.date >= sevenDaysAgo && r.date <= todayStr && r.type === 'Expense');
+      const weekSpent = weekRecords.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+      const balanceMap = calculateAccountBalances();
+      let totalLiquidWealth = 0;
+      Object.values(balanceMap).forEach(b => totalLiquidWealth += b);
+
+      const dObj = new Date(selectedMonthKey + '-01');
+      document.getElementById('dailyMonthBadge').innerText = dObj.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      document.getElementById('kpiNetLiquidWealth').innerText = formatINR(totalLiquidWealth);
+      document.getElementById('kpiDailyMonthIncome').innerText = formatINR(monthIncome);
+      document.getElementById('kpiDailyMonthExpense').innerText = formatINR(monthExpense);
+      document.getElementById('kpiDailyMonthSavings').innerText = (monthSavings >= 0 ? '+' : '') + formatINR(monthSavings);
+
+      document.getElementById('kpiSummaryTodaySpent').innerText = formatINR(todaySpent);
+      document.getElementById('kpiSummaryWeekSpent').innerText = formatINR(weekSpent);
+      document.getElementById('kpiSummaryMonthSpent').innerText = formatINR(monthExpense);
+
+      const balancesContainer = document.getElementById('liveAccountBalancesContainer');
+      balancesContainer.innerHTML = '';
+      accountsList.forEach(acc => {
+        const bal = balanceMap[acc.name] || 0;
+        const card = document.createElement('div');
+        card.className = "bg-white/[0.04] p-3 rounded-2xl border border-white/[0.07] flex flex-col justify-between";
+        card.innerHTML = `
+          <span class="text-[10px] text-slate-400 font-semibold truncate">${acc.name}</span>
+          <span class="text-sm font-extrabold ${bal >= 0 ? 'text-white' : 'text-rose-400'} mt-1 block font-mono-val">${formatINR(bal)}</span>
+        `;
+        balancesContainer.appendChild(card);
+      });
+
+      const catMap = {};
+      monthRecords.filter(r => r.type === 'Expense').forEach(i => catMap[i.category] = (catMap[i.category] || 0) + (parseFloat(i.amount) || 0));
+      const catContainer = document.getElementById('dailyCategoryBreakdownContainer');
+      catContainer.innerHTML = '';
+
+      const sortedCats = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+      if (sortedCats.length === 0) {
+        catContainer.innerHTML = '<div class="text-xs text-slate-500 text-center py-2">No expenses logged for this month yet.</div>';
+      } else {
+        sortedCats.forEach(([cat, val]) => {
+          const pct = monthExpense > 0 ? ((val / monthExpense) * 100).toFixed(0) : 0;
+          const rowEl = document.createElement('div');
+          rowEl.className = "flex justify-between items-center text-xs p-2.5 bg-white/[0.03] rounded-xl border border-white/[0.06]";
+          rowEl.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 w-10 text-center font-mono-val">${pct}%</span>
+              <span class="font-bold text-white text-xs">${cat}</span>
+            </div>
+            <span class="font-extrabold text-slate-100 font-mono-val">₹ ${val.toLocaleString('en-IN')}</span>
+          `;
+          catContainer.appendChild(rowEl);
+        });
+      }
+    }
+
+    function renderDailyTrendsCharts() {
+      const now = new Date();
+      const weekLabels = [];
+      const weeklyTotals = [];
+      for (let w = 5; w >= 0; w--) {
+        const start = new Date(now.getTime() - ((w * 7 + 6) * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+        const end = new Date(now.getTime() - (w * 7 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+        weekLabels.push(`W-${w === 0 ? 'Curr' : w}`);
+        weeklyTotals.push(expenseRecords.filter(r => r.date >= start && r.date <= end && r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0));
+      }
+
+      if (dailyWeeklyBarChart) dailyWeeklyBarChart.destroy();
+      const ctxWeekly = document.getElementById('dailyWeeklyBarChart').getContext('2d');
+      dailyWeeklyBarChart = new Chart(ctxWeekly, {
+        type: 'bar',
+        data: {
+          labels: weekLabels,
+          datasets: [{ label: 'Weekly Expense', data: weeklyTotals, backgroundColor: '#f59e0b', borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const monthLabels = [];
+      const monthIncomes = [];
+      const monthExpenses = [];
+      for (let m = 5; m >= 0; m--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+        const key = d.toISOString().slice(0, 7);
+        monthLabels.push(d.toLocaleDateString('en-IN', { month: 'short' }));
+        monthIncomes.push(expenseRecords.filter(r => r.date && r.date.startsWith(key) && r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0));
+        monthExpenses.push(expenseRecords.filter(r => r.date && r.date.startsWith(key) && r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0));
+      }
+
+      if (dailyMonthlyCompareChart) dailyMonthlyCompareChart.destroy();
+      const ctxCompare = document.getElementById('dailyMonthlyCompareChart').getContext('2d');
+      dailyMonthlyCompareChart = new Chart(ctxCompare, {
+        type: 'bar',
+        data: {
+          labels: monthLabels,
+          datasets: [
+            { label: 'Income', data: monthIncomes, backgroundColor: '#10b981', borderRadius: 4 },
+            { label: 'Expense', data: monthExpenses, backgroundColor: '#f59e0b', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 10 } } } }
+        }
+      });
+
+      const currentYearMonth = document.getElementById('dailyDashMonthSelector').value || now.toISOString().slice(0, 7);
+      const catMap = {};
+      expenseRecords.filter(r => r.type === 'Expense' && r.date && r.date.startsWith(currentYearMonth)).forEach(i => catMap[i.category] = (catMap[i.category] || 0) + (parseFloat(i.amount) || 0));
+
+      if (dailyCategoryDoughnutChart) dailyCategoryDoughnutChart.destroy();
+      const ctxCat = document.getElementById('dailyCategoryDoughnutChart').getContext('2d');
+      dailyCategoryDoughnutChart = new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catMap).length ? Object.keys(catMap) : ['No Expenses'],
+          datasets: [{
+            data: Object.values(catMap).length ? Object.values(catMap) : [1],
+            backgroundColor: ['#f59e0b', '#6366f1', '#10b981', '#06b6d4', '#ec4899', '#8b5cf6'],
+            borderWidth: 2, borderColor: '#030712'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 10 } } } }
+        }
+      });
+    }
+
+    function onDrillFilterChanged() {
+      const typeEl = document.getElementById('trendDrillType');
+      const select = document.getElementById('trendDrillTarget');
+      if (!typeEl || !select) return;
+
+      const type = typeEl.value;
+      select.innerHTML = '';
+
+      if (type === 'Category') {
+        expenseCategories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          select.appendChild(opt);
+        });
+      } else {
+        accountsList.forEach(acc => {
+          const opt = document.createElement('option');
+          opt.value = acc.name;
+          opt.textContent = acc.name;
+          select.appendChild(opt);
         });
       }
 
-      showModal('accountTransactionsModal');
+      renderMoMDrillChart();
     }
 
-    // =============================================================
-    // 2 & 3. BUDGET TARGETS & MULTI-PERIOD HORIZON ENGINE
-    // =============================================================
+    function renderMoMDrillChart() {
+      const drillTypeEl = document.getElementById('trendDrillType');
+      const targetEl = document.getElementById('trendDrillTarget');
+      if (!drillTypeEl || !targetEl) return;
+
+      const drillType = drillTypeEl.value;
+      const target = targetEl.value;
+      const now = new Date();
+
+      const labels = [];
+      const dataValues = [];
+
+      for (let m = 5; m >= 0; m--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+        const key = d.toISOString().slice(0, 7);
+        labels.push(d.toLocaleDateString('en-IN', { month: 'short' }));
+
+        let sum = 0;
+        if (drillType === 'Category') {
+          sum = expenseRecords.filter(r => r.date && r.date.startsWith(key) && r.category === target && r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+        } else {
+          sum = expenseRecords.filter(r => r.date && r.date.startsWith(key) && (r.account === target || r.toAccount === target)).reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+        }
+        dataValues.push(sum);
+      }
+
+      if (dailyMoMDrillChart) dailyMoMDrillChart.destroy();
+      const ctx = document.getElementById('dailyMoMDrillChart').getContext('2d');
+      dailyMoMDrillChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: `${target} (${drillType})`,
+            data: dataValues,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+            borderWidth: 2,
+            tension: 0.35,
+            fill: true,
+            pointBackgroundColor: '#6366f1'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 10 } } } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => '₹' + v } }
+          }
+        }
+      });
+    }
+
+    function renderSpendCalendarMatrix() {
+      const selectedMonthKey = document.getElementById('calendarMonthSelector').value || new Date().toISOString().slice(0, 7);
+      const grid = document.getElementById('calendarDaysGrid');
+      grid.innerHTML = '';
+
+      const [yearStr, monthStr] = selectedMonthKey.split('-');
+      const year = parseInt(yearStr);
+      const month = parseInt(monthStr) - 1;
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDayIndex; i++) {
+        const pad = document.createElement('div');
+        pad.className = "h-12 rounded-xl bg-slate-900/20 opacity-20";
+        grid.appendChild(pad);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayStr = day < 10 ? `0${day}` : `${day}`;
+        const dateKey = `${selectedMonthKey}-${dayStr}`;
+        const daySpends = expenseRecords.filter(r => r.date === dateKey && r.type === 'Expense');
+        const dayTotal = daySpends.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.onclick = () => openCalendarDayDetails(dateKey, dayTotal, daySpends);
+        cell.className = `h-14 rounded-xl p-1 flex flex-col justify-between text-left border ${dayTotal > 0 ? 'border-amber-500/40 bg-amber-950/20' : 'border-white/[0.06] bg-white/[0.02]'}`;
+        cell.innerHTML = `
+          <span class="text-[10px] font-bold text-slate-400 font-mono-val">${day}</span>
+          ${dayTotal > 0 ? `<span class="text-[9px] font-extrabold text-amber-400 truncate font-mono-val">₹${dayTotal >= 1000 ? (dayTotal/1000).toFixed(1)+'k' : dayTotal}</span>` : ''}
+        `;
+        grid.appendChild(cell);
+      }
+    }
+
+    function openCalendarDayDetails(dateKey, total, items) {
+      const box = document.getElementById('calendarDayBreakdownBox');
+      const label = document.getElementById('calendarSelectedDateLabel');
+      const totalEl = document.getElementById('calendarSelectedDateTotal');
+      const list = document.getElementById('calendarDayItemsList');
+
+      label.innerText = dateKey;
+      totalEl.innerText = `Total Outflow: ${formatINR(total)}`;
+
+      list.innerHTML = '';
+      if (items.length === 0) {
+        list.innerHTML = '<div class="text-xs text-slate-500 text-center py-2">No expenses logged on this date.</div>';
+      } else {
+        items.forEach(it => {
+          const itemEl = document.createElement('div');
+          itemEl.className = "flex justify-between items-center text-xs p-2 bg-slate-900 rounded-xl border border-white/10";
+          itemEl.innerHTML = `
+            <div>
+              <span class="font-bold text-white block">${it.category}</span>
+              <span class="text-[10px] text-slate-400">${it.account} • ${it.note || 'No note'}</span>
+            </div>
+            <span class="font-extrabold text-amber-400 font-mono-val">${formatINR(it.amount)}</span>
+          `;
+          list.appendChild(itemEl);
+        });
+      }
+
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeCalendarDayDetails() {
+      document.getElementById('calendarDayBreakdownBox').classList.add('hidden');
+    }
+
+    // -------------------------------------------------------------
+    // ENHANCED PLANNER: REQUIRED VS PLANNED & CUMULATIVE ARREARS
+    // -------------------------------------------------------------
     function saveMonthlyBudgetStorage(pushCloud = true) {
       localStorage.setItem('monthly_budgets_v1', JSON.stringify(monthlyBudgets));
       localStorage.setItem('horizon_budgets_v1', JSON.stringify(horizonBudgets));
@@ -1366,6 +2806,7 @@
       return monthlyBudgets[monthKey];
     }
 
+    // Calculates cumulative planned arrears from the past up to targetMonthKey
     function calculateCategoryArrears(catName, targetMonthKey) {
       const allMonths = [...new Set([...Object.keys(monthlyBudgets), targetMonthKey])].sort();
       let cumulativePending = 0;
@@ -1470,13 +2911,13 @@
             </div>
             <div class="mt-1 text-[10px]">
               ${totalPendingWithArrears > 0 
-                ? `<span class="text-rose-400 font-bold font-mono-val">Pending: ${formatINR(totalPendingWithArrears)}${pastArrears > 0 ? `(includes ${formatINR(pastArrears)} prior)` : ''}</span>`
+                ? `<span class="text-rose-400 font-bold font-mono-val">Pending: ${formatINR(totalPendingWithArrears)} ${pastArrears > 0 ? `(includes ${formatINR(pastArrears)} prior)` : ''}</span>`
                 : `<span class="text-emerald-400 font-bold font-mono-val">✓ Target Fully Met / Cleared</span>`
               }
             </div>
           </div>
-          <button type="button" onclick="openEditBudgetAllocationModal('${item.category}', ${required}, ${item.plannedAmount})" class="text-indigo-400 text-xs font-semibold p-1 cursor-pointer hover:text-indigo-300" title="Edit Allocation">
-            <i class="fa-solid fa-pen-to-square text-sm"></i>
+          <button type="button" onclick="editBudgetItemPrompt('${item.category}', ${required}, ${item.plannedAmount})" class="text-indigo-400 text-xs font-semibold p-1 cursor-pointer">
+            <i class="fa-solid fa-pen-to-square"></i>
           </button>
         `;
         container.appendChild(card);
@@ -1484,35 +2925,26 @@
       document.getElementById('plannerAllocationsCount').innerText = `${plannedList.length} Categories`;
     }
 
-    function openEditBudgetAllocationModal(cat, req, plan) {
-      document.getElementById('editBudgetNameInput').value = cat;
-      document.getElementById('editBudgetReqInput').value = req;
-      document.getElementById('editBudgetPlanInput').value = plan;
-      showModal('editBudgetAllocationModal');
-    }
-
-    function handleSaveEditedBudgetAllocation(e) {
-      e.preventDefault();
-      const cat = document.getElementById('editBudgetNameInput').value;
-      const req = parseFloat(document.getElementById('editBudgetReqInput').value) || 0;
-      const plan = parseFloat(document.getElementById('editBudgetPlanInput').value) || 0;
-      const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-
-      const target = monthlyBudgets[monthKey]?.find(b => b.category === cat);
-      if (target) {
-        target.requiredAmount = req;
-        target.plannedAmount = plan;
-        saveMonthlyBudgetStorage();
-        hideModal('editBudgetAllocationModal');
-        renderBudgetPlanner();
-        renderHubOverview();
-        notify(`Updated ${cat} budget limits`);
+    function editBudgetItemPrompt(cat, currentReq, currentPlanned) {
+      const newReq = prompt(`Update REQUIRED minimum for ${cat}:`, currentReq);
+      if (newReq === null) return;
+      const newPlan = prompt(`Update PLANNED target for ${cat}:`, currentPlanned);
+      if (newPlan !== null) {
+        const parsedReq = parseFloat(newReq) || 0;
+        const parsedPlan = parseFloat(newPlan) || 0;
+        const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
+        const target = monthlyBudgets[monthKey].find(b => b.category === cat);
+        if (target) {
+          target.requiredAmount = parsedReq;
+          target.plannedAmount = parsedPlan;
+          saveMonthlyBudgetStorage();
+          renderBudgetPlanner();
+          renderHubOverview();
+          notify(`Updated ${cat} targets`);
+        }
       }
     }
 
-    // =============================================================
-    // 4. BUDGET STATUS WITH REVISED COLOR CODING
-    // =============================================================
     function renderPlannerDashboard() {
       const monthKey = document.getElementById('plannerDashMonthSelector').value || new Date().toISOString().slice(0, 7);
       const plannedList = getOrInitializeMonthBudget(monthKey);
@@ -1530,24 +2962,18 @@
         
         const pastArrears = calculateCategoryArrears(item.category, monthKey);
         const effectiveGoal = item.plannedAmount + Math.max(0, pastArrears);
-        const remainingBuffer = effectiveGoal - catActual;
+        const remaining = effectiveGoal - catActual;
 
-        // Specified Rule: Paid Amber if < Planned; Crimson Red if > Planned
-        const paidColor = catActual <= effectiveGoal ? 'text-amber-400' : 'text-rose-400';
-
-        // Specified Rule: Buffer Green if > 50% of planned; Amber if <= 50%; Red if <= 0
-        let bufferBadgeClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
-        let barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
-
-        if (remainingBuffer <= 0) {
-          bufferBadgeClass = "bg-rose-500/20 text-rose-400 border-rose-500/30";
-          barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
-        } else if (remainingBuffer > (effectiveGoal * 0.5)) {
-          bufferBadgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
-          barColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
-        } else {
-          bufferBadgeClass = "bg-amber-500/20 text-amber-300 border-amber-500/30";
+        let badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+        let barColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
+        if (catActual >= effectiveGoal) {
+          badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+        } else if (completionPct >= 75) {
+          badgeClass = "bg-amber-500/20 text-amber-300 border-amber-500/30";
           barColor = "bg-gradient-to-r from-amber-500 to-orange-500";
+        } else {
+          badgeClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
+          barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
         }
 
         const card = document.createElement('div');
@@ -1557,7 +2983,7 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-white">${item.category}</span>
-                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${bufferBadgeClass} font-mono-val">${completionPct}% Planned</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${badgeClass} font-mono-val">${completionPct}% of planned</span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
                 Required: <b class="text-slate-300 font-mono-val">${formatINR(item.requiredAmount || item.plannedAmount)}</b> • 
@@ -1566,10 +2992,10 @@
               ${pastArrears > 0 ? `<span class="text-[10px] text-amber-400 font-medium font-mono-val block">Rolled Past Lag: ${formatINR(pastArrears)}</span>` : ''}
             </div>
             <div class="text-right">
-              <span class="text-xs font-extrabold block font-mono-val ${remainingBuffer <= 0 ? 'text-rose-400' : (remainingBuffer > (effectiveGoal * 0.5) ? 'text-emerald-400' : 'text-amber-400')}">
-                ${remainingBuffer <= 0 ? 'Lag ' + formatINR(Math.abs(remainingBuffer)) : 'Buffer ' + formatINR(remainingBuffer)}
+              <span class="text-xs font-extrabold ${remaining <= 0 ? 'text-emerald-400' : 'text-amber-400'} block font-mono-val">
+                ${remaining <= 0 ? '✓ Arrears 0 (Cleared)' : 'Pending ' + formatINR(remaining)}
               </span>
-              <span class="text-[10px] text-slate-400 mt-0.5 block">Paid: <b class="${paidColor} font-mono-val">${formatINR(catActual)}</b></span>
+              <span class="text-[10px] text-slate-400 mt-0.5 block">Paid: <b class="text-white font-mono-val">${formatINR(catActual)}</b></span>
             </div>
           </div>
           <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-white/10">
@@ -1581,34 +3007,26 @@
 
       const totalBurnPct = totalPlanned > 0 ? ((totalActual / totalPlanned) * 100).toFixed(0) : 0;
       document.getElementById('kpiTotalPlannedBudget').innerText = formatINR(totalPlanned);
-      
-      const overallPaidEl = document.getElementById('kpiPlannerTotalActualSpent');
-      overallPaidEl.innerText = formatINR(totalActual);
-      overallPaidEl.className = `text-base font-black mt-0.5 block font-mono-val ${totalActual <= totalPlanned ? 'text-amber-400' : 'text-rose-400'}`;
-
-      const netBuffer = totalPlanned - totalActual;
-      const overallBufferEl = document.getElementById('kpiPlannerTotalRemainingBuffer');
-      overallBufferEl.innerText = formatINR(netBuffer);
-      overallBufferEl.className = `text-base font-black mt-0.5 block font-mono-val ${netBuffer <= 0 ? 'text-rose-400' : (netBuffer > (totalPlanned * 0.5) ? 'text-emerald-400' : 'text-amber-400')}`;
-
+      document.getElementById('kpiPlannerTotalActualSpent').innerText = formatINR(totalActual);
+      document.getElementById('kpiPlannerTotalRemainingBuffer').innerText = formatINR(totalPlanned - totalActual);
       document.getElementById('kpiBudgetOverallBurnBadge').innerText = `${totalBurnPct}% Used`;
       document.getElementById('plannerTotalProgressBar').style.width = `${Math.min(100, totalBurnPct)}%`;
     }
 
-    // =============================================================
-    // HORIZONS PROPORTIONAL CALCULATIONS & MODALS
-    // =============================================================
+    // -------------------------------------------------------------
+    // MULTI-HORIZON ENGINE (QUARTERLY, HALF-YEARLY, ANNUALLY)
+    // -------------------------------------------------------------
     function renderHorizonPlanner() {
       const spanType = document.getElementById('horizonSpanSelector').value;
-      const multiplier = spanType === 'quarterly' ? 3 : (spanType === 'halfyearly' ? 6 : 12);
-      const spanTitle = spanType === 'quarterly' ? 'Quarterly (3 Mos)' : (spanType === 'halfyearly' ? 'Half-Yearly (6 Mos)' : 'Annual (12 Mos)');
+      const count = spanType === 'quarterly' ? 3 : (spanType === 'halfyearly' ? 6 : 12);
+      const spanTitle = spanType === 'quarterly' ? 'Quarterly (3 Months)' : (spanType === 'halfyearly' ? 'Half-Yearly (6 Months)' : 'Annual (12 Months)');
       
       document.getElementById('horizonKpiTitle').innerText = `${spanTitle} Horizon`;
-      document.getElementById('horizonMonthsSpanBadge').innerText = `${multiplier} Months Scope`;
+      document.getElementById('horizonMonthsSpanBadge').innerText = `${count} Months Scope`;
 
       const now = new Date();
       const horizonMonths = [];
-      for (let i = 0; i < multiplier; i++) {
+      for (let i = 0; i < count; i++) {
         const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
         horizonMonths.push(d.toISOString().slice(0, 7));
       }
@@ -1621,31 +3039,32 @@
       let totalHorizonPlanned = 0;
       let totalHorizonPaid = 0;
 
-      const currentMonthKey = now.toISOString().slice(0, 7);
-      const currentMonthBudgets = getOrInitializeMonthBudget(currentMonthKey);
-
       activeCategories.forEach(cat => {
-        const currentCatItem = currentMonthBudgets.find(b => b.category.toLowerCase() === cat.toLowerCase());
-        const baseReqPerMonth = currentCatItem ? (parseFloat(currentCatItem.requiredAmount) || parseFloat(currentCatItem.plannedAmount) || 0) : 0;
-        const basePlanPerMonth = currentCatItem ? (parseFloat(currentCatItem.plannedAmount) || 0) : 0;
+        let monthlyReq = 0;
+        let monthlyPlan = 0;
 
-        // Specified Rule: Required × multiplier, Planned × multiplier
-        const autoMultipliedReq = baseReqPerMonth * multiplier;
-        const autoMultipliedPlan = basePlanPerMonth * multiplier;
+        horizonMonths.forEach(m => {
+          const list = getOrInitializeMonthBudget(m);
+          const it = list.find(b => b.category.toLowerCase() === cat.toLowerCase());
+          if (it) {
+            monthlyReq += (parseFloat(it.requiredAmount) || parseFloat(it.plannedAmount) || 0);
+            monthlyPlan += (parseFloat(it.plannedAmount) || 0);
+          }
+        });
 
         const horizonKey = `${spanType}_${cat}`;
-        const activePlannedHorizon = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : autoMultipliedPlan;
+        const customPlanned = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : monthlyPlan;
 
         const totalPaidInPeriod = expenseRecords
           .filter(r => r.type === 'Expense' && r.category.toLowerCase() === cat.toLowerCase() && horizonMonths.some(m => r.date && r.date.startsWith(m)))
           .reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
 
-        totalHorizonReq += autoMultipliedReq;
-        totalHorizonPlanned += activePlannedHorizon;
+        totalHorizonReq += monthlyReq;
+        totalHorizonPlanned += customPlanned;
         totalHorizonPaid += totalPaidInPeriod;
 
-        const remainingToDisburse = activePlannedHorizon - totalPaidInPeriod;
-        const progressPct = activePlannedHorizon > 0 ? Math.min(100, Math.round((totalPaidInPeriod / activePlannedHorizon) * 100)) : 0;
+        const remainingToDisburse = customPlanned - totalPaidInPeriod;
+        const progressPct = customPlanned > 0 ? Math.min(100, Math.round((totalPaidInPeriod / customPlanned) * 100)) : 0;
 
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-4 space-y-2.5";
@@ -1657,14 +3076,14 @@
                 <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/20 text-purple-200 font-mono-val">${progressPct}% Paid</span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
-                Required: <b class="text-slate-300 font-mono-val">${formatINR(autoMultipliedReq)}</b> 
-                (${formatINR(baseReqPerMonth)}/mo × ${multiplier})
+                Baseline Required: <b class="text-slate-300 font-mono-val">${formatINR(monthlyReq)}</b> 
+                (${formatINR(monthlyReq / count)}/mo × ${count})
               </span>
             </div>
             <div class="text-right">
-              <span class="text-xs font-bold text-purple-300 font-mono-val block">Goal: ${formatINR(activePlannedHorizon)}</span>
-              <button type="button" onclick="openEditHorizonGoalModal('${cat}', '${spanType}', ${autoMultipliedReq}, ${activePlannedHorizon})" class="text-[10px] text-indigo-400 hover:underline cursor-pointer">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Goal
+              <span class="text-xs font-bold text-purple-300 font-mono-val block">Horizon Goal: ${formatINR(customPlanned)}</span>
+              <button type="button" onclick="editHorizonGoalPrompt('${cat}', '${spanType}', ${customPlanned})" class="text-[10px] text-indigo-400 hover:underline">
+                <i class="fa-solid fa-pen-to-square"></i> Set Custom Goal
               </button>
             </div>
           </div>
@@ -1674,7 +3093,7 @@
           </div>
 
           <div class="flex justify-between items-center text-[10px] pt-1 border-t border-white/[0.06]">
-            <span class="text-slate-400">Paid: <b class="text-amber-400 font-mono-val">${formatINR(totalPaidInPeriod)}</b></span>
+            <span class="text-slate-400">Total Paid: <b class="text-amber-400 font-mono-val">${formatINR(totalPaidInPeriod)}</b></span>
             <span class="${remainingToDisburse <= 0 ? 'text-emerald-400' : 'text-purple-300'} font-bold font-mono-val">
               ${remainingToDisburse <= 0 ? '✓ Goal Cleared' : `${formatINR(remainingToDisburse)} remaining to pay any month`}
             </span>
@@ -1688,26 +3107,17 @@
       document.getElementById('kpiHorizonTotalPaid').innerText = formatINR(totalHorizonPaid);
     }
 
-    function openEditHorizonGoalModal(cat, spanType, reqVal, planVal) {
-      document.getElementById('editHorizonCategoryInput').value = cat;
-      document.getElementById('editHorizonSpanTypeInput').value = spanType;
-      document.getElementById('editHorizonCategoryLabel').innerText = `${cat} • ${spanType.toUpperCase()}`;
-      document.getElementById('editHorizonBaselineReqDisplay').value = reqVal;
-      document.getElementById('editHorizonPlannedGoalInput').value = planVal;
-      showModal('editHorizonGoalModal');
-    }
-
-    function handleSaveEditedHorizonGoal(e) {
-      e.preventDefault();
-      const cat = document.getElementById('editHorizonCategoryInput').value;
-      const spanType = document.getElementById('editHorizonSpanTypeInput').value;
-      const newPlan = parseFloat(document.getElementById('editHorizonPlannedGoalInput').value) || 0;
-
-      horizonBudgets[`${spanType}_${cat}`] = newPlan;
-      saveMonthlyBudgetStorage();
-      hideModal('editHorizonGoalModal');
-      renderHorizonPlanner();
-      notify(`Updated ${cat} ${spanType} goal!`);
+    function editHorizonGoalPrompt(cat, spanType, currentVal) {
+      const val = prompt(`Set total ${spanType} planned allocation for ${cat} (e.g. 20000):`, currentVal);
+      if (val !== null) {
+        const parsed = parseFloat(val);
+        if (!isNaN(parsed) && parsed >= 0) {
+          horizonBudgets[`${spanType}_${cat}`] = parsed;
+          saveMonthlyBudgetStorage();
+          renderHorizonPlanner();
+          notify(`Updated ${cat} ${spanType} goal`);
+        }
+      }
     }
 
     function renderPlannerMultiMonthHistory() {
@@ -1771,9 +3181,695 @@
       });
     }
 
-    // =============================================================
-    // 5. UNIVERSAL DATA EXPORT / IMPORT ENGINE (APPEND VS OVERWRITE)
-    // =============================================================
+    // -------------------------------------------------------------
+    // DEBT & COMMITMENTS ENGINE
+    // -------------------------------------------------------------
+    function saveDebtStorage(pushCloud = true) {
+      localStorage.setItem('debt_categories', JSON.stringify(categories));
+      localStorage.setItem('debt_records', JSON.stringify(debtRecords));
+      if (pushCloud) pushAllDataToCloud();
+    }
+
+    function getDebtDatasetForMonth(monthKey, cat = 'ALL') {
+      const source = (cat === 'ALL') ? debtRecords : debtRecords.filter(d => d.category === cat);
+      if (source.length === 0) return { items: [], isProjected: false };
+
+      if (monthKey === 'ALL') {
+        const map = new Map();
+        source.forEach(item => {
+          if (!map.has(item.metric) || (item.month || '') > (map.get(item.metric).month || '')) {
+            map.set(item.metric, item);
+          }
+        });
+        return { items: Array.from(map.values()), isProjected: false };
+      }
+
+      const exactMonthItems = source.filter(d => d.month === monthKey);
+      if (exactMonthItems.length > 0) return { items: exactMonthItems, isProjected: false };
+
+      const priorMonths = [...new Set(source.map(d => d.month))].filter(m => m < monthKey).sort();
+      if (priorMonths.length === 0) return { items: source, isProjected: false };
+
+      const lastMonth = priorMonths[priorMonths.length - 1];
+      const baseItems = source.filter(d => d.month === lastMonth);
+
+      const [y1, m1] = lastMonth.split('-').map(Number);
+      const [y2, m2] = monthKey.split('-').map(Number);
+      const elapsed = (y2 - y1) * 12 + (m2 - m1);
+      if (elapsed <= 0) return { items: baseItems, isProjected: false };
+
+      const projected = baseItems.map(item => {
+        let bal = item.balance;
+        let left = item.monthsLeft || 12;
+        const r = ((item.rate || 0) / 100) / 12;
+
+        for (let step = 0; step < elapsed; step++) {
+          if (bal > 0) {
+            const interest = bal * r;
+            const principal = Math.min(bal, Math.max(0, item.emi - interest));
+            bal = Math.max(0, bal - principal);
+            left = Math.max(0, left - 1);
+          }
+        }
+
+        return {
+          ...item,
+          id: `proj_${item.id}_${monthKey}`,
+          month: monthKey,
+          balance: Math.round(bal),
+          monthsLeft: left,
+          isAutoProjected: true
+        };
+      });
+
+      return { items: projected, isProjected: true };
+    }
+
+    function switchDebtScreen(screenId) {
+      document.querySelectorAll('.debt-screen').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.className = 'debt-screen space-y-4 page-turn-in';
+        target.classList.remove('hidden');
+      }
+
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active-nav-dock'));
+      const activeNavBtn = document.getElementById('nav-' + screenId);
+      if (activeNavBtn) activeNavBtn.classList.add('active-nav-dock');
+
+      if (screenId === 'entryScreen') renderHistoryTable();
+      if (screenId === 'dashboardScreen') renderDashboard();
+      if (screenId === 'trendsScreen') renderCharts();
+      if (screenId === 'plannerScreen') renderPredictionsView();
+    }
+
+    function openDebtPopupModal() {
+      resetDebtFormToNew();
+      showModal('debtPopupModal');
+    }
+
+    function closeDebtPopupModal() {
+      hideModal('debtPopupModal');
+    }
+
+    function resetDebtFormToNew() {
+      document.getElementById('editEntryId').value = '';
+      document.getElementById('debtForm').reset();
+      document.getElementById('fMonth').value = new Date().toISOString().slice(0, 7);
+    }
+
+    function handleDebtSubmission(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editEntryId').value;
+      const m = document.getElementById('fMonth').value;
+      const metric = document.getElementById('fMetric').value.trim();
+      const cat = document.getElementById('fCategory').value;
+      const bal = parseFloat(document.getElementById('fBalance').value) || 0;
+      const emi = parseFloat(document.getElementById('fEmi').value) || 0;
+      const rate = parseFloat(document.getElementById('fRate').value) || 0;
+      const monthsLeft = parseInt(document.getElementById('fMonthsLeft').value) || 12;
+      const priority = document.getElementById('fPriority').value;
+
+      if (editId) {
+        const idx = debtRecords.findIndex(r => String(r.id) === String(editId));
+        if (idx !== -1) {
+          debtRecords[idx] = { ...debtRecords[idx], month: m, metric, category: cat, balance: bal, emi, rate, monthsLeft, priority };
+          notify(`Updated "${metric}"`);
+        }
+      } else {
+        const existingIdx = debtRecords.findIndex(r => r.metric.toLowerCase() === metric.toLowerCase() && r.month === m);
+        if (existingIdx !== -1) {
+          debtRecords[existingIdx] = { ...debtRecords[existingIdx], month: m, metric, category: cat, balance: bal, emi, rate, monthsLeft, priority };
+        } else {
+          debtRecords.push({ id: Date.now(), month: m, metric, category: cat, balance: bal, emi, rate, monthsLeft, priority });
+        }
+        notify(`Saved "${metric}"`);
+      }
+
+      saveDebtStorage();
+      closeDebtPopupModal();
+      renderHistoryTable();
+      renderDashboard();
+      renderHubOverview();
+    }
+
+    function editDebtEntryDirect(id) {
+      let item = debtRecords.find(r => String(r.id) === String(id));
+      if (!item) {
+        const selectedMonth = document.getElementById('debtViewMonthSelector').value;
+        const { items } = getDebtDatasetForMonth(selectedMonth, 'ALL');
+        item = items.find(r => String(r.id) === String(id));
+      }
+      if (!item) return;
+
+      history.pushState({ modal: 'editDebt' }, '');
+      document.getElementById('debtModalTitle').innerText = `Edit: ${item.metric}`;
+      document.getElementById('editEntryId').value = item.id;
+      document.getElementById('fMonth').value = item.month || new Date().toISOString().slice(0, 7);
+      document.getElementById('fMetric').value = item.metric;
+      document.getElementById('fCategory').value = item.category;
+      document.getElementById('fBalance').value = item.balance;
+      document.getElementById('fEmi').value = item.emi;
+      document.getElementById('fRate').value = item.rate || 0;
+      document.getElementById('fMonthsLeft').value = item.monthsLeft || 12;
+      document.getElementById('fPriority').value = item.priority || 'Normal';
+      showModal('debtPopupModal');
+    }
+
+    function deleteDebtEntry(id) {
+      if (confirm("Delete this loan commitment?")) {
+        debtRecords = debtRecords.filter(r => String(r.id) !== String(id));
+        saveDebtStorage();
+        renderHistoryTable();
+        renderDashboard();
+        renderHubOverview();
+        notify("Commitment deleted.");
+      }
+    }
+
+    function renderHistoryTable() {
+      const container = document.getElementById('historyTableContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const selectedMonth = document.getElementById('debtViewMonthSelector').value;
+      const { items } = getDebtDatasetForMonth(selectedMonth, 'ALL');
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-slate-500 text-xs">No commitments found. Tap + to add.</div>';
+        return;
+      }
+
+      items.forEach(row => {
+        const itemEl = document.createElement('div');
+        itemEl.className = "glass-card rounded-2xl p-3.5 flex justify-between items-center text-xs";
+        itemEl.innerHTML = `
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-white text-xs">${row.metric}</span>
+              ${row.isAutoProjected ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">Auto</span>` : ''}
+            </div>
+            <span class="text-[10px] text-slate-400">${row.category} • EMI: ${formatINR(row.emi)} • <b class="text-amber-300 font-mono-val">${row.monthsLeft} mos left</b></span>
+          </div>
+          <div class="flex items-center gap-2 text-right">
+            <span class="font-black text-slate-100 text-sm mr-1 font-mono-val">${formatINR(row.balance)}</span>
+            <button type="button" onclick="editDebtEntryDirect('${row.id}')" class="text-indigo-400 hover:text-indigo-300 p-1.5 cursor-pointer" title="Edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" onclick="deleteDebtEntry('${row.id}')" class="text-slate-500 hover:text-rose-400 p-1.5 cursor-pointer" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(itemEl);
+      });
+    }
+
+    function renderDashboard() {
+      const selectedMonth = document.getElementById('debtDashMonthSelector').value;
+      const { items } = getDebtDatasetForMonth(selectedMonth, activeDashboardCategory);
+      const totalBalance = items.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+      const totalEmi = items.reduce((s, it) => s + (parseFloat(it.emi) || 0), 0);
+
+      document.getElementById('kpiTotalDebt').innerText = formatINR(totalBalance);
+      document.getElementById('kpiTotalEmi').innerText = formatINR(totalEmi);
+      document.getElementById('kpiActiveCount').innerText = `${items.length} Loans`;
+
+      const listContainer = document.getElementById('liabilitiesListContainer');
+      if (!listContainer) return;
+      listContainer.innerHTML = '';
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-3.5 flex justify-between items-center text-xs";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-white">${item.metric}</span>
+              ${item.isAutoProjected ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300">Auto</span>` : ''}
+            </div>
+            <span class="text-[10px] text-slate-400">${item.category} • EMI: ${formatINR(item.emi)} • ${item.monthsLeft} mos left</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-black text-slate-100 font-mono-val">${formatINR(item.balance)}</span>
+            <button type="button" onclick="editDebtEntryDirect('${item.id}')" class="text-indigo-400 hover:text-indigo-300 p-1 cursor-pointer">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" onclick="deleteDebtEntry('${item.id}')" class="text-slate-500 hover:text-rose-400 p-1 cursor-pointer">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    function renderCharts() {
+      const cat = document.getElementById('logCategoryFilter').value || 'ALL';
+      const source = (cat === 'ALL') ? debtRecords : debtRecords.filter(d => d.category === cat);
+      const months = [...new Set(source.map(d => d.month))].sort();
+      const balances = [], emis = [];
+
+      months.forEach(m => {
+        const mItems = source.filter(d => d.month === m);
+        balances.push(mItems.reduce((acc, c) => acc + (parseFloat(c.balance) || 0), 0));
+        emis.push(mItems.reduce((acc, c) => acc + (parseFloat(c.emi) || 0), 0));
+      });
+
+      if (debtChart) debtChart.destroy();
+      const ctx1 = document.getElementById('debtTrendChart').getContext('2d');
+      debtChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            data: balances,
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      if (emiChart) emiChart.destroy();
+      const ctx2 = document.getElementById('emiTrendChart').getContext('2d');
+      emiChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [{ data: emis, backgroundColor: '#f59e0b', borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderPredictionsView() {
+      const { items: latestItems } = getDebtDatasetForMonth('ALL', 'ALL');
+      const currentBalance = latestItems.reduce((sum, item) => sum + (parseFloat(item.balance) || 0), 0);
+      const baseDate = new Date();
+
+      const m6Key = new Date(baseDate.getFullYear(), baseDate.getMonth() + 6, 1).toISOString().slice(0, 7);
+      const m12Key = new Date(baseDate.getFullYear(), baseDate.getMonth() + 12, 1).toISOString().slice(0, 7);
+      const { items: m6Items } = getDebtDatasetForMonth(m6Key, 'ALL');
+      const { items: m12Items } = getDebtDatasetForMonth(m12Key, 'ALL');
+
+      const m6Bal = m6Items.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+      const m12Bal = m12Items.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+
+      const elF6D = document.getElementById('forecastDate6M');
+      if (elF6D) elF6D.innerText = new Date(m6Key + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      const elF6B = document.getElementById('forecastDebt6M');
+      if (elF6B) elF6B.innerText = formatINR(m6Bal);
+      const drop6 = currentBalance > 0 ? (((currentBalance - m6Bal) / currentBalance) * 100).toFixed(1) : 0;
+      const elF6Drop = document.getElementById('forecastDrop6M');
+      if (elF6Drop) elF6Drop.innerText = `↓ ${drop6}% drop`;
+
+      const elF12D = document.getElementById('forecastDate1Y');
+      if (elF12D) elF12D.innerText = new Date(m12Key + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      const elF12B = document.getElementById('forecastDebt1Y');
+      if (elF12B) elF12B.innerText = formatINR(m12Bal);
+      const drop12 = currentBalance > 0 ? (((currentBalance - m12Bal) / currentBalance) * 100).toFixed(1) : 0;
+      const elF12Drop = document.getElementById('forecastDrop1Y');
+      if (elF12Drop) elF12Drop.innerText = `↓ ${drop12}% drop`;
+
+      const tbody = document.getElementById('forecast5MonthsTbody');
+      if (tbody) {
+        tbody.innerHTML = '';
+        for (let m = 1; m <= 5; m++) {
+          const nextMonthKey = new Date(baseDate.getFullYear(), baseDate.getMonth() + m, 1).toISOString().slice(0, 7);
+          const { items: projItems } = getDebtDatasetForMonth(nextMonthKey, 'ALL');
+          const totalBal = projItems.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+          const totalEmi = projItems.reduce((s, it) => s + (parseFloat(it.emi) || 0), 0);
+          const dObj = new Date(nextMonthKey + '-01');
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="py-2.5 px-2.5 font-bold text-white">${dObj.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}</td>
+            <td class="py-2.5 px-2.5 text-right font-extrabold text-slate-100 font-mono-val">${formatINR(totalBal)}</td>
+            <td class="py-2.5 px-2.5 text-right text-indigo-300 font-semibold font-mono-val">${formatINR(totalEmi)}</td>
+            <td class="py-2.5 px-2.5 text-center"><span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 font-mono-val">${projItems.filter(it => it.balance > 0).length}</span></td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      const container = document.getElementById('plannerListContainer');
+      if (container) {
+        container.innerHTML = '';
+        const sorted = [...latestItems].sort((a,b) => (b.rate || 0) - (a.rate || 0));
+        sorted.forEach(item => {
+          const card = document.createElement('div');
+          card.className = "glass-card rounded-2xl p-4 space-y-2";
+          card.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-bold text-white block">${item.metric}</span>
+                <span class="text-[11px] text-slate-400">${item.category} • Balance: <b class="text-slate-200 font-mono-val">${formatINR(item.balance)}</b></span>
+              </div>
+              <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700 font-mono-val">${item.rate}% APR</span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+    }
+
+    function onDebtViewMonthChanged() {
+      renderHistoryTable();
+    }
+
+    function onDebtDashMonthChanged() {
+      renderDashboard();
+    }
+
+    // -------------------------------------------------------------
+    // CATEGORY & ACCOUNT REORDER MODALS
+    // -------------------------------------------------------------
+    function openExpenseCategoryModal(type = 'Expense') {
+      history.pushState({ modal: 'categories' }, '');
+      showModal('expenseCatModal');
+      switchCategoryModalType(type);
+    }
+    function closeExpenseCategoryModal() {
+      hideModal('expenseCatModal');
+    }
+    function switchCategoryModalType(type) {
+      currentCatModalType = type;
+      const bExp = document.getElementById('tabModalCatExpense');
+      const bInc = document.getElementById('tabModalCatIncome');
+      if (type === 'Income') {
+        bInc.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-white bg-emerald-600 shadow cursor-pointer";
+        bExp.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white cursor-pointer";
+      } else {
+        bExp.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-white bg-amber-600 shadow cursor-pointer";
+        bInc.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white cursor-pointer";
+      }
+      renderExpenseCategoryBadges();
+    }
+    function renderExpenseCategoryBadges() {
+      const container = document.getElementById('expenseCategoryBadgeContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const arr = currentCatModalType === 'Income' ? incomeCategories : expenseCategories;
+      document.getElementById('lblCatModalCount').innerText = `${currentCatModalType} Categories (${arr.length})`;
+
+      arr.forEach((cat, idx) => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300 font-medium";
+        row.innerHTML = `
+          <span class="font-bold text-white">${cat}</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="moveExpenseCategory(${idx}, 'top')" class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">Top</button>
+            <button type="button" onclick="moveExpenseCategory(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 text-slate-300 disabled:opacity-30">▲</button>
+            <button type="button" onclick="moveExpenseCategory(${idx}, 1)" ${idx === arr.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 text-slate-300 disabled:opacity-30">▼</button>
+            <button type="button" onclick="deleteExpenseCategory('${cat}')" class="text-rose-400 hover:text-rose-300 ml-1.5 cursor-pointer"><i class="fa-solid fa-trash-can text-xs"></i></button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+    function moveExpenseCategory(index, direction) {
+      const arr = currentCatModalType === 'Income' ? incomeCategories : expenseCategories;
+      if (direction === 'top') {
+        const item = arr.splice(index, 1)[0];
+        arr.unshift(item);
+      } else {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= arr.length) return;
+        const item = arr.splice(index, 1)[0];
+        arr.splice(newIndex, 0, item);
+      }
+      saveExpenseStorage();
+      populateExpenseElements();
+      renderExpenseCategoryBadges();
+    }
+    function handleNewExpenseCategory(e) {
+      e.preventDefault();
+      const input = document.getElementById('newExpenseCatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      const arr = currentCatModalType === 'Income' ? incomeCategories : expenseCategories;
+      if (!arr.includes(val)) arr.push(val);
+      saveExpenseStorage();
+      populateExpenseElements();
+      renderExpenseCategoryBadges();
+      input.value = '';
+    }
+    function deleteExpenseCategory(cat) {
+      if (confirm(`Remove category "${cat}"?`)) {
+        if (currentCatModalType === 'Income') {
+          incomeCategories = incomeCategories.filter(c => c !== cat);
+        } else {
+          expenseCategories = expenseCategories.filter(c => c !== cat);
+        }
+        saveExpenseStorage();
+        populateExpenseElements();
+        renderExpenseCategoryBadges();
+      }
+    }
+
+    function openAccountModal() {
+      history.pushState({ modal: 'accounts' }, '');
+      showModal('accountModal');
+      renderAccountBadges();
+    }
+    function closeAccountModal() {
+      hideModal('accountModal');
+    }
+    function renderAccountBadges() {
+      const container = document.getElementById('accountDetailedListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      accountsList.forEach((acc, idx) => {
+        const row = document.createElement('div');
+        row.className = "p-2.5 rounded-xl bg-slate-900 border border-slate-700 flex justify-between items-center text-xs";
+        row.innerHTML = `
+          <div>
+            <span class="font-bold text-white block">${acc.name}</span>
+            <span class="text-[10px] text-slate-400">Starting: ${formatINR(acc.initialBalance)}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="moveAccount(${idx}, 'top')" class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">Top</button>
+            <button type="button" onclick="moveAccount(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 disabled:opacity-30">▲</button>
+            <button type="button" onclick="moveAccount(${idx}, 1)" ${idx === accountsList.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 disabled:opacity-30">▼</button>
+            <button type="button" onclick="deleteAccount('${acc.name}')" class="text-rose-400 hover:text-rose-300 ml-1.5 cursor-pointer"><i class="fa-solid fa-trash-can text-xs"></i></button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+    function moveAccount(index, direction) {
+      if (direction === 'top') {
+        const item = accountsList.splice(index, 1)[0];
+        accountsList.unshift(item);
+      } else {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= accountsList.length) return;
+        const item = accountsList.splice(index, 1)[0];
+        accountsList.splice(newIndex, 0, item);
+      }
+      saveExpenseStorage();
+      populateExpenseElements();
+      renderAccountBadges();
+    }
+    function handleNewAccount(e) {
+      e.preventDefault();
+      const name = document.getElementById('newAccountName').value.trim();
+      const initial = parseFloat(document.getElementById('newAccountInitial').value) || 0;
+      if (!name) return;
+      if (!accountsList.some(a => a.name.toLowerCase() === name.toLowerCase())) {
+        accountsList.push({ name, initialBalance: initial });
+        saveExpenseStorage();
+        populateExpenseElements();
+        renderAccountBadges();
+      }
+      document.getElementById('newAccountName').value = '';
+      document.getElementById('newAccountInitial').value = '';
+    }
+    function deleteAccount(name) {
+      if (confirm(`Remove account "${name}"?`)) {
+        accountsList = accountsList.filter(a => a.name !== name);
+        saveExpenseStorage();
+        populateExpenseElements();
+        renderAccountBadges();
+      }
+    }
+
+    function openCategoryModal() {
+      history.pushState({ modal: 'debtCategories' }, '');
+      showModal('categoryModal');
+      renderCategoryBadges();
+    }
+    function closeCategoryModal() {
+      hideModal('categoryModal');
+    }
+    function renderCategoryBadges() {
+      const container = document.getElementById('categoryBadgeContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      document.getElementById('catModalCount').innerText = categories.length;
+      categories.forEach((cat, idx) => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300 font-medium";
+        row.innerHTML = `
+          <span class="font-bold text-white">${cat}</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="moveDebtCategory(${idx}, 'top')" class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px]">Top</button>
+            <button type="button" onclick="moveDebtCategory(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 disabled:opacity-30">▲</button>
+            <button type="button" onclick="moveDebtCategory(${idx}, 1)" ${idx === categories.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-slate-800 border border-slate-700 disabled:opacity-30">▼</button>
+            <button type="button" onclick="deleteDebtCategory('${cat}')" class="text-rose-400 hover:text-rose-300 ml-1.5 cursor-pointer"><i class="fa-solid fa-trash-can text-xs"></i></button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+    function moveDebtCategory(index, direction) {
+      if (direction === 'top') {
+        const item = categories.splice(index, 1)[0];
+        categories.unshift(item);
+      } else {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= categories.length) return;
+        const item = categories.splice(index, 1)[0];
+        categories.splice(newIndex, 0, item);
+      }
+      saveDebtStorage();
+      populateCategoryElements();
+      renderCategoryBadges();
+    }
+    function handleNewDebtCategory(e) {
+      e.preventDefault();
+      const val = document.getElementById('newCatInput').value.trim();
+      if (!val) return;
+      if (!categories.includes(val)) categories.push(val);
+      saveDebtStorage();
+      populateCategoryElements();
+      renderCategoryBadges();
+      document.getElementById('newCatInput').value = '';
+    }
+    function deleteDebtCategory(cat) {
+      if (confirm(`Remove debt category "${cat}"?`)) {
+        categories = categories.filter(c => c !== cat);
+        saveDebtStorage();
+        populateCategoryElements();
+        renderCategoryBadges();
+      }
+    }
+
+    function populateCategoryElements() {
+      const fCat = document.getElementById('fCategory');
+      if (fCat) {
+        fCat.innerHTML = '';
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          fCat.appendChild(opt);
+        });
+      }
+
+      const logFilter = document.getElementById('logCategoryFilter');
+      if (logFilter) {
+        const val = logFilter.value;
+        logFilter.innerHTML = '<option value="ALL">All Categories</option>';
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          logFilter.appendChild(opt);
+        });
+        if (val) logFilter.value = val;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // PASSCODE SECURITY
+    // -------------------------------------------------------------
+    function checkSecurityOnLaunch() {
+      if (storedPin) {
+        showModal('pinLockOverlay');
+        updatePinDots();
+      }
+    }
+
+    function handlePinInput(digit) {
+      if (enteredPin.length < 4) {
+        enteredPin += digit;
+        updatePinDots();
+        if (enteredPin.length === 4) {
+          setTimeout(() => {
+            if (enteredPin === storedPin) {
+              hideModal('pinLockOverlay');
+              enteredPin = '';
+              notify("Unlocked!");
+            } else {
+              notify("Incorrect Passcode!");
+              clearPinInput();
+            }
+          }, 150);
+        }
+      }
+    }
+
+    function clearPinInput() {
+      enteredPin = '';
+      updatePinDots();
+    }
+
+    function backspacePinInput() {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`pinDot${i}`);
+        if (dot) {
+          if (i < enteredPin.length) {
+            dot.className = "w-3.5 h-3.5 rounded-full bg-indigo-500 border-2 border-indigo-500 shadow-md scale-110 transition-all";
+          } else {
+            dot.className = "w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all";
+          }
+        }
+      }
+    }
+
+    function promptSetPasscode() {
+      const pin = prompt("Enter a 4-digit numeric passcode:");
+      if (pin) {
+        if (/^\d{4}$/.test(pin)) {
+          storedPin = pin;
+          localStorage.setItem('app_security_pin', pin);
+          updateConfigUI();
+          renderHubOverview();
+          notify("Passcode enabled!");
+        } else {
+          alert("Passcode must be exactly 4 numbers!");
+        }
+      }
+    }
+
+    function openSettingsModal() {
+      history.pushState({ modal: 'settings' }, '');
+      showModal('settingsPopupModal');
+    }
+
+    function closeSettingsModal() {
+      hideModal('settingsPopupModal');
+    }
+
+    // -------------------------------------------------------------
+    // EXPORT & IMPORT ENGINES
+    // -------------------------------------------------------------
     function triggerImportFileInput() {
       const input = document.getElementById('universalFileInput');
       if (input) input.click();
@@ -1787,86 +3883,71 @@
       const fileName = file.name.toLowerCase();
 
       reader.onload = function(e) {
-        pendingImportPayload = e.target.result;
-        pendingImportFormat = fileName.endsWith('.csv') ? 'CSV' : 'JSON';
-        showModal('importStrategyModal');
+        const content = e.target.result;
+        try {
+          if (fileName.endsWith('.json')) {
+            importJSONContent(content);
+          } else if (fileName.endsWith('.csv')) {
+            importCSVContent(content);
+          } else {
+            if (content.trim().startsWith('{')) {
+              importJSONContent(content);
+            } else {
+              importCSVContent(content);
+            }
+          }
+        } catch (err) {
+          notify("Failed to import file: " + err.message);
+        }
         event.target.value = '';
       };
 
       reader.readAsText(file);
     }
 
-    function executeChosenImport(strategy) {
-      hideModal('importStrategyModal');
-      if (!pendingImportPayload) return;
-
-      try {
-        if (pendingImportFormat === 'JSON') {
-          importJSONPayload(pendingImportPayload, strategy);
-        } else {
-          importCSVPayload(pendingImportPayload, strategy);
-        }
-      } catch (err) {
-        notify("Failed to import file: " + err.message);
-      } finally {
-        pendingImportPayload = null;
-      }
-    }
-
-    function importJSONPayload(jsonString, strategy) {
+    function importJSONContent(jsonString) {
       const data = JSON.parse(jsonString);
+      let newSpends = 0;
+      let newLoans = 0;
 
-      if (strategy === 'OVERWRITE') {
-        expenseRecords = Array.isArray(data.expenseRecords) ? data.expenseRecords : [];
-        debtRecords = Array.isArray(data.debtRecords) ? data.debtRecords : [];
-        monthlyBudgets = (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') ? data.monthlyBudgets : {};
-        horizonBudgets = (data.horizonBudgets && typeof data.horizonBudgets === 'object') ? data.horizonBudgets : {};
-        accountsList = Array.isArray(data.accountsList) ? data.accountsList : DEFAULT_ACCOUNTS;
-        expenseCategories = Array.isArray(data.expenseCategories) ? data.expenseCategories : DEFAULT_EXPENSE_CATEGORIES;
-        incomeCategories = Array.isArray(data.incomeCategories) ? data.incomeCategories : DEFAULT_INCOME_CATEGORIES;
-        categories = Array.isArray(data.debtCategories) ? data.debtCategories : DEFAULT_DEBT_CATEGORIES;
-        notify("Full system state overwritten & restored!");
-      } else {
-        // APPEND STRATEGY
-        let addedSpends = 0, addedLoans = 0;
-        if (Array.isArray(data.expenseRecords)) {
-          const existingIds = new Set(expenseRecords.map(r => String(r.id)));
-          data.expenseRecords.forEach(item => {
-            if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
-              expenseRecords.push(item);
-              addedSpends++;
-            }
-          });
-        }
-        if (Array.isArray(data.debtRecords)) {
-          const existingIds = new Set(debtRecords.map(r => String(r.id)));
-          data.debtRecords.forEach(item => {
-            if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
-              debtRecords.push(item);
-              addedLoans++;
-            }
-          });
-        }
-        if (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') {
-          monthlyBudgets = { ...monthlyBudgets, ...data.monthlyBudgets };
-        }
-        if (data.horizonBudgets && typeof data.horizonBudgets === 'object') {
-          horizonBudgets = { ...horizonBudgets, ...data.horizonBudgets };
-        }
-        if (Array.isArray(data.accountsList)) {
-          const accNames = new Set(accountsList.map(a => a.name));
-          data.accountsList.forEach(a => { if (!accNames.has(a.name)) accountsList.push(a); });
-        }
-        if (Array.isArray(data.expenseCategories)) {
-          expenseCategories = Array.from(new Set([...expenseCategories, ...data.expenseCategories]));
-        }
-        if (Array.isArray(data.incomeCategories)) {
-          incomeCategories = Array.from(new Set([...incomeCategories, ...data.incomeCategories]));
-        }
-        if (Array.isArray(data.debtCategories)) {
-          categories = Array.from(new Set([...categories, ...data.debtCategories]));
-        }
-        notify(`Merged: +${addedSpends} spends, +${addedLoans} loans`);
+      if (Array.isArray(data.expenseRecords)) {
+        const existingIds = new Set(expenseRecords.map(r => String(r.id)));
+        data.expenseRecords.forEach(item => {
+          if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
+            expenseRecords.push(item);
+            newSpends++;
+          }
+        });
+      }
+
+      if (Array.isArray(data.debtRecords)) {
+        const existingIds = new Set(debtRecords.map(r => String(r.id)));
+        data.debtRecords.forEach(item => {
+          if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
+            debtRecords.push(item);
+            newLoans++;
+          }
+        });
+      }
+
+      if (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') {
+        monthlyBudgets = { ...data.monthlyBudgets, ...monthlyBudgets };
+      }
+      if (data.horizonBudgets && typeof data.horizonBudgets === 'object') {
+        horizonBudgets = { ...data.horizonBudgets, ...horizonBudgets };
+      }
+
+      if (Array.isArray(data.expenseCategories)) {
+        expenseCategories = Array.from(new Set([...expenseCategories, ...data.expenseCategories]));
+      }
+      if (Array.isArray(data.incomeCategories)) {
+        incomeCategories = Array.from(new Set([...incomeCategories, ...data.incomeCategories]));
+      }
+      if (Array.isArray(data.accountsList)) {
+        const accNames = new Set(accountsList.map(a => a.name));
+        data.accountsList.forEach(acc => {
+          if (!accNames.has(acc.name)) accountsList.push(acc);
+        });
       }
 
       saveExpenseStorage();
@@ -1875,19 +3956,16 @@
       populateExpenseElements();
       populateCategoryElements();
       renderHubOverview();
+      notify(`Imported ${newSpends} spends & ${newLoans} commitments!`);
       closeSettingsModal();
     }
 
-    function importCSVPayload(csvString, strategy) {
+    function importCSVContent(csvString) {
       const lines = csvString.split(/\r?\n/).filter(line => line.trim().length > 0);
       if (lines.length <= 1) return notify("CSV file is empty!");
 
-      if (strategy === 'OVERWRITE') {
-        expenseRecords = [];
-        debtRecords = [];
-      }
-
-      let addedSpends = 0, addedLoans = 0;
+      let newSpends = 0;
+      let newLoans = 0;
 
       for (let i = 1; i < lines.length; i++) {
         const cols = parseCSVLine(lines[i]);
@@ -1908,7 +3986,7 @@
         const notes = (cols[12] || '').replace(/"/g, '').trim();
 
         if (mod === 'Daily') {
-          const duplicate = (strategy === 'APPEND') && expenseRecords.some(r => (rowId && String(r.id) === rowId) || (r.date === dateOrMonth && r.amount === amount && r.category === category));
+          const duplicate = expenseRecords.some(r => (rowId && String(r.id) === rowId) || (r.date === dateOrMonth && r.amount === amount && r.category === category));
           if (!duplicate) {
             expenseRecords.push({
               id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
@@ -1920,10 +3998,10 @@
               toAccount: toAccount || '',
               note: notes
             });
-            addedSpends++;
+            newSpends++;
           }
         } else if (mod === 'Debt') {
-          const duplicate = (strategy === 'APPEND') && debtRecords.some(r => (rowId && String(r.id) === rowId) || (r.month === dateOrMonth && r.metric === titleOrType));
+          const duplicate = debtRecords.some(r => (rowId && String(r.id) === rowId) || (r.month === dateOrMonth && r.metric === titleOrType));
           if (!duplicate) {
             debtRecords.push({
               id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
@@ -1937,7 +4015,7 @@
               priority: priority || 'Normal',
               notes: notes
             });
-            addedLoans++;
+            newLoans++;
           }
         }
       }
@@ -1947,7 +4025,7 @@
       populateExpenseElements();
       populateCategoryElements();
       renderHubOverview();
-      notify(`Import complete: +${addedSpends} spends, +${addedLoans} debts`);
+      notify(`Imported ${newSpends} transactions & ${newLoans} commitments!`);
       closeSettingsModal();
     }
 
@@ -1992,13 +4070,13 @@
         csv += `"Daily","${r.id || ''}","${r.date || ''}","${(r.type || 'Expense')}","${(r.category || '').replace(/"/g, '""')}",${r.amount || 0},0,0,0,"${(r.account || '').replace(/"/g, '""')}","${(r.toAccount || '').replace(/"/g, '""')}","Normal","${(r.note || '').replace(/"/g, '""')}"\r\n`;
       });
 
-      const fileName = `FinTrack_Full_Portfolio_${new Date().toISOString().slice(0, 10)}.csv`;
+      const fileName = `FinTrack_Portfolio_${new Date().toISOString().slice(0, 10)}.csv`;
       downloadBlobWithFallback(csv, fileName, 'text/csv;charset=utf-8;');
     }
 
     function exportJSONBackup() {
       const backup = {
-        version: "3.0",
+        version: "2.9",
         exportedAt: new Date().toISOString(),
         debtCategories: categories,
         debtRecords,
@@ -2011,13 +4089,13 @@
         appConfig
       };
       const jsonStr = JSON.stringify(backup, null, 2);
-      const fileName = `FinTrack_Complete_Vault_${new Date().toISOString().slice(0, 10)}.json`;
+      const fileName = `FinTrack_Backup_${new Date().toISOString().slice(0, 10)}.json`;
       downloadBlobWithFallback(jsonStr, fileName, 'application/json;charset=utf-8;');
     }
 
-    // =============================================================
-    // INITIALIZATION & HARDWARE GESTURE BINDINGS
-    // =============================================================
+    // -------------------------------------------------------------
+    // INITIALIZATION & EVENT BINDINGS
+    // -------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
       history.replaceState({ page: 'hub' }, '');
 
@@ -2063,5 +4141,3 @@
   </script>
 </body>
 </html>
-
-  
