@@ -349,7 +349,7 @@
     <!-- ************************************************************* -->
     <div id="hubViewContainer" class="space-y-3.5 page-turn-in">
       
-      <!-- HERO BENTO VAULT: NET LIQUID CAPITAL (CLICKABLE FOR ACCOUNTS POPUP) -->
+      <!-- HERO BENTO VAULT: NET LIQUID CAPITAL -->
       <div onclick="openLiquidAccountsBreakdown()" class="bento-hero-vault rounded-[28px] p-5">
         <div class="flex justify-between items-center mb-1.5">
           <div class="flex items-center gap-2">
@@ -369,7 +369,6 @@
 
         <!-- 3 Color-Coded Metric Capsules -->
         <div class="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-white/[0.08]">
-          <!-- Inflow: Pure Emerald -->
           <div class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-500/25">
             <div class="flex items-center gap-1 text-[9px] text-emerald-400 uppercase font-bold">
               <i class="fa-solid fa-arrow-trend-up text-[8px]"></i> Inflow
@@ -377,7 +376,6 @@
             <span id="hubMonthInflow" class="text-xs font-black text-emerald-400 mt-1 block font-mono-val">₹0</span>
           </div>
 
-          <!-- Spent: Pure Amber -->
           <div class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-500/25">
             <div class="flex items-center gap-1 text-[9px] text-amber-400 uppercase font-bold">
               <i class="fa-solid fa-arrow-trend-down text-[8px]"></i> Spent
@@ -385,7 +383,6 @@
             <span id="hubMonthOutflow" class="text-xs font-black text-amber-400 mt-1 block font-mono-val">₹0</span>
           </div>
 
-          <!-- Surplus: Adaptive Dynamic Tier Color -->
           <div id="hubSurplusBox" class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-white/[0.1]">
             <div class="flex items-center gap-1 text-[9px] text-slate-300 uppercase font-bold">
               <i class="fa-solid fa-shield-heart text-[8px]"></i> Surplus
@@ -436,7 +433,7 @@
 
           <div class="my-2 relative z-10">
             <h3 class="text-base font-black text-white tracking-tight">Budget Planner</h3>
-            <p class="text-[11px] text-purple-200/70 font-medium">Monthly targets & completion</p>
+            <p class="text-[11px] text-purple-200/70 font-medium">Targets, Arrears & Horizons</p>
           </div>
 
           <div class="space-y-1 pt-2.5 border-t border-white/[0.08] relative z-10">
@@ -445,7 +442,7 @@
               <span id="tilePlannerTarget" class="font-bold text-purple-200 font-mono-val">₹0</span>
             </div>
             <div class="flex justify-between items-center text-[11px]">
-              <span class="text-slate-400 font-medium">Completed</span>
+              <span class="text-slate-400 font-medium">Paid</span>
               <span id="tilePlannerSpent" class="font-black text-amber-400 font-mono-val">₹0</span>
             </div>
           </div>
@@ -504,8 +501,6 @@
     <!-- MODULE 1: DAILY SPENDS WORKSPACE                              -->
     <!-- ************************************************************* -->
     <div id="dailyModuleContainer" class="hidden space-y-3.5">
-
-      <!-- SPENDS VIEW 1: RECENT ACTIVITY FEED -->
       <section id="dailyEntryScreen" class="daily-screen space-y-3.5">
         <div class="glass-card rounded-2xl p-3 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 flex-1">
@@ -536,7 +531,6 @@
         <div id="expenseHistoryContainer" class="space-y-3 pb-6"></div>
       </section>
 
-      <!-- SPENDS VIEW 2: SUMMARY DASHBOARD -->
       <section id="dailySummaryScreen" class="daily-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -608,7 +602,6 @@
         </div>
       </section>
 
-      <!-- SPENDS VIEW 3: TRENDS -->
       <section id="dailyTrendsScreen" class="daily-screen hidden space-y-4">
         <div class="glass-card rounded-3xl p-4">
           <div class="flex justify-between items-center mb-2">
@@ -644,7 +637,6 @@
         </div>
       </section>
 
-      <!-- SPENDS VIEW 4: CALENDAR -->
       <section id="dailyCalendarScreen" class="daily-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <h2 class="text-base font-black text-white">Daily Spends Calendar</h2>
@@ -674,52 +666,57 @@
     </div>
 
     <!-- ************************************************************* -->
-    <!-- MODULE 2: PLANNER WORKSPACE                                  -->
+    <!-- MODULE 2: PLANNER WORKSPACE (WITH HORIZONS & ARREARS)         -->
     <!-- ************************************************************* -->
     <div id="plannerModuleContainer" class="hidden space-y-3.5">
       
-      <!-- PLANNER VIEW 1: TARGETS -->
+      <!-- PLANNER VIEW 1: TARGETS (REQUIRED VS PLANNED) -->
       <section id="plannerInputScreen" class="planner-screen space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
-            <h2 class="text-base font-black text-white">Budget Allocations</h2>
-            <p class="text-xs text-slate-400">Configure monthly targets</p>
+            <h2 class="text-base font-black text-white">Monthly Allocations</h2>
+            <p class="text-xs text-slate-400">Set compulsory required vs planned targets</p>
           </div>
           <input type="month" id="plannerMonthSelector" onchange="onPlannerMonthChanged()" class="bg-slate-900 border border-white/10 text-purple-300 font-bold rounded-xl px-2.5 py-1.5 text-xs outline-none cursor-pointer">
         </div>
 
         <div class="glass-card rounded-3xl p-4 space-y-3">
-          <form id="budgetAddForm" onsubmit="handleSaveBudgetItem(event)" class="grid grid-cols-3 gap-2">
-            <div class="col-span-2">
-              <input type="text" id="budgetCatNameInput" list="budgetCatDatalist" placeholder="Category (e.g. Groceries)" required class="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+          <form id="budgetAddForm" onsubmit="handleSaveBudgetItem(event)" class="space-y-2">
+            <div class="relative">
+              <input type="text" id="budgetCatNameInput" list="budgetCatDatalist" placeholder="Category (e.g. Gold Loan, Groceries)" required class="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
               <datalist id="budgetCatDatalist"></datalist>
             </div>
-            <div>
-              <input type="number" id="budgetCatAmountInput" min="0" step="any" placeholder="Target ₹" required class="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-bold font-mono-val">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] text-slate-400 font-semibold mb-1">Required Min (₹)</label>
+                <input type="number" id="budgetCatRequiredInput" min="0" step="any" placeholder="Required ₹5,000" class="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-bold font-mono-val">
+              </div>
+              <div>
+                <label class="block text-[10px] text-purple-300 font-semibold mb-1">Your Planned Goal (₹) *</label>
+                <input type="number" id="budgetCatAmountInput" min="0" step="any" placeholder="Planned ₹5,500" required class="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-bold font-mono-val">
+              </div>
             </div>
-            <div class="col-span-3">
-              <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg">
-                <i class="fa-solid fa-plus text-[10px]"></i> Save Budget Target
-              </button>
-            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5 shadow-lg mt-1">
+              <i class="fa-solid fa-plus text-[10px]"></i> Save Monthly Allocation
+            </button>
           </form>
         </div>
 
         <div class="space-y-2.5">
           <div class="flex justify-between items-center px-1">
-            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Planned Allocations</h3>
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Planned Allocations & Status</h3>
             <span id="plannerAllocationsCount" class="text-[11px] text-purple-300 font-semibold font-mono-val">0 Categories</span>
           </div>
           <div id="plannerCategoryCardsContainer" class="space-y-2.5"></div>
         </div>
       </section>
 
-      <!-- PLANNER VIEW 2: DASHBOARD -->
+      <!-- PLANNER VIEW 2: DASHBOARD (WITH CUMULATIVE ARREARS) -->
       <section id="plannerDashboardScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
             <h2 class="text-base font-black text-white">Budget vs. Actual Status</h2>
-            <p class="text-xs text-slate-400">Completion rate & remaining buffer</p>
+            <p class="text-xs text-slate-400">Cumulative pending roll-forward across months</p>
           </div>
           <input type="month" id="plannerDashMonthSelector" onchange="onPlannerDashMonthChanged()" class="bg-slate-900 border border-white/10 text-purple-300 font-bold rounded-xl px-2.5 py-1.5 text-xs outline-none cursor-pointer">
         </div>
@@ -741,23 +738,23 @@
 
           <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10">
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] text-amber-400 uppercase font-bold block">Completed (Spent)</span>
+              <span class="text-[9px] text-amber-400 uppercase font-bold block">Paid (Actual)</span>
               <span id="kpiPlannerTotalActualSpent" class="text-base font-black text-amber-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] text-emerald-400 uppercase font-bold block">Remaining Buffer</span>
+              <span class="text-[9px] text-emerald-400 uppercase font-bold block">Net Planned Buffer / Lag</span>
               <span id="kpiPlannerTotalRemainingBuffer" class="text-base font-black text-emerald-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
           </div>
         </div>
 
         <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider px-1">Category Completion & Variance</h3>
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider px-1">Category Completion & Cumulative Balances</h3>
           <div id="plannerDashboardProgressList" class="space-y-2.5"></div>
         </div>
       </section>
 
-      <!-- PLANNER VIEW 3: MULTI-MONTH -->
+      <!-- PLANNER VIEW 3: MULTI-MONTH HISTORY -->
       <section id="plannerHistoryScreen" class="planner-screen hidden space-y-4">
         <div class="glass-card rounded-3xl p-4">
           <span class="text-xs font-bold text-slate-200 block mb-2">Planned Target vs. Actual Outflow</span>
@@ -772,8 +769,8 @@
                 <tr>
                   <th class="py-2.5 px-2.5">Month</th>
                   <th class="py-2.5 px-2.5 text-right">Planned</th>
-                  <th class="py-2.5 px-2.5 text-right">Spent</th>
-                  <th class="py-2.5 px-2.5 text-right">Remaining</th>
+                  <th class="py-2.5 px-2.5 text-right">Paid</th>
+                  <th class="py-2.5 px-2.5 text-right">Variance</th>
                   <th class="py-2.5 px-2.5 text-center">Status</th>
                 </tr>
               </thead>
@@ -782,14 +779,59 @@
           </div>
         </div>
       </section>
+
+      <!-- PLANNER VIEW 4: HORIZONS (QUARTERLY, HALF-YEARLY, ANNUALLY) -->
+      <section id="plannerHorizonScreen" class="planner-screen hidden space-y-4">
+        <div class="flex items-center justify-between px-1">
+          <div>
+            <h2 class="text-base font-black text-white">Multi-Period Horizons</h2>
+            <p class="text-xs text-slate-400">Plan flexibly across 3, 6, or 12 months</p>
+          </div>
+          <select id="horizonSpanSelector" onchange="renderHorizonPlanner()" class="bg-slate-900 border border-white/10 text-purple-300 font-bold rounded-xl px-2.5 py-1.5 text-xs outline-none cursor-pointer">
+            <option value="quarterly" selected>Quarterly (3 Mos)</option>
+            <option value="halfyearly">Half-Yearly (6 Mos)</option>
+            <option value="annually">Annually (12 Mos)</option>
+          </select>
+        </div>
+
+        <!-- Period KPI -->
+        <div class="bento-tile-purple rounded-3xl p-5 shadow-xl relative overflow-hidden glass-card">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[10px] font-extrabold tracking-widest text-purple-200/80 uppercase" id="horizonKpiTitle">Quarterly Horizon View</span>
+            <span id="horizonMonthsSpanBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30">3 Months</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/10">
+            <div class="bg-black/35 p-2 rounded-2xl border border-white/[0.06]">
+              <span class="text-[9px] text-slate-400 uppercase font-semibold block">Compulsory Req</span>
+              <span id="kpiHorizonTotalRequired" class="text-xs font-black text-slate-200 mt-0.5 block font-mono-val">₹0</span>
+            </div>
+            <div class="bg-black/35 p-2 rounded-2xl border border-white/[0.06]">
+              <span class="text-[9px] text-purple-300 uppercase font-semibold block">Total Planned</span>
+              <span id="kpiHorizonTotalPlanned" class="text-xs font-black text-purple-200 mt-0.5 block font-mono-val">₹0</span>
+            </div>
+            <div class="bg-black/35 p-2 rounded-2xl border border-white/[0.06]">
+              <span class="text-[9px] text-amber-400 uppercase font-semibold block">Paid to Date</span>
+              <span id="kpiHorizonTotalPaid" class="text-xs font-black text-amber-400 mt-0.5 block font-mono-val">₹0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2.5">
+          <div class="flex justify-between items-center px-1">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Flexible Horizon Plans</h3>
+            <span class="text-[10px] text-indigo-300 font-medium">Pay any amount in any month</span>
+          </div>
+          <div id="plannerHorizonListContainer" class="space-y-2.5"></div>
+        </div>
+      </section>
+
     </div>
 
     <!-- ************************************************************* -->
     <!-- MODULE 3: DEBT & EMI WORKSPACE                                -->
     <!-- ************************************************************* -->
     <div id="debtModuleContainer" class="hidden space-y-3.5">
-
-      <!-- DEBT VIEW 1: LOANS FEED -->
       <section id="entryScreen" class="debt-screen space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -814,7 +856,6 @@
         <div id="historyTableContainer" class="space-y-2.5 pb-6"></div>
       </section>
 
-      <!-- DEBT VIEW 2: DASHBOARD -->
       <section id="dashboardScreen" class="debt-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
@@ -869,7 +910,6 @@
         </div>
       </section>
 
-      <!-- DEBT VIEW 3: TRENDS -->
       <section id="trendsScreen" class="debt-screen hidden space-y-4">
         <div class="glass-card rounded-3xl p-4">
           <span class="text-xs font-bold text-slate-200 block mb-2">Total Outstanding Trajectory</span>
@@ -881,7 +921,6 @@
         </div>
       </section>
 
-      <!-- DEBT VIEW 4: PAYOFF PLANNER -->
       <section id="plannerScreen" class="debt-screen hidden space-y-4">
         <div class="grid grid-cols-2 gap-3">
           <div class="glass-card rounded-3xl p-4 border border-indigo-500/30 relative overflow-hidden">
@@ -937,7 +976,7 @@
 
   <!-- ================= TACTILE FLOATING BUTTONS ================= -->
   
-  <!-- LEFT: HOME NAVIGATION BUTTON (MATCHES PLUS SIZE) -->
+  <!-- LEFT: HOME NAVIGATION BUTTON -->
   <div id="floatingHomeBtnContainer" class="fixed bottom-24 left-5 z-40 max-w-md mx-auto pointer-events-auto">
     <button type="button" onclick="navigateToHub()" class="w-14 h-14 rounded-[22px] bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-800 hover:from-indigo-900 hover:to-slate-700 text-indigo-300 hover:text-white fab-btn-shadow border border-indigo-400/30 flex items-center justify-center text-xl transition-all duration-200 active:scale-90 cursor-pointer" title="Go to Hub">
       <i class="fa-solid fa-house"></i>
@@ -959,7 +998,7 @@
   <!-- ================= HIDDEN IMPORT FILE INPUT ================= -->
   <input type="file" id="universalFileInput" accept=".json,.csv" onchange="handleImportFileSelected(event)" class="hidden">
 
-  <!-- ================= INTERACTIVE HEADER/TITLE POPUP SHEET ================= -->
+  <!-- ================= MODALS & POPUPS ================= -->
   <div id="titleDetailModal" class="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
     <div class="max-w-sm mx-auto my-auto mt-16 glass-card rounded-3xl p-5 space-y-4">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
@@ -969,7 +1008,7 @@
           </div>
           <div>
             <h3 class="text-sm font-black text-white">System Architecture</h3>
-            <p class="text-[11px] text-slate-400">Executive Finance Hub v2.8</p>
+            <p class="text-[11px] text-slate-400">Executive Finance Hub v2.9</p>
           </div>
         </div>
         <button type="button" onclick="hideModal('titleDetailModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
@@ -978,21 +1017,7 @@
       </div>
 
       <div class="space-y-2 text-xs text-slate-300">
-        <p class="leading-relaxed">FinTrack coordinates your total net liquid capital, scheduled debt amortizations, and discretionary category velocity in a unified offline-first architecture.</p>
-        <div class="p-3 bg-white/[0.03] rounded-2xl border border-white/[0.06] space-y-1.5">
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="text-slate-400">Active Architecture</span>
-            <span class="font-bold text-indigo-300">Hybrid PWA / APK</span>
-          </div>
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="text-slate-400">Gesture Control</span>
-            <span class="font-bold text-emerald-400">Hardware Swipe Navigation</span>
-          </div>
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="text-slate-400">Local Integrity</span>
-            <span class="font-bold text-cyan-300">Resilient Redundancy Active</span>
-          </div>
-        </div>
+        <p class="leading-relaxed">FinTrack coordinates your total net liquid capital, multi-period flexible budget horizons, cumulative arrears reconciliation, and amortization schedules.</p>
       </div>
 
       <button type="button" onclick="hideModal('titleDetailModal')" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">
@@ -1001,7 +1026,7 @@
     </div>
   </div>
 
-  <!-- ================= POPUP: NET LIQUID CAPITAL ACCOUNT-WISE LEDGER ================= -->
+  <!-- POPUP: NET LIQUID CAPITAL ACCOUNT-WISE LEDGER -->
   <div id="liquidAccountsModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
     <div class="max-w-md mx-auto my-auto mt-10 glass-card rounded-3xl p-5 space-y-4 border border-indigo-500/30 shadow-2xl">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
@@ -1037,7 +1062,7 @@
     </div>
   </div>
 
-  <!-- ================= CONFIGURATION MODAL ================= -->
+  <!-- CONFIGURATION MODAL -->
   <div id="configModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
     <div class="max-w-md mx-auto w-full space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3 pt-1">
@@ -1053,7 +1078,7 @@
       </div>
 
       <div class="space-y-1">
-        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Category / Management</span>
+        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Category Setup</span>
         <div class="glass-card rounded-2xl divide-y divide-white/[0.06] overflow-hidden text-xs">
           <div onclick="openExpenseCategoryModal('Income')" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
             <span class="text-slate-200">Income Category Setup</span>
@@ -1064,14 +1089,14 @@
             <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
           </div>
           <div onclick="closeConfigModal(); navigateToModule('planner');" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
-            <span class="text-slate-200">Budget Targets</span>
+            <span class="text-slate-200">Budget Targets & Horizons</span>
             <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
           </div>
         </div>
       </div>
 
       <div class="space-y-1">
-        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Preferences & Engine</span>
+        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Preferences</span>
         <div class="glass-card rounded-2xl divide-y divide-white/[0.06] overflow-hidden text-xs">
           <div class="p-3.5 flex justify-between items-center">
             <span class="text-slate-200">Main Currency</span>
@@ -1080,13 +1105,6 @@
               <option value="USD" class="bg-slate-900 text-white">USD ($)</option>
               <option value="EUR" class="bg-slate-900 text-white">EUR (€)</option>
               <option value="GBP" class="bg-slate-900 text-white">GBP (£)</option>
-            </select>
-          </div>
-          <div class="p-3.5 flex justify-between items-center">
-            <span class="text-slate-200">Default Screen</span>
-            <select id="cfgStartScreen" onchange="updateAppConfigField('startScreen', this.value)" class="bg-transparent text-indigo-400 font-bold outline-none cursor-pointer text-right">
-              <option value="hub" class="bg-slate-900 text-white">Hub (Bento View)</option>
-              <option value="daily" class="bg-slate-900 text-white">Daily Spends</option>
             </select>
           </div>
           <div class="p-3.5 flex justify-between items-center">
@@ -1102,7 +1120,7 @@
     </div>
   </div>
 
-  <!-- ================= AUTHENTICATION MODAL ================= -->
+  <!-- AUTHENTICATION MODAL -->
   <div id="authModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
     <div class="w-full max-w-sm glass-card p-6 rounded-3xl mx-auto my-auto mt-12 border border-white/10">
       <div class="flex justify-between items-center mb-3">
@@ -1120,25 +1138,6 @@
         </button>
         <button type="button" id="tabAuthSignUp" onclick="setAuthMode('signup')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">
           Sign Up
-        </button>
-      </div>
-
-      <div class="mb-3.5 p-3 rounded-2xl bg-slate-900 border border-indigo-500/30 flex justify-between items-center">
-        <div>
-          <span class="text-[11px] font-bold text-white block">Firebase Cloud Sync</span>
-          <span id="fbKeyStatusText" class="text-[10px] text-slate-400">Project keys for multi-device sync</span>
-        </div>
-        <button type="button" onclick="toggleFirebaseConfigInline()" class="text-xs font-bold text-indigo-400 px-2.5 py-1 rounded-xl bg-indigo-500/10 border border-indigo-500/20 cursor-pointer">
-          Setup
-        </button>
-      </div>
-
-      <div id="inlineFirebaseConfigBox" class="hidden mb-3.5 p-3.5 rounded-2xl bg-slate-950 border border-white/10 space-y-2">
-        <input type="text" id="fbApiKeyInput" placeholder="API Key" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white">
-        <input type="text" id="fbAuthDomainInput" placeholder="Auth Domain" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white">
-        <input type="text" id="fbProjectIdInput" placeholder="Project ID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white">
-        <button type="button" onclick="saveFirebaseConfigFromAuth()" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">
-          Save Keys
         </button>
       </div>
 
@@ -1168,7 +1167,7 @@
     </div>
   </div>
 
-  <!-- ================= SETTINGS & IMPORT/EXPORT MODAL ================= -->
+  <!-- SETTINGS MODAL -->
   <div id="settingsPopupModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
     <div class="glass-card w-full max-w-sm rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
       <div class="flex justify-between items-center border-b border-white/10 pb-2.5">
@@ -1179,25 +1178,6 @@
         <button type="button" onclick="closeSettingsModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
           <i class="fa-solid fa-xmark"></i>
         </button>
-      </div>
-
-      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-cloud text-indigo-400 text-xs"></i>
-            <span class="text-xs font-bold text-white">Cloud Multi-Device Sync</span>
-          </div>
-          <span id="settingsAccountBadge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-400">Offline</span>
-        </div>
-        <p id="settingsAccountEmail" class="text-[11px] text-slate-400 leading-relaxed truncate">No account linked.</p>
-        <div class="flex gap-2 pt-1">
-          <button type="button" onclick="openAuthModal()" class="flex-1 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold active:scale-95 transition cursor-pointer">
-            Account / Login
-          </button>
-          <button type="button" onclick="handleSignOutCloud()" id="btnSignOutCloud" class="hidden py-1.5 px-3 rounded-xl bg-slate-800 text-rose-400 text-xs font-semibold active:scale-95 transition border border-rose-500/20 cursor-pointer">
-            Sign Out
-          </button>
-        </div>
       </div>
 
       <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2.5">
@@ -1221,7 +1201,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: DEBT CATEGORIES ================= -->
+  <!-- MODAL: DEBT CATEGORIES -->
   <div id="categoryModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
     <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
@@ -1247,14 +1227,12 @@
       </div>
 
       <div class="pt-2 border-t border-white/10 flex justify-end">
-        <button type="button" onclick="closeCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">
-          Done
-        </button>
+        <button type="button" onclick="closeCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= MODAL: EXPENSE & INCOME CATEGORIES ================= -->
+  <!-- MODAL: EXPENSE & INCOME CATEGORIES -->
   <div id="expenseCatModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
     <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
@@ -1268,12 +1246,8 @@
       </div>
 
       <div class="bg-slate-900 p-1 rounded-2xl flex border border-white/10 gap-1">
-        <button type="button" id="tabModalCatExpense" onclick="switchCategoryModalType('Expense')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-white bg-amber-600 shadow cursor-pointer">
-          Expense Categories
-        </button>
-        <button type="button" id="tabModalCatIncome" onclick="switchCategoryModalType('Income')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white cursor-pointer">
-          Income Categories
-        </button>
+        <button type="button" id="tabModalCatExpense" onclick="switchCategoryModalType('Expense')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-white bg-amber-600 shadow cursor-pointer">Expense Categories</button>
+        <button type="button" id="tabModalCatIncome" onclick="switchCategoryModalType('Income')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-400 hover:text-white cursor-pointer">Income Categories</button>
       </div>
 
       <form onsubmit="handleNewExpenseCategory(event)" class="flex gap-2">
@@ -1289,14 +1263,12 @@
       </div>
 
       <div class="pt-2 border-t border-white/10 flex justify-end">
-        <button type="button" onclick="closeExpenseCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">
-          Done
-        </button>
+        <button type="button" onclick="closeExpenseCategoryModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= MODAL: ACCOUNTS & BALANCES ================= -->
+  <!-- MODAL: ACCOUNTS & BALANCES -->
   <div id="accountModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
     <div class="glass-card w-full max-w-md rounded-3xl p-5 space-y-4 mx-auto my-auto mt-12 border border-white/10">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
@@ -1325,9 +1297,7 @@
       </div>
 
       <div class="pt-2 border-t border-white/10 flex justify-end">
-        <button type="button" onclick="closeAccountModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">
-          Done
-        </button>
+        <button type="button" onclick="closeAccountModal()" class="bg-white/10 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl cursor-pointer">Done</button>
       </div>
     </div>
   </div>
@@ -1338,7 +1308,7 @@
     <span id="toastMsg">Action completed</span>
   </div>
 
-  <!-- ================= POPUP: LOG TRANSACTION ================= -->
+  <!-- POPUP: LOG TRANSACTION -->
   <div id="spendPopupModal" class="fixed inset-0 z-50 bg-[#030712]/98 backdrop-blur-2xl overflow-y-auto p-4 safe-top safe-bottom" style="display: none;">
     <div class="max-w-md mx-auto w-full space-y-4">
       <div class="flex justify-between items-center border-b border-white/10 pb-3 pt-1">
@@ -1356,15 +1326,9 @@
 
         <div>
           <div class="bg-slate-900 p-1 rounded-2xl flex border border-white/10 gap-1">
-            <button type="button" id="tabTypeExpense" onclick="setTransactionType('Expense')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-amber-600 shadow cursor-pointer">
-              💸 Expense
-            </button>
-            <button type="button" id="tabTypeIncome" onclick="setTransactionType('Income')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">
-              💰 Income
-            </button>
-            <button type="button" id="tabTypeTransfer" onclick="setTransactionType('Transfer')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">
-              🔄 Transfer
-            </button>
+            <button type="button" id="tabTypeExpense" onclick="setTransactionType('Expense')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-white bg-amber-600 shadow cursor-pointer">💸 Expense</button>
+            <button type="button" id="tabTypeIncome" onclick="setTransactionType('Income')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">💰 Income</button>
+            <button type="button" id="tabTypeTransfer" onclick="setTransactionType('Transfer')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white cursor-pointer">🔄 Transfer</button>
           </div>
         </div>
 
@@ -1410,7 +1374,7 @@
 
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Note / Description</label>
-          <input type="text" id="expNote" autocomplete="off" placeholder="e.g. Dinner, utility bill" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
+          <input type="text" id="expNote" autocomplete="off" placeholder="e.g. Dinner, EMI payment" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
         </div>
 
         <button type="submit" id="btnExpenseSubmit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 rounded-2xl text-xs tracking-wide transition shadow-lg flex items-center justify-center gap-2 active:scale-98 cursor-pointer mt-4">
@@ -1420,7 +1384,7 @@
     </div>
   </div>
 
-  <!-- ================= POPUP: LOG COMMITMENT / DEBT ================= -->
+  <!-- POPUP: LOG DEBT / COMMITMENT -->
   <div id="debtPopupModal" class="fixed inset-0 z-50 bg-[#030712]/98 backdrop-blur-2xl overflow-y-auto p-4 safe-top safe-bottom" style="display: none;">
     <div class="max-w-md mx-auto w-full space-y-4">
       <div class="flex justify-between items-center border-b border-white/10 pb-3 pt-1">
@@ -1453,7 +1417,7 @@
 
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Loan / Commitment Name *</label>
-          <input type="text" id="fMetric" placeholder="e.g. Car Loan, Home Loan" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
+          <input type="text" id="fMetric" placeholder="e.g. Car Loan, Gold Loan" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
@@ -1533,17 +1497,18 @@
       { id: 102, type: 'Transfer', date: '2026-10-02', category: 'Transfer', amount: 20000, account: 'HDFC Bank', toAccount: 'ICICI Bank', note: 'Savings allocation' },
       { id: 103, type: 'Expense', date: '2026-10-03', category: 'Groceries', amount: 3200, account: 'ICICI Bank', toAccount: '', note: 'Supermarket essentials' },
       { id: 104, type: 'Expense', date: '2026-10-04', category: 'Fuel & Transport', amount: 2000, account: 'Credit Card', toAccount: '', note: 'Vehicle fuel' },
-      { id: 105, type: 'Expense', date: '2026-10-05', category: 'Food & Dining', amount: 1450, account: 'UPI / GPay', toAccount: '', note: 'Family dinner' }
+      { id: 105, type: 'Expense', date: '2026-10-05', category: 'Food & Dining', amount: 1450, account: 'UPI / GPay', toAccount: '', note: 'Family dinner' },
+      { id: 106, type: 'Expense', date: '2026-10-06', category: 'EMI', amount: 5000, account: 'HDFC Bank', toAccount: '', note: 'Gold EMI regular instalment' }
     ];
 
     const DEFAULT_BUDGET_TEMPLATES = [
-      { category: "EMI", plannedAmount: 50000 },
-      { category: "Groceries", plannedAmount: 10000 },
-      { category: "Utilities & Bills", plannedAmount: 1000 },
-      { category: "Health & Medical", plannedAmount: 2000 },
-      { category: "Entertainment", plannedAmount: 2000 },
-      { category: "Apparel & Styling", plannedAmount: 2000 },
-      { category: "Fuel & Transport", plannedAmount: 5000 }
+      { category: "EMI", requiredAmount: 5000, plannedAmount: 5500 },
+      { category: "Groceries", requiredAmount: 8000, plannedAmount: 10000 },
+      { category: "Utilities & Bills", requiredAmount: 1000, plannedAmount: 1200 },
+      { category: "Health & Medical", requiredAmount: 1000, plannedAmount: 2000 },
+      { category: "Entertainment", requiredAmount: 1000, plannedAmount: 2000 },
+      { category: "Apparel & Styling", requiredAmount: 1000, plannedAmount: 2000 },
+      { category: "Fuel & Transport", requiredAmount: 4000, plannedAmount: 5000 }
     ];
 
     const DEFAULT_APP_CONFIG = {
@@ -1590,6 +1555,9 @@
     }
     let expenseRecords = safeLoadArray('expense_records', DEFAULT_EXPENSE_DATA);
     let monthlyBudgets = JSON.parse(localStorage.getItem('monthly_budgets_v1')) || {};
+
+    // Multi-Period Horizon Planned Overrides
+    let horizonBudgets = JSON.parse(localStorage.getItem('horizon_budgets_v1')) || {};
 
     // Chart Handles
     let debtChart = null, emiChart = null;
@@ -1669,7 +1637,7 @@
     }
 
     // -------------------------------------------------------------
-    // HARDWARE APK & WEBVIEW SWIPE ENGINE (BACKWARD/FORWARD)
+    // APK & WEBVIEW SWIPE ENGINE
     // -------------------------------------------------------------
     let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
 
@@ -1693,17 +1661,14 @@
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
 
-      // Ensure horizontal swipe dominance
       if (Math.abs(deltaX) > 65 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
         if (deltaX > 0) {
-          // Swipe Right: Always perform hardware back action
           if (history.state) {
             history.back();
           } else if (activeModule !== 'hub') {
             navigateToHub();
           }
         } else {
-          // Swipe Left: Cycle screens forward
           cycleTabsForward();
         }
       }
@@ -1718,7 +1683,7 @@
         const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
         if (curIdx !== -1 && curIdx < screens.length - 1) switchDailyScreen(screens[curIdx + 1]);
       } else if (activeModule === 'planner') {
-        const screens = ['plannerInputScreen', 'plannerDashboardScreen', 'plannerHistoryScreen'];
+        const screens = ['plannerInputScreen', 'plannerDashboardScreen', 'plannerHorizonScreen', 'plannerHistoryScreen'];
         const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
         if (curIdx !== -1 && curIdx < screens.length - 1) switchPlannerScreen(screens[curIdx + 1]);
       } else if (activeModule === 'debt') {
@@ -1801,7 +1766,7 @@
         document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-lg";
         document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-chart-pie"></i>';
         document.getElementById('appTitleText').innerHTML = 'Budget Planner <span class="text-[9px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">Targets</span>';
-        document.getElementById('appSubtitleText').innerText = 'Planned targets & completion';
+        document.getElementById('appSubtitleText').innerText = 'Planned targets, Arrears & Horizons';
 
         plannerContainer.className = "space-y-3.5 page-turn-in";
         plannerContainer.classList.remove('hidden');
@@ -1839,11 +1804,6 @@
       document.getElementById('hubMonthSurplus').innerText = formatINR(surplus);
       document.getElementById('tileSpendThisMonth').innerText = formatINR(totalOutflow);
 
-      // Surplus Dynamic Rule Application:
-      // Negative => Red
-      // Surplus < 50% of Inflow => Light Green
-      // Surplus 51% - 99% of Inflow => Dark Amber
-      // Above => Red
       const surplusValEl = document.getElementById('hubMonthSurplus');
       const surplusBox = document.getElementById('hubSurplusBox');
 
@@ -1853,15 +1813,12 @@
       } else if (totalInflow > 0) {
         const surplusRatio = (surplus / totalInflow) * 100;
         if (surplusRatio < 50) {
-          // Light green
           surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-emerald-300";
           surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-400/30";
         } else if (surplusRatio >= 50 && surplusRatio <= 99) {
-          // Dark amber
           surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-amber-500";
           surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-600/40";
         } else {
-          // Over 100% or anomalous
           surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-rose-500";
           surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40";
         }
@@ -1919,6 +1876,10 @@
             <i class="fa-solid fa-gauge-high text-sm"></i>
             <span class="text-[10px] font-bold">Status</span>
           </button>
+          <button type="button" onclick="switchPlannerScreen('plannerHorizonScreen')" id="nav-plannerHorizonScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
+            <i class="fa-solid fa-arrows-split-up-and-left text-sm"></i>
+            <span class="text-[10px] font-bold">Horizons</span>
+          </button>
           <button type="button" onclick="switchPlannerScreen('plannerHistoryScreen')" id="nav-plannerHistoryScreen" class="nav-item flex flex-col items-center gap-0.5 text-slate-400 transition flex-1 py-1.5 cursor-pointer rounded-2xl">
             <i class="fa-solid fa-chart-column text-sm"></i>
             <span class="text-[10px] font-bold">Progress</span>
@@ -1955,9 +1916,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // CONFIGURATION CONTROLLER
-    // -------------------------------------------------------------
     function openConfigModal() {
       history.pushState({ modal: 'config' }, '');
       showModal('configModal');
@@ -1997,36 +1955,6 @@
     // -------------------------------------------------------------
     // CLOUD FIREBASE SYNC CONTROLLER
     // -------------------------------------------------------------
-    function toggleFirebaseConfigInline() {
-      const box = document.getElementById('inlineFirebaseConfigBox');
-      const isHidden = box.classList.contains('hidden');
-      if (isHidden) {
-        box.classList.remove('hidden');
-        const stored = JSON.parse(localStorage.getItem('firebase_web_config') || '{}');
-        document.getElementById('fbApiKeyInput').value = stored.apiKey || '';
-        document.getElementById('fbAuthDomainInput').value = stored.authDomain || '';
-        document.getElementById('fbProjectIdInput').value = stored.projectId || '';
-      } else {
-        box.classList.add('hidden');
-      }
-    }
-
-    function saveFirebaseConfigFromAuth() {
-      const config = {
-        apiKey: document.getElementById('fbApiKeyInput').value.trim(),
-        authDomain: document.getElementById('fbAuthDomainInput').value.trim(),
-        projectId: document.getElementById('fbProjectIdInput').value.trim()
-      };
-      if (!config.apiKey || !config.projectId) {
-        return alert("Please enter API Key and Project ID!");
-      }
-      localStorage.setItem('firebase_web_config', JSON.stringify(config));
-      document.getElementById('inlineFirebaseConfigBox').classList.add('hidden');
-      document.getElementById('fbKeyStatusText').innerText = 'Connected: ' + config.projectId;
-      notify("Keys saved. Connecting to cloud...");
-      initFirebaseClient();
-    }
-
     function openAuthModal() {
       history.pushState({ modal: 'auth' }, '');
       showModal('authModal');
@@ -2064,12 +1992,7 @@
 
       const stored = JSON.parse(localStorage.getItem('firebase_web_config') || '{}');
       if (!stored.apiKey) {
-        toggleFirebaseConfigInline();
-        return alert("Please tap 'Setup' to provide your Firebase project keys first!");
-      }
-
-      if (!firebase.apps.length || !firestoreDB) {
-        initFirebaseClient();
+        return alert("Firebase config keys required in code or storage!");
       }
 
       try {
@@ -2091,22 +2014,11 @@
       notify("Using device storage.");
     }
 
-    async function handleSignOutCloud() {
-      if (confirm("Sign out of cloud account? Data on this device remains safely intact.")) {
-        if (firebase.auth) await firebase.auth().signOut();
-        updateCloudStatusUI(false);
-        closeSettingsModal();
-        notify("Signed out.");
-      }
-    }
-
     function initFirebaseClient() {
       const storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null');
       if (storedConfig && storedConfig.apiKey) {
         try {
-          if (!firebase.apps.length) {
-            firebase.initializeApp(storedConfig);
-          }
+          if (!firebase.apps.length) firebase.initializeApp(storedConfig);
           firestoreDB = firebase.firestore();
           firebase.auth().onAuthStateChanged(user => {
             if (user) {
@@ -2119,7 +2031,6 @@
             }
           });
         } catch (err) {
-          console.warn("Firebase Init Notice:", err);
           updateCloudStatusUI(false);
         }
       } else {
@@ -2130,28 +2041,12 @@
     function updateCloudStatusUI(isOnline, email = '') {
       const icon = document.getElementById('cloudStatusIcon');
       const label = document.getElementById('cloudStatusLabel');
-      const badge = document.getElementById('settingsAccountBadge');
-      const emailLabel = document.getElementById('settingsAccountEmail');
-      const signOutBtn = document.getElementById('btnSignOutCloud');
-
       if (isOnline) {
         if (icon) icon.className = "fa-solid fa-cloud text-emerald-400";
         if (label) label.innerText = "Synced";
-        if (badge) {
-          badge.innerText = "Cloud Online";
-          badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-        }
-        if (emailLabel) emailLabel.innerText = email;
-        if (signOutBtn) signOutBtn.classList.remove('hidden');
       } else {
         if (icon) icon.className = "fa-solid fa-cloud text-slate-500";
         if (label) label.innerText = "Offline";
-        if (badge) {
-          badge.innerText = "Local Storage";
-          badge.className = "text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-slate-400";
-        }
-        if (emailLabel) emailLabel.innerText = "Using device storage.";
-        if (signOutBtn) signOutBtn.classList.add('hidden');
       }
     }
 
@@ -2160,32 +2055,25 @@
       try {
         const docRef = firestoreDB.collection('users').doc(uid).collection('portfolio').doc('main');
         const docSnap = await docRef.get();
-
         if (docSnap.exists) {
           const cloudData = docSnap.data();
-          if (cloudData && ((cloudData.expenseRecords && cloudData.expenseRecords.length > 0) || (cloudData.debtRecords && cloudData.debtRecords.length > 0))) {
-            importJSONContent(JSON.stringify(cloudData));
-          } else {
-            await pushAllDataToCloud(uid);
-          }
+          if (cloudData) importJSONContent(JSON.stringify(cloudData));
         } else {
           await pushAllDataToCloud(uid);
         }
-      } catch (err) {
-        console.warn("Cloud sync warning:", err);
-      }
+      } catch (err) {}
     }
 
     async function pushAllDataToCloud(uid = null) {
       if (!firestoreDB) return;
       const targetUid = uid || (firebaseUser ? firebaseUser.uid : null);
       if (!targetUid) return;
-
       try {
         const payload = {
           expenseRecords,
           debtRecords,
           monthlyBudgets,
+          horizonBudgets,
           expenseCategories,
           incomeCategories,
           accountsList,
@@ -2193,9 +2081,7 @@
           lastUpdated: new Date().toISOString()
         };
         await firestoreDB.collection('users').doc(targetUid).collection('portfolio').doc('main').set(payload, { merge: true });
-      } catch (err) {
-        console.warn("Cloud push warning:", err);
-      }
+      } catch (err) {}
     }
 
     // -------------------------------------------------------------
@@ -2236,12 +2122,10 @@
 
       let filtered = expenseRecords.filter(r => {
         if (!r || !r.date) return false;
-        
         let matchesRange = true;
         if (feedTimeRange === 'CURRENT_MONTH' && selectedMonth) {
           matchesRange = r.date.startsWith(selectedMonth);
         }
-        
         const matchesType = (filterType === 'ALL' || r.type === filterType);
         const matchesSearch = !search || 
           (r.category && r.category.toLowerCase().includes(search)) || 
@@ -2426,7 +2310,7 @@
           const monthKey = date ? date.slice(0, 7) : new Date().toISOString().slice(0, 7);
           getOrInitializeMonthBudget(monthKey);
           if (!monthlyBudgets[monthKey].some(b => b.category.toLowerCase() === category.toLowerCase())) {
-            monthlyBudgets[monthKey].push({ category: category, plannedAmount: amount });
+            monthlyBudgets[monthKey].push({ category: category, requiredAmount: amount, plannedAmount: amount });
             saveMonthlyBudgetStorage();
           }
         }
@@ -2897,25 +2781,52 @@
     }
 
     // -------------------------------------------------------------
-    // PLANNER LOGIC & CARRY-FORWARD
+    // ENHANCED PLANNER: REQUIRED VS PLANNED & CUMULATIVE ARREARS
     // -------------------------------------------------------------
     function saveMonthlyBudgetStorage(pushCloud = true) {
       localStorage.setItem('monthly_budgets_v1', JSON.stringify(monthlyBudgets));
+      localStorage.setItem('horizon_budgets_v1', JSON.stringify(horizonBudgets));
       if (pushCloud) pushAllDataToCloud();
     }
 
     function getOrInitializeMonthBudget(monthKey) {
       if (monthlyBudgets[monthKey] && monthlyBudgets[monthKey].length > 0) {
+        monthlyBudgets[monthKey].forEach(b => {
+          if (b.requiredAmount === undefined) b.requiredAmount = b.plannedAmount || 0;
+        });
         return monthlyBudgets[monthKey];
       }
       const priorMonths = Object.keys(monthlyBudgets).filter(m => m < monthKey).sort();
       if (priorMonths.length > 0 && appConfig.carryOver) {
         monthlyBudgets[monthKey] = JSON.parse(JSON.stringify(monthlyBudgets[priorMonths[priorMonths.length - 1]]));
       } else {
-        monthlyBudgets[monthKey] = DEFAULT_BUDGET_TEMPLATES;
+        monthlyBudgets[monthKey] = JSON.parse(JSON.stringify(DEFAULT_BUDGET_TEMPLATES));
       }
       saveMonthlyBudgetStorage(true);
       return monthlyBudgets[monthKey];
+    }
+
+    // Calculates cumulative planned arrears from the past up to targetMonthKey
+    function calculateCategoryArrears(catName, targetMonthKey) {
+      const allMonths = [...new Set([...Object.keys(monthlyBudgets), targetMonthKey])].sort();
+      let cumulativePending = 0;
+
+      for (let m of allMonths) {
+        if (m >= targetMonthKey) break;
+
+        const mPlans = monthlyBudgets[m] || [];
+        const planItem = mPlans.find(b => b.category.toLowerCase() === catName.toLowerCase());
+        const plannedAmt = planItem ? (parseFloat(planItem.plannedAmount) || 0) : 0;
+        
+        const mPaid = expenseRecords
+          .filter(r => r.date && r.date.startsWith(m) && r.category.toLowerCase() === catName.toLowerCase() && r.type === 'Expense')
+          .reduce((sum, it) => sum + (parseFloat(it.amount) || 0), 0);
+
+        if (plannedAmt > 0) {
+          cumulativePending += (plannedAmt - mPaid);
+        }
+      }
+      return cumulativePending;
     }
 
     function switchPlannerScreen(screenId) {
@@ -2932,6 +2843,7 @@
 
       if (screenId === 'plannerInputScreen') renderBudgetPlanner();
       if (screenId === 'plannerDashboardScreen') renderPlannerDashboard();
+      if (screenId === 'plannerHorizonScreen') renderHorizonPlanner();
       if (screenId === 'plannerHistoryScreen') renderPlannerMultiMonthHistory();
     }
 
@@ -2949,22 +2861,25 @@
       getOrInitializeMonthBudget(monthKey);
 
       const cat = document.getElementById('budgetCatNameInput').value.trim();
-      const amt = parseFloat(document.getElementById('budgetCatAmountInput').value) || 0;
+      const reqAmt = parseFloat(document.getElementById('budgetCatRequiredInput').value) || 0;
+      const plannedAmt = parseFloat(document.getElementById('budgetCatAmountInput').value) || 0;
       if (!cat) return;
 
       const idx = monthlyBudgets[monthKey].findIndex(b => b.category.toLowerCase() === cat.toLowerCase());
       if (idx !== -1) {
-        monthlyBudgets[monthKey][idx].plannedAmount = amt;
+        monthlyBudgets[monthKey][idx].requiredAmount = reqAmt || plannedAmt;
+        monthlyBudgets[monthKey][idx].plannedAmount = plannedAmt;
       } else {
-        monthlyBudgets[monthKey].push({ category: cat, plannedAmount: amt });
+        monthlyBudgets[monthKey].push({ category: cat, requiredAmount: reqAmt || plannedAmt, plannedAmount: plannedAmt });
       }
 
       saveMonthlyBudgetStorage();
       document.getElementById('budgetCatNameInput').value = '';
+      document.getElementById('budgetCatRequiredInput').value = '';
       document.getElementById('budgetCatAmountInput').value = '';
       renderBudgetPlanner();
       renderHubOverview();
-      notify("Budget saved!");
+      notify("Allocation saved!");
     }
 
     function renderBudgetPlanner() {
@@ -2973,15 +2888,35 @@
       const container = document.getElementById('plannerCategoryCardsContainer');
       container.innerHTML = '';
 
+      const monthExpenses = expenseRecords.filter(r => r.date && r.date.startsWith(monthKey) && r.type === 'Expense');
+
       plannedList.forEach(item => {
+        const required = item.requiredAmount !== undefined ? item.requiredAmount : item.plannedAmount;
+        const paid = monthExpenses.filter(r => r.category.toLowerCase() === item.category.toLowerCase()).reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+        const thisMonthPending = item.plannedAmount - paid;
+        const pastArrears = calculateCategoryArrears(item.category, monthKey);
+        const totalPendingWithArrears = Math.max(0, thisMonthPending + pastArrears);
+
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-4 flex justify-between items-center";
         card.innerHTML = `
           <div>
             <span class="text-xs font-bold text-white block">${item.category}</span>
-            <span class="text-[11px] text-slate-400">Target: <b class="text-purple-300 font-extrabold font-mono-val">${formatINR(item.plannedAmount)}</b></span>
+            <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-400">
+              <span>Req: <b class="text-slate-300 font-mono-val">${formatINR(required)}</b></span>
+              <span>•</span>
+              <span>Planned: <b class="text-purple-300 font-mono-val">${formatINR(item.plannedAmount)}</b></span>
+              <span>•</span>
+              <span>Paid: <b class="text-amber-300 font-mono-val">${formatINR(paid)}</b></span>
+            </div>
+            <div class="mt-1 text-[10px]">
+              ${totalPendingWithArrears > 0 
+                ? `<span class="text-rose-400 font-bold font-mono-val">Pending: ${formatINR(totalPendingWithArrears)} ${pastArrears > 0 ? `(includes ${formatINR(pastArrears)} prior)` : ''}</span>`
+                : `<span class="text-emerald-400 font-bold font-mono-val">✓ Target Fully Met / Cleared</span>`
+              }
+            </div>
           </div>
-          <button type="button" onclick="editBudgetItemPrompt('${item.category}', ${item.plannedAmount})" class="text-indigo-400 text-xs font-semibold p-1 cursor-pointer">
+          <button type="button" onclick="editBudgetItemPrompt('${item.category}', ${required}, ${item.plannedAmount})" class="text-indigo-400 text-xs font-semibold p-1 cursor-pointer">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
         `;
@@ -2990,20 +2925,22 @@
       document.getElementById('plannerAllocationsCount').innerText = `${plannedList.length} Categories`;
     }
 
-    function editBudgetItemPrompt(cat, currentAmt) {
-      const newAmt = prompt(`Update monthly budget limit for ${cat}:`, currentAmt);
-      if (newAmt !== null) {
-        const parsed = parseFloat(newAmt);
-        if (!isNaN(parsed) && parsed >= 0) {
-          const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-          const target = monthlyBudgets[monthKey].find(b => b.category === cat);
-          if (target) {
-            target.plannedAmount = parsed;
-            saveMonthlyBudgetStorage();
-            renderBudgetPlanner();
-            renderHubOverview();
-            notify(`Updated ${cat} budget`);
-          }
+    function editBudgetItemPrompt(cat, currentReq, currentPlanned) {
+      const newReq = prompt(`Update REQUIRED minimum for ${cat}:`, currentReq);
+      if (newReq === null) return;
+      const newPlan = prompt(`Update PLANNED target for ${cat}:`, currentPlanned);
+      if (newPlan !== null) {
+        const parsedReq = parseFloat(newReq) || 0;
+        const parsedPlan = parseFloat(newPlan) || 0;
+        const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
+        const target = monthlyBudgets[monthKey].find(b => b.category === cat);
+        if (target) {
+          target.requiredAmount = parsedReq;
+          target.plannedAmount = parsedPlan;
+          saveMonthlyBudgetStorage();
+          renderBudgetPlanner();
+          renderHubOverview();
+          notify(`Updated ${cat} targets`);
         }
       }
     }
@@ -3022,16 +2959,21 @@
         const catActual = monthExpenses.filter(r => r.category.toLowerCase() === item.category.toLowerCase()).reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
         totalActual += catActual;
         const completionPct = item.plannedAmount > 0 ? ((catActual / item.plannedAmount) * 100).toFixed(0) : 0;
-        const remaining = item.plannedAmount - catActual;
+        
+        const pastArrears = calculateCategoryArrears(item.category, monthKey);
+        const effectiveGoal = item.plannedAmount + Math.max(0, pastArrears);
+        const remaining = effectiveGoal - catActual;
 
         let badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
         let barColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
-        if (completionPct >= 100) {
-          badgeClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
-          barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
+        if (catActual >= effectiveGoal) {
+          badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
         } else if (completionPct >= 75) {
           badgeClass = "bg-amber-500/20 text-amber-300 border-amber-500/30";
           barColor = "bg-gradient-to-r from-amber-500 to-orange-500";
+        } else {
+          badgeClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
+          barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
         }
 
         const card = document.createElement('div');
@@ -3041,21 +2983,23 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-white">${item.category}</span>
-                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${badgeClass} font-mono-val">${completionPct}% Completed</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${badgeClass} font-mono-val">${completionPct}% of planned</span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
-                Target: <b class="text-slate-200 font-mono-val">₹ ${parseFloat(item.plannedAmount).toLocaleString('en-IN')}</b>
+                Required: <b class="text-slate-300 font-mono-val">${formatINR(item.requiredAmount || item.plannedAmount)}</b> • 
+                Planned: <b class="text-purple-200 font-mono-val">${formatINR(item.plannedAmount)}</b>
               </span>
+              ${pastArrears > 0 ? `<span class="text-[10px] text-amber-400 font-medium font-mono-val block">Rolled Past Lag: ${formatINR(pastArrears)}</span>` : ''}
             </div>
             <div class="text-right">
-              <span class="text-xs font-extrabold ${remaining >= 0 ? 'text-emerald-400' : 'text-rose-400'} block font-mono-val">
-                ${remaining >= 0 ? '₹ ' + remaining.toLocaleString('en-IN') + ' Left' : '₹ ' + Math.abs(remaining).toLocaleString('en-IN') + ' Over'}
+              <span class="text-xs font-extrabold ${remaining <= 0 ? 'text-emerald-400' : 'text-amber-400'} block font-mono-val">
+                ${remaining <= 0 ? '✓ Arrears 0 (Cleared)' : 'Pending ' + formatINR(remaining)}
               </span>
-              <span class="text-[10px] text-slate-400 mt-0.5 block">Spent: <b class="text-white font-mono-val">₹ ${catActual.toLocaleString('en-IN')}</b></span>
+              <span class="text-[10px] text-slate-400 mt-0.5 block">Paid: <b class="text-white font-mono-val">${formatINR(catActual)}</b></span>
             </div>
           </div>
           <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-white/10">
-            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${Math.min(100, completionPct)}%"></div>
+            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${Math.min(100, (catActual / (effectiveGoal || 1)) * 100)}%"></div>
           </div>
         `;
         container.appendChild(card);
@@ -3067,6 +3011,113 @@
       document.getElementById('kpiPlannerTotalRemainingBuffer').innerText = formatINR(totalPlanned - totalActual);
       document.getElementById('kpiBudgetOverallBurnBadge').innerText = `${totalBurnPct}% Used`;
       document.getElementById('plannerTotalProgressBar').style.width = `${Math.min(100, totalBurnPct)}%`;
+    }
+
+    // -------------------------------------------------------------
+    // MULTI-HORIZON ENGINE (QUARTERLY, HALF-YEARLY, ANNUALLY)
+    // -------------------------------------------------------------
+    function renderHorizonPlanner() {
+      const spanType = document.getElementById('horizonSpanSelector').value;
+      const count = spanType === 'quarterly' ? 3 : (spanType === 'halfyearly' ? 6 : 12);
+      const spanTitle = spanType === 'quarterly' ? 'Quarterly (3 Months)' : (spanType === 'halfyearly' ? 'Half-Yearly (6 Months)' : 'Annual (12 Months)');
+      
+      document.getElementById('horizonKpiTitle').innerText = `${spanTitle} Horizon`;
+      document.getElementById('horizonMonthsSpanBadge').innerText = `${count} Months Scope`;
+
+      const now = new Date();
+      const horizonMonths = [];
+      for (let i = 0; i < count; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+        horizonMonths.push(d.toISOString().slice(0, 7));
+      }
+
+      const activeCategories = Array.from(new Set(expenseCategories));
+      const container = document.getElementById('plannerHorizonListContainer');
+      container.innerHTML = '';
+
+      let totalHorizonReq = 0;
+      let totalHorizonPlanned = 0;
+      let totalHorizonPaid = 0;
+
+      activeCategories.forEach(cat => {
+        let monthlyReq = 0;
+        let monthlyPlan = 0;
+
+        horizonMonths.forEach(m => {
+          const list = getOrInitializeMonthBudget(m);
+          const it = list.find(b => b.category.toLowerCase() === cat.toLowerCase());
+          if (it) {
+            monthlyReq += (parseFloat(it.requiredAmount) || parseFloat(it.plannedAmount) || 0);
+            monthlyPlan += (parseFloat(it.plannedAmount) || 0);
+          }
+        });
+
+        const horizonKey = `${spanType}_${cat}`;
+        const customPlanned = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : monthlyPlan;
+
+        const totalPaidInPeriod = expenseRecords
+          .filter(r => r.type === 'Expense' && r.category.toLowerCase() === cat.toLowerCase() && horizonMonths.some(m => r.date && r.date.startsWith(m)))
+          .reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+        totalHorizonReq += monthlyReq;
+        totalHorizonPlanned += customPlanned;
+        totalHorizonPaid += totalPaidInPeriod;
+
+        const remainingToDisburse = customPlanned - totalPaidInPeriod;
+        const progressPct = customPlanned > 0 ? Math.min(100, Math.round((totalPaidInPeriod / customPlanned) * 100)) : 0;
+
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-4 space-y-2.5";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-white">${cat}</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/20 text-purple-200 font-mono-val">${progressPct}% Paid</span>
+              </div>
+              <span class="text-[11px] text-slate-400 mt-1 block">
+                Baseline Required: <b class="text-slate-300 font-mono-val">${formatINR(monthlyReq)}</b> 
+                (${formatINR(monthlyReq / count)}/mo × ${count})
+              </span>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-bold text-purple-300 font-mono-val block">Horizon Goal: ${formatINR(customPlanned)}</span>
+              <button type="button" onclick="editHorizonGoalPrompt('${cat}', '${spanType}', ${customPlanned})" class="text-[10px] text-indigo-400 hover:underline">
+                <i class="fa-solid fa-pen-to-square"></i> Set Custom Goal
+              </button>
+            </div>
+          </div>
+
+          <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-white/10">
+            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: ${progressPct}%"></div>
+          </div>
+
+          <div class="flex justify-between items-center text-[10px] pt-1 border-t border-white/[0.06]">
+            <span class="text-slate-400">Total Paid: <b class="text-amber-400 font-mono-val">${formatINR(totalPaidInPeriod)}</b></span>
+            <span class="${remainingToDisburse <= 0 ? 'text-emerald-400' : 'text-purple-300'} font-bold font-mono-val">
+              ${remainingToDisburse <= 0 ? '✓ Goal Cleared' : `${formatINR(remainingToDisburse)} remaining to pay any month`}
+            </span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById('kpiHorizonTotalRequired').innerText = formatINR(totalHorizonReq);
+      document.getElementById('kpiHorizonTotalPlanned').innerText = formatINR(totalHorizonPlanned);
+      document.getElementById('kpiHorizonTotalPaid').innerText = formatINR(totalHorizonPaid);
+    }
+
+    function editHorizonGoalPrompt(cat, spanType, currentVal) {
+      const val = prompt(`Set total ${spanType} planned allocation for ${cat} (e.g. 20000):`, currentVal);
+      if (val !== null) {
+        const parsed = parseFloat(val);
+        if (!isNaN(parsed) && parsed >= 0) {
+          horizonBudgets[`${spanType}_${cat}`] = parsed;
+          saveMonthlyBudgetStorage();
+          renderHorizonPlanner();
+          notify(`Updated ${cat} ${spanType} goal`);
+        }
+      }
     }
 
     function renderPlannerMultiMonthHistory() {
@@ -3846,7 +3897,6 @@
             }
           }
         } catch (err) {
-          console.error(err);
           notify("Failed to import file: " + err.message);
         }
         event.target.value = '';
@@ -3882,6 +3932,9 @@
 
       if (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') {
         monthlyBudgets = { ...data.monthlyBudgets, ...monthlyBudgets };
+      }
+      if (data.horizonBudgets && typeof data.horizonBudgets === 'object') {
+        horizonBudgets = { ...data.horizonBudgets, ...horizonBudgets };
       }
 
       if (Array.isArray(data.expenseCategories)) {
@@ -4023,7 +4076,7 @@
 
     function exportJSONBackup() {
       const backup = {
-        version: "2.8",
+        version: "2.9",
         exportedAt: new Date().toISOString(),
         debtCategories: categories,
         debtRecords,
@@ -4032,6 +4085,7 @@
         accountsList,
         expenseRecords,
         monthlyBudgets,
+        horizonBudgets,
         appConfig
       };
       const jsonStr = JSON.stringify(backup, null, 2);
@@ -4040,7 +4094,7 @@
     }
 
     // -------------------------------------------------------------
-    // INITIALIZATION & HARDWARE BINDINGS
+    // INITIALIZATION & EVENT BINDINGS
     // -------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
       history.replaceState({ page: 'hub' }, '');
