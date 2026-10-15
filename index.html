@@ -387,7 +387,7 @@
             <div class="flex items-center gap-1 text-[9px] text-slate-300 uppercase font-bold">
               <i class="fa-solid fa-shield-heart text-[8px]"></i> Surplus
             </div>
-            <span id="hubMonthSurplus" class="text-xs font-black mt-1 block font-mono-val text-white">₹0</span>
+            <span id="hubMonthSurplus" class="text-xs font-black mt-1 block font-mono-val text-white">—</span>
           </div>
         </div>
       </div>
@@ -413,7 +413,7 @@
             </div>
             <div class="text-right">
               <span class="text-[9px] text-emerald-300/80 uppercase font-bold block tracking-wider">Outflow</span>
-              <span id="tileSpendThisMonth" class="text-sm font-black text-amber-400 font-mono-val mt-0.5 block">₹0</span>
+              <span id="tileSpendThisMonth" class="text-sm font-black text-amber-400 font-mono-val mt-0.5 block">—</span>
               <span class="text-[10px] text-emerald-300 font-bold inline-flex items-center gap-1 mt-1 group-hover:translate-x-1 transition-transform">
                 Open <i class="fa-solid fa-arrow-right text-[9px]"></i>
               </span>
@@ -439,11 +439,11 @@
           <div class="space-y-1 pt-2.5 border-t border-white/[0.08] relative z-10">
             <div class="flex justify-between items-center text-[11px]">
               <span class="text-slate-400 font-medium">Planned</span>
-              <span id="tilePlannerTarget" class="font-bold text-purple-200 font-mono-val">₹0</span>
+              <span id="tilePlannerTarget" class="font-bold text-purple-200 font-mono-val">—</span>
             </div>
             <div class="flex justify-between items-center text-[11px]">
               <span class="text-slate-400 font-medium">Paid</span>
-              <span id="tilePlannerSpent" class="font-black text-amber-400 font-mono-val">₹0</span>
+              <span id="tilePlannerSpent" class="font-black text-amber-400 font-mono-val">—</span>
             </div>
           </div>
         </div>
@@ -466,11 +466,11 @@
           <div class="space-y-1 pt-2 border-t border-white/[0.08] relative z-10">
             <div>
               <span class="text-[9px] text-slate-400 uppercase font-bold block">Monthly EMI</span>
-              <span id="tileDebtEmi" class="text-xs font-black text-amber-300 font-mono-val">₹0</span>
+              <span id="tileDebtEmi" class="text-xs font-black text-amber-300 font-mono-val">—</span>
             </div>
             <div>
               <span class="text-[9px] text-slate-400 uppercase font-bold block">Pending</span>
-              <span id="tileDebtTotalPending" class="text-xs font-black text-white font-mono-val">₹0</span>
+              <span id="tileDebtTotalPending" class="text-xs font-black text-white font-mono-val">—</span>
             </div>
           </div>
         </div>
@@ -1596,6 +1596,14 @@
     let enteredPin = '';
 
     let appConfig = JSON.parse(localStorage.getItem('fintrack_app_config')) || DEFAULT_APP_CONFIG;
+    // When Firebase is configured, keep dashboard tiles in a loading state until
+    // authentication/cloud hydration resolves; do not flash misleading ₹0 values.
+    let cloudHydrationPending = !!(JSON.parse(localStorage.getItem('firebase_web_config') || 'null') || {}).apiKey;
+
+    function setHubMetricsLoading(isLoading) {
+      const ids = ['hubNetLiquid','hubMonthInflow','hubMonthOutflow','hubMonthSurplus','tileSpendThisMonth','tilePlannerTarget','tilePlannerSpent','tileDebtEmi','tileDebtTotalPending'];
+      ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = isLoading ? 'Loading…' : el.textContent; });
+    }
 
     function safeLoadArray(key, fallback) {
       try {
@@ -1852,9 +1860,91 @@
     }
 
     // -------------------------------------------------------------
+    // IMMEDIATE NET LIQUID CAPITAL HYDRATION
+    // Compute directly from synchronously loaded local portfolio data.
+    // This runs before the first hub render and is repeated after cloud sync.
+    // -------------------------------------------------------------
+    function refreshNetLiquidCapitalValue() {
+      // Paint every metric in the Net Liquid Capital hero from local data in one
+      // resilient pass. This is intentionally independent of the rest of the hub
+      // renderer so a later dashboard/chart error cannot leave these values blank.
+      const money = (value) => {
+        try { return formatINR(Number(value) || 0); }
+        catch (_) { return `₹${(Number(value) || 0).toLocaleString('en-IN')}`; }
+      };
+      const put = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+
+      try {
+        const records = Array.isArray(expenseRecords) ? expenseRecords.filter(Boolean) : [];
+        const balanceMap = (typeof calculateAccountBalances === 'function') ? calculateAccountBalances() : {};
+        const totalLiquid = Object.values(balanceMap || {}).reduce((sum, balance) => sum + (Number(balance) || 0), 0);
+        const totalInflow = records.reduce((sum, record) => {
+          const type = String(record.type || '').trim().toLowerCase();
+          return sum + (type === 'income' || type === 'inflow' ? (Number(record.amount) || 0) : 0);
+        }, 0);
+        const totalOutflow = records.reduce((sum, record) => {
+          const type = String(record.type || '').trim().toLowerCase();
+          return sum + (type === 'expense' || type === 'spent' || type === 'outflow' ? (Number(record.amount) || 0) : 0);
+        }, 0);
+        const surplus = totalInflow - totalOutflow;
+
+        put('hubNetLiquid', money(totalLiquid));
+        put('hubMonthInflow', money(totalInflow));
+        put('hubMonthOutflow', money(totalOutflow));
+        put('hubMonthSurplus', money(surplus));
+        const valueEl = document.getElementById('hubNetLiquid');
+        if (valueEl) valueEl.dataset.liquidCapitalReady = 'true';
+
+        const surplusValEl = document.getElementById('hubMonthSurplus');
+        const surplusBox = document.getElementById('hubSurplusBox');
+        if (surplusValEl && surplusBox) {
+          if (surplus < 0) {
+            surplusValEl.className = 'text-xs font-black mt-1 block font-mono-val text-rose-400';
+            surplusBox.className = 'bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40';
+          } else if (totalInflow > 0) {
+            const surplusRatio = (surplus / totalInflow) * 100;
+            if (surplusRatio < 50) {
+              surplusValEl.className = 'text-xs font-black mt-1 block font-mono-val text-emerald-300';
+              surplusBox.className = 'bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-400/30';
+            } else if (surplusRatio <= 99) {
+              surplusValEl.className = 'text-xs font-black mt-1 block font-mono-val text-amber-500';
+              surplusBox.className = 'bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-600/40';
+            } else {
+              surplusValEl.className = 'text-xs font-black mt-1 block font-mono-val text-rose-500';
+              surplusBox.className = 'bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40';
+            }
+          } else {
+            surplusValEl.className = 'text-xs font-black mt-1 block font-mono-val text-slate-300';
+            surplusBox.className = 'bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-white/10';
+          }
+        }
+      } catch (error) {
+        console.error('Unable to render Net Liquid Capital metrics:', error);
+        // Never leave the three cashflow fields blank if local data is malformed.
+        put('hubNetLiquid', '₹0');
+        put('hubMonthInflow', '₹0');
+        put('hubMonthOutflow', '₹0');
+        put('hubMonthSurplus', '₹0');
+      }
+    }
+
+    // -------------------------------------------------------------
     // FINANCIAL COLOR THRESHOLDING LOGIC
     // -------------------------------------------------------------
     function renderHubOverview() {
+      // Update from local data immediately. If this browser has no cached portfolio
+      // and Firebase is still resolving, show Loading… rather than misleading zeroes.
+      const hasCachedPortfolio = ['expense_records','expense_accounts','monthly_budgets_v1','debt_records'].some(key => {
+        try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return Array.isArray(value) ? value.length > 0 : !!(value && Object.keys(value).length); } catch (_) { return false; }
+      });
+      // Always paint a complete local snapshot on launch. Waiting for Firebase
+      // must never short-circuit the landing-page tiles and leave dashes/zeros.
+      // If this is a cloud-only profile, the values are recalculated again as soon
+      // as syncWithCloudDatabase imports the remote portfolio.
+      refreshNetLiquidCapitalValue();
       const balanceMap = calculateAccountBalances();
       let totalLiquid = 0;
       Object.values(balanceMap).forEach(b => totalLiquid += b);
@@ -1863,10 +1953,7 @@
       const totalInflow = expenseRecords.filter(r => r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
       const surplus = totalInflow - totalOutflow;
 
-      document.getElementById('hubNetLiquid').innerText = formatINR(totalLiquid);
-      document.getElementById('hubMonthInflow').innerText = formatINR(totalInflow);
-      document.getElementById('hubMonthOutflow').innerText = formatINR(totalOutflow);
-      document.getElementById('hubMonthSurplus').innerText = formatINR(surplus);
+      refreshNetLiquidCapitalValue();
       document.getElementById('tileSpendThisMonth').innerText = formatINR(totalOutflow);
 
       const surplusValEl = document.getElementById('hubMonthSurplus');
@@ -2118,17 +2205,24 @@
             if (user) {
               firebaseUser = user;
               updateCloudStatusUI(true, user.email);
+              // Keep cached values visible where available; cloud sync will refresh all tiles.
               syncWithCloudDatabase(user.uid);
             } else {
               firebaseUser = null;
+              cloudHydrationPending = false;
               updateCloudStatusUI(false);
+              renderHubOverview();
             }
           });
         } catch (err) {
+          cloudHydrationPending = false;
           updateCloudStatusUI(false);
+          renderHubOverview();
         }
       } else {
+        cloudHydrationPending = false;
         updateCloudStatusUI(false);
+        renderHubOverview();
       }
     }
 
@@ -2151,11 +2245,21 @@
         const docSnap = await docRef.get();
         if (docSnap.exists) {
           const cloudData = docSnap.data();
-          if (cloudData) importJSONContent(JSON.stringify(cloudData));
+          if (cloudData) {
+            importJSONContent(JSON.stringify(cloudData));
+          }
         } else {
           await pushAllDataToCloud(uid);
         }
-      } catch (err) {}
+        cloudHydrationPending = false;
+        refreshNetLiquidCapitalValue();
+        renderHubOverview();
+        // Recompute hidden workspace summaries too, so opening a module never shows stale defaults.
+        try { renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary(); } catch (renderErr) { console.warn('Some workspace summaries will refresh when opened:', renderErr); }
+      } catch (err) {
+        cloudHydrationPending = false;
+        renderHubOverview();
+      }
     }
 
     async function pushAllDataToCloud(uid = null) {
@@ -4258,7 +4362,18 @@
     // -------------------------------------------------------------
     // INITIALIZATION & EVENT BINDINGS
     // -------------------------------------------------------------
+    // The script is placed at the end of <body>, so the tile already exists.
+    // Paint local metrics synchronously when available. If this is a cloud-only
+    // profile with no local cache, keep all landing metrics in a loading state
+    // until the Firebase result arrives instead of flashing false ₹0 values.
+    const hasInitialCachedPortfolio = ['expense_records','expense_accounts','monthly_budgets_v1','debt_records'].some(key => {
+      try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return Array.isArray(value) ? value.length > 0 : !!(value && Object.keys(value).length); } catch (_) { return false; }
+    });
+    if (cloudHydrationPending && !hasInitialCachedPortfolio) setHubMetricsLoading(true);
+    else refreshNetLiquidCapitalValue();
+
     window.addEventListener('DOMContentLoaded', () => {
+      refreshNetLiquidCapitalValue();
       history.replaceState({ page: 'hub' }, '');
 
       const currentMonth = new Date().toISOString().slice(0, 7);
@@ -4297,8 +4412,10 @@
       checkSecurityOnLaunch();
       updateConfigUI();
 
-      // Render the locally saved portfolio immediately; cloud sync runs afterward in the background.
+      // Render all landing-page metrics synchronously from the local snapshot.
+      // Firebase sync runs afterward and triggers another complete render.
       navigateToHub(false);
+      refreshNetLiquidCapitalValue();
       initFirebaseClient();
     });
   </script>
