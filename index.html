@@ -363,7 +363,7 @@
         </div>
 
         <div class="flex items-baseline gap-2.5 my-2">
-          <span id="hubNetLiquid" class="text-4xl font-black text-white tracking-tight font-mono-val">₹0</span>
+          <span id="hubNetLiquid" class="text-4xl font-black text-white tracking-tight font-mono-val">—</span>
           <span class="text-[11px] text-indigo-300/80 font-medium">Live Balance</span>
         </div>
 
@@ -373,14 +373,14 @@
             <div class="flex items-center gap-1 text-[9px] text-emerald-400 uppercase font-bold">
               <i class="fa-solid fa-arrow-trend-up text-[8px]"></i> Inflow
             </div>
-            <span id="hubMonthInflow" class="text-xs font-black text-emerald-400 mt-1 block font-mono-val">₹0</span>
+            <span id="hubMonthInflow" class="text-xs font-black text-emerald-400 mt-1 block font-mono-val">—</span>
           </div>
 
           <div class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-500/25">
             <div class="flex items-center gap-1 text-[9px] text-amber-400 uppercase font-bold">
               <i class="fa-solid fa-arrow-trend-down text-[8px]"></i> Spent
             </div>
-            <span id="hubMonthOutflow" class="text-xs font-black text-amber-400 mt-1 block font-mono-val">₹0</span>
+            <span id="hubMonthOutflow" class="text-xs font-black text-amber-400 mt-1 block font-mono-val">—</span>
           </div>
 
           <div id="hubSurplusBox" class="bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-white/[0.1]">
@@ -1008,7 +1008,7 @@
           </div>
           <div>
             <h3 class="text-sm font-black text-white">System Architecture</h3>
-            <p class="text-[11px] text-slate-400">Executive Finance Hub v2.9</p>
+            <p class="text-[11px] text-slate-400">Executive Finance Hub v3.1</p>
           </div>
         </div>
         <button type="button" onclick="hideModal('titleDetailModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
@@ -1059,6 +1059,30 @@
           Close
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT TRANSACTION HISTORY MODAL (ADDED FEATURE) -->
+  <div id="accountTransactionsModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
+    <div class="max-w-md mx-auto my-8 glass-card rounded-3xl p-5 space-y-4 border border-cyan-500/30 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <div><h3 id="accountTransactionsTitle" class="text-sm font-black text-white">Account Transactions</h3><p class="text-[11px] text-slate-400">All income, expenses and transfers linked to this account</p></div>
+        <button type="button" onclick="hideModal('accountTransactionsModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="accountTransactionsSummary" class="p-3 rounded-2xl bg-black/30 border border-white/10"></div>
+      <div id="accountTransactionsList" class="space-y-2 max-h-[55vh] overflow-y-auto no-scrollbar"></div>
+      <button type="button" onclick="hideModal('accountTransactionsModal')" class="w-full py-2.5 rounded-xl bg-white/10 text-slate-200 text-xs font-semibold">Close</button>
+    </div>
+  </div>
+
+  <!-- IMPORT MODE MODAL (ADDED FEATURE) -->
+  <div id="importModeModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl p-4 flex items-center justify-center" style="display: none;">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-5 space-y-4 border border-indigo-500/30">
+      <h3 class="text-sm font-black text-white">How should imported data be handled?</h3>
+      <p class="text-xs text-slate-400">Append keeps your current records. Replace all data clears the current portfolio first and then loads the selected backup.</p>
+      <button type="button" onclick="chooseImportMode('append')" class="w-full p-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-200 text-xs font-bold text-left"><i class="fa-solid fa-layer-group mr-2"></i>Append imported data <span class="block text-[10px] font-normal mt-1">Keep existing entries and add records that are not already present.</span></button>
+      <button type="button" onclick="chooseImportMode('replace')" class="w-full p-3 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-200 text-xs font-bold text-left"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Replace all current data <span class="block text-[10px] font-normal mt-1">Remove current portfolio data and load only the selected file.</span></button>
+      <button type="button" onclick="hideModal('importModeModal')" class="w-full py-2 rounded-xl bg-white/10 text-slate-300 text-xs font-semibold">Cancel</button>
     </div>
   </div>
 
@@ -1120,6 +1144,39 @@
     </div>
   </div>
 
+  <!-- BUDGET EDITOR: ALL VALUES IN ONE FORM -->
+  <div id="budgetEditorModal" class="fixed inset-0 z-[70] bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display:none;">
+    <div class="w-full max-w-sm glass-card p-5 rounded-3xl mx-auto mt-12 border border-indigo-500/30 space-y-4">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3">
+        <div><h3 id="budgetEditorTitle" class="text-sm font-black text-white">Edit Budget</h3><p id="budgetEditorSubtitle" class="text-[11px] text-slate-400">Update required and planned amounts</p></div>
+        <button type="button" onclick="hideModal('budgetEditorModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-3 rounded-xl bg-white/[0.04] border border-white/10"><div id="budgetEditorCategory" class="text-xs font-bold text-indigo-200">Category</div><div id="budgetEditorPeriod" class="text-[10px] text-slate-400 mt-1">Selected period</div></div>
+      <label class="block text-[11px] font-semibold text-slate-300">Required amount per month (₹)<input id="budgetEditorRequired" type="number" min="0" step="0.01" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white" /></label>
+      <label class="block text-[11px] font-semibold text-slate-300"><span id="budgetEditorPlannedLabel">Planned amount (₹)</span><input id="budgetEditorPlanned" type="number" min="0" step="0.01" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white" /></label>
+      <p id="budgetEditorHelp" class="text-[10px] text-slate-500">Both values will be saved to your planner.</p>
+      <div class="grid grid-cols-2 gap-2"><button type="button" onclick="hideModal('budgetEditorModal')" class="py-2.5 rounded-xl bg-white/10 text-slate-200 text-xs font-bold">Cancel</button><button type="button" onclick="saveBudgetEditor()" class="py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">Save all changes</button></div>
+    </div>
+  </div>
+
+  <!-- FIREBASE ONLINE CONNECTION SETUP -->
+  <div id="firebaseConfigModal" class="fixed inset-0 z-[80] bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display:none;">
+    <div class="w-full max-w-md glass-card p-5 rounded-3xl mx-auto mt-6 border border-cyan-500/30 space-y-4">
+      <div class="flex justify-between items-center border-b border-white/10 pb-3"><div><h3 class="text-sm font-black text-white">Set Up Online Sync</h3><p class="text-[11px] text-slate-400">Connect FinTrack to your Firebase project</p></div><button type="button" onclick="hideModal('firebaseConfigModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300"><i class="fa-solid fa-xmark"></i></button></div>
+      <p class="text-[11px] leading-relaxed text-slate-300">Paste the Web App configuration from Firebase Console → Project settings → General → Your apps. In Firebase Authentication, enable Email/Password. Create a Cloud Firestore database and configure security rules so each signed-in user can access only their own <code>users/{uid}</code> document.</p>
+      <div class="grid grid-cols-1 gap-2">
+        <label class="text-[10px] text-slate-300 font-semibold">API Key *<input id="fbApiKey" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="AIza…" /></label>
+        <label class="text-[10px] text-slate-300 font-semibold">Auth Domain *<input id="fbAuthDomain" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="your-project.firebaseapp.com" /></label>
+        <label class="text-[10px] text-slate-300 font-semibold">Project ID *<input id="fbProjectId" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="your-project-id" /></label>
+        <label class="text-[10px] text-slate-300 font-semibold">App ID *<input id="fbAppId" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="1:…:web:…" /></label>
+        <label class="text-[10px] text-slate-300 font-semibold">Messaging Sender ID<input id="fbMessagingSenderId" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Optional" /></label>
+        <label class="text-[10px] text-slate-300 font-semibold">Storage Bucket<input id="fbStorageBucket" autocomplete="off" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Optional" /></label>
+      </div>
+      <div class="grid grid-cols-2 gap-2"><button type="button" onclick="hideModal('firebaseConfigModal')" class="py-2.5 rounded-xl bg-white/10 text-slate-200 text-xs font-bold">Cancel</button><button type="button" onclick="saveFirebaseConnectionConfig()" class="py-2.5 rounded-xl bg-cyan-600 text-white text-xs font-bold">Save & Connect</button></div>
+      <p class="text-[10px] text-amber-300/90">This screen saves Firebase web configuration only. It cannot create a Firebase project or enable Authentication/Firestore for you.</p>
+    </div>
+  </div>
+
   <!-- AUTHENTICATION MODAL -->
   <div id="authModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
     <div class="w-full max-w-sm glass-card p-6 rounded-3xl mx-auto my-auto mt-12 border border-white/10">
@@ -1159,7 +1216,12 @@
         </button>
       </form>
 
-      <div class="mt-3.5 pt-3 border-t border-white/10 text-center">
+      <div class="mt-3 pt-3 border-t border-white/10 text-center">
+        <button type="button" onclick="openFirebaseConfigModal()" class="w-full py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-semibold text-cyan-200 cursor-pointer">
+          <i class="fa-solid fa-plug-circle-bolt mr-1"></i> Set Up / Connect Online Sync
+        </button>
+      </div>
+      <div class="mt-2 text-center">
         <button type="button" onclick="continueInLocalMode()" class="w-full py-2 px-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-xs font-semibold text-slate-300 cursor-pointer">
           Continue in Local Mode
         </button>
@@ -1615,6 +1677,9 @@
         
         const card = document.createElement('div');
         card.className = "p-3 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex justify-between items-center";
+        card.style.cursor = 'pointer';
+        card.title = 'Click to view transactions for ' + acc.name;
+        card.addEventListener('click', () => openAccountTransactions(acc.name));
         card.innerHTML = `
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-xs text-indigo-300 font-bold">
@@ -1964,6 +2029,33 @@
       hideModal('authModal');
     }
 
+    function openFirebaseConfigModal() {
+      const cfg = JSON.parse(localStorage.getItem('firebase_web_config') || '{}');
+      document.getElementById('fbApiKey').value = cfg.apiKey || '';
+      document.getElementById('fbAuthDomain').value = cfg.authDomain || '';
+      document.getElementById('fbProjectId').value = cfg.projectId || '';
+      document.getElementById('fbAppId').value = cfg.appId || '';
+      document.getElementById('fbMessagingSenderId').value = cfg.messagingSenderId || '';
+      document.getElementById('fbStorageBucket').value = cfg.storageBucket || '';
+      showModal('firebaseConfigModal');
+    }
+
+    async function saveFirebaseConnectionConfig() {
+      const config = {
+        apiKey: document.getElementById('fbApiKey').value.trim(),
+        authDomain: document.getElementById('fbAuthDomain').value.trim(),
+        projectId: document.getElementById('fbProjectId').value.trim(),
+        appId: document.getElementById('fbAppId').value.trim(),
+        messagingSenderId: document.getElementById('fbMessagingSenderId').value.trim(),
+        storageBucket: document.getElementById('fbStorageBucket').value.trim()
+      };
+      if (!config.apiKey || !config.authDomain || !config.projectId || !config.appId) return alert('Enter the required Firebase API key, Auth domain, Project ID and App ID.');
+      localStorage.setItem('firebase_web_config', JSON.stringify(config));
+      hideModal('firebaseConfigModal');
+      notify('Firebase settings saved. Reloading to initialize online sync…');
+      setTimeout(() => location.reload(), 500);
+    }
+
     function setAuthMode(mode) {
       authMode = mode;
       const bIn = document.getElementById('tabAuthSignIn');
@@ -1991,9 +2083,11 @@
       const name = document.getElementById('authNameInput').value.trim();
 
       const stored = JSON.parse(localStorage.getItem('firebase_web_config') || '{}');
-      if (!stored.apiKey) {
-        return alert("Firebase config keys required in code or storage!");
+      if (!stored.apiKey || !stored.authDomain || !stored.projectId || !stored.appId) {
+        openFirebaseConfigModal();
+        return alert("Set up the Firebase connection first, then sign up or sign in.");
       }
+      if (typeof firebase === 'undefined' || !firebase.auth) return alert('Firebase libraries did not load. Check your internet connection and reload FinTrack.');
 
       try {
         if (authMode === 'signup') {
@@ -2078,6 +2172,7 @@
           incomeCategories,
           accountsList,
           categories,
+          appConfig,
           lastUpdated: new Date().toISOString()
         };
         await firestoreDB.collection('users').doc(targetUid).collection('portfolio').doc('main').set(payload, { merge: true });
@@ -2478,6 +2573,36 @@
       return balanceMap;
     }
 
+    function openAccountTransactions(accountName) {
+      const related = expenseRecords.filter(r => r.account === accountName || r.toAccount === accountName)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (Number(b.id) || 0) - (Number(a.id) || 0));
+      const balanceMap = calculateAccountBalances();
+      document.getElementById('accountTransactionsTitle').innerText = accountName + ' • Transactions';
+      document.getElementById('accountTransactionsSummary').innerHTML = `<div class="flex justify-between gap-3"><span class="text-xs text-slate-400">Current calculated balance</span><b class="text-sm ${((balanceMap[accountName] || 0) < 0) ? 'text-rose-400' : 'text-emerald-300'} font-mono-val">${formatINR(balanceMap[accountName] || 0)}</b></div><div class="text-[10px] text-slate-500 mt-1">${related.length} linked transaction(s)</div>`;
+      const list = document.getElementById('accountTransactionsList');
+      list.innerHTML = '';
+      if (!related.length) {
+        list.innerHTML = '<div class="text-center text-xs text-slate-500 p-6">No transactions recorded for this account.</div>';
+      } else {
+        related.forEach(r => {
+          const isTransfer = r.type === 'Transfer';
+          const isInflow = r.type === 'Income' || (isTransfer && r.toAccount === accountName);
+          const amountClass = isTransfer ? 'text-indigo-300' : (isInflow ? 'text-emerald-300' : 'text-amber-300');
+          const sign = isTransfer ? (r.toAccount === accountName ? '+' : '−') : (isInflow ? '+' : '−');
+          const el = document.createElement('div');
+          el.className = 'p-3 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex justify-between gap-3';
+          const detail = isTransfer ? `${r.account || 'Unknown'} → ${r.toAccount || 'Unknown'}` : `${r.category || 'Uncategorised'} • ${r.account || ''}`;
+          el.innerHTML = `<div class="min-w-0"><div class="text-xs font-bold text-white">${escapeHTML(r.note || r.category || r.type || 'Transaction')}</div><div class="text-[10px] text-slate-400 mt-1">${escapeHTML(r.date || 'No date')} • ${escapeHTML(detail)}</div><div class="text-[9px] uppercase tracking-wider text-slate-500 mt-1">${escapeHTML(r.type || 'Transaction')}</div></div><div class="text-right shrink-0"><div class="text-xs font-black ${amountClass} font-mono-val">${sign}${formatINR(parseFloat(r.amount) || 0)}</div><button type="button" onclick="hideModal('accountTransactionsModal'); editExpense('${String(r.id).replace(/'/g, '')}')" class="text-[10px] text-indigo-300 mt-2">Edit</button></div>`;
+          list.appendChild(el);
+        });
+      }
+      showModal('accountTransactionsModal');
+    }
+
+    function escapeHTML(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+
     function onDailyDashMonthChanged() {
       renderDailySummary();
     }
@@ -2867,10 +2992,10 @@
 
       const idx = monthlyBudgets[monthKey].findIndex(b => b.category.toLowerCase() === cat.toLowerCase());
       if (idx !== -1) {
-        monthlyBudgets[monthKey][idx].requiredAmount = reqAmt || plannedAmt;
+        monthlyBudgets[monthKey][idx].requiredAmount = reqAmt;
         monthlyBudgets[monthKey][idx].plannedAmount = plannedAmt;
       } else {
-        monthlyBudgets[monthKey].push({ category: cat, requiredAmount: reqAmt || plannedAmt, plannedAmount: plannedAmt });
+        monthlyBudgets[monthKey].push({ category: cat, requiredAmount: reqAmt, plannedAmount: plannedAmt });
       }
 
       saveMonthlyBudgetStorage();
@@ -2925,24 +3050,53 @@
       document.getElementById('plannerAllocationsCount').innerText = `${plannedList.length} Categories`;
     }
 
+    let budgetEditorState = { kind: 'target', category: '', spanType: '' };
+
+    function openBudgetEditor(category, required, planned, kind = 'target', spanType = '') {
+      budgetEditorState = { kind, category, spanType };
+      document.getElementById('budgetEditorTitle').innerText = kind === 'horizon' ? 'Edit Horizon Plan' : 'Edit Monthly Target';
+      document.getElementById('budgetEditorSubtitle').innerText = kind === 'horizon' ? 'Edit the monthly requirement and total horizon goal together.' : 'Edit the monthly required amount and planned target together.';
+      document.getElementById('budgetEditorCategory').innerText = category;
+      document.getElementById('budgetEditorPeriod').innerText = kind === 'horizon' ? `${spanType} horizon` : (document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7));
+      document.getElementById('budgetEditorRequired').value = Number(required) || 0;
+      document.getElementById('budgetEditorPlanned').value = Number(planned) || 0;
+      document.getElementById('budgetEditorPlannedLabel').innerText = kind === 'horizon' ? 'Total planned amount for this horizon (₹)' : 'Planned amount for this month (₹)';
+      document.getElementById('budgetEditorHelp').innerText = kind === 'horizon' ? 'The required total is calculated as monthly required × 3, 6 or 12 months. The planned value is the total goal for the selected horizon.' : 'Required and planned are stored separately; editing one will not overwrite the other.';
+      showModal('budgetEditorModal');
+    }
+
     function editBudgetItemPrompt(cat, currentReq, currentPlanned) {
-      const newReq = prompt(`Update REQUIRED minimum for ${cat}:`, currentReq);
-      if (newReq === null) return;
-      const newPlan = prompt(`Update PLANNED target for ${cat}:`, currentPlanned);
-      if (newPlan !== null) {
-        const parsedReq = parseFloat(newReq) || 0;
-        const parsedPlan = parseFloat(newPlan) || 0;
+      openBudgetEditor(cat, currentReq, currentPlanned, 'target', '');
+    }
+
+    function saveBudgetEditor() {
+      const reqText = document.getElementById('budgetEditorRequired').value.trim();
+      const planText = document.getElementById('budgetEditorPlanned').value.trim();
+      if (reqText === '' || planText === '') return notify('Enter both required and planned amounts.');
+      const req = Number(reqText);
+      const plan = Number(planText);
+      if (!Number.isFinite(req) || req < 0 || !Number.isFinite(plan) || plan < 0) return notify('Enter valid non-negative required and planned amounts.');
+      const { kind, category, spanType } = budgetEditorState;
+      if (kind === 'horizon') {
+        horizonBudgets[`${spanType}_${category}`] = { requiredMonthly: req, plannedAmount: plan };
+        saveMonthlyBudgetStorage();
+        renderHorizonPlanner();
+        notify(`Updated ${category} horizon plan`);
+      } else {
         const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-        const target = monthlyBudgets[monthKey].find(b => b.category === cat);
-        if (target) {
-          target.requiredAmount = parsedReq;
-          target.plannedAmount = parsedPlan;
-          saveMonthlyBudgetStorage();
-          renderBudgetPlanner();
-          renderHubOverview();
-          notify(`Updated ${cat} targets`);
-        }
+        const list = getOrInitializeMonthBudget(monthKey);
+        let target = list.find(b => String(b.category).toLowerCase() === String(category).toLowerCase());
+        if (!target) { target = { category, requiredAmount: 0, plannedAmount: 0 }; list.push(target); }
+        target.requiredAmount = req;
+        target.plannedAmount = plan;
+        saveMonthlyBudgetStorage();
+        renderBudgetPlanner();
+        renderPlannerDashboard();
+        renderHorizonPlanner();
+        notify(`Updated ${category} monthly target`);
       }
+      renderHubOverview();
+      hideModal('budgetEditorModal');
     }
 
     function renderPlannerDashboard() {
@@ -2964,16 +3118,14 @@
         const effectiveGoal = item.plannedAmount + Math.max(0, pastArrears);
         const remaining = effectiveGoal - catActual;
 
-        let badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
-        let barColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
-        if (catActual >= effectiveGoal) {
-          badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
-        } else if (completionPct >= 75) {
-          badgeClass = "bg-amber-500/20 text-amber-300 border-amber-500/30";
-          barColor = "bg-gradient-to-r from-amber-500 to-orange-500";
-        } else {
+        let badgeClass = "bg-amber-500/20 text-amber-300 border-amber-500/30";
+        let barColor = "bg-gradient-to-r from-amber-500 to-orange-500";
+        if (catActual > item.plannedAmount) {
           badgeClass = "bg-rose-500/20 text-rose-300 border-rose-500/30";
           barColor = "bg-gradient-to-r from-rose-500 to-pink-500";
+        } else if (catActual >= item.plannedAmount) {
+          badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+          barColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
         }
 
         const card = document.createElement('div');
@@ -2995,7 +3147,7 @@
               <span class="text-xs font-extrabold ${remaining <= 0 ? 'text-emerald-400' : 'text-amber-400'} block font-mono-val">
                 ${remaining <= 0 ? '✓ Arrears 0 (Cleared)' : 'Pending ' + formatINR(remaining)}
               </span>
-              <span class="text-[10px] text-slate-400 mt-0.5 block">Paid: <b class="text-white font-mono-val">${formatINR(catActual)}</b></span>
+              <span class="text-[10px] text-slate-400 mt-0.5 block">Paid: <b class="${catActual > item.plannedAmount ? 'text-rose-400' : (catActual < item.plannedAmount ? 'text-amber-400' : 'text-emerald-400')} font-mono-val">${formatINR(catActual)}</b></span>
             </div>
           </div>
           <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-white/10">
@@ -3008,7 +3160,11 @@
       const totalBurnPct = totalPlanned > 0 ? ((totalActual / totalPlanned) * 100).toFixed(0) : 0;
       document.getElementById('kpiTotalPlannedBudget').innerText = formatINR(totalPlanned);
       document.getElementById('kpiPlannerTotalActualSpent').innerText = formatINR(totalActual);
-      document.getElementById('kpiPlannerTotalRemainingBuffer').innerText = formatINR(totalPlanned - totalActual);
+      const netBuffer = totalPlanned - totalActual;
+      const bufferEl = document.getElementById('kpiPlannerTotalRemainingBuffer');
+      bufferEl.innerText = formatINR(netBuffer);
+      bufferEl.className = `text-base font-black mt-0.5 block font-mono-val ${netBuffer <= 0 ? 'text-rose-400' : (netBuffer > totalPlanned * 0.5 ? 'text-emerald-400' : 'text-amber-400')}`;
+      document.getElementById('kpiPlannerTotalActualSpent').className = `text-base font-black mt-0.5 block font-mono-val ${totalActual > totalPlanned ? 'text-rose-400' : (totalActual < totalPlanned ? 'text-amber-400' : 'text-emerald-400')}`;
       document.getElementById('kpiBudgetOverallBurnBadge').innerText = `${totalBurnPct}% Used`;
       document.getElementById('plannerTotalProgressBar').style.width = `${Math.min(100, totalBurnPct)}%`;
     }
@@ -3031,7 +3187,7 @@
         horizonMonths.push(d.toISOString().slice(0, 7));
       }
 
-      const activeCategories = Array.from(new Set(expenseCategories));
+      const activeCategories = Array.from(new Set([...expenseCategories, ...Object.values(monthlyBudgets).flatMap(rows => (rows || []).map(b => b.category)).filter(Boolean)]));
       const container = document.getElementById('plannerHorizonListContainer');
       container.innerHTML = '';
 
@@ -3053,13 +3209,16 @@
         });
 
         const horizonKey = `${spanType}_${cat}`;
-        const customPlanned = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : monthlyPlan;
+        const savedHorizon = horizonBudgets[horizonKey];
+        const customPlanned = savedHorizon !== undefined ? (typeof savedHorizon === 'object' ? (Number(savedHorizon.plannedAmount) || 0) : (Number(savedHorizon) || 0)) : monthlyPlan;
+        const customRequiredMonthly = (savedHorizon && typeof savedHorizon === 'object' && Number.isFinite(Number(savedHorizon.requiredMonthly))) ? Number(savedHorizon.requiredMonthly) : (count ? monthlyReq / count : 0);
+        const displayRequired = customRequiredMonthly * count;
 
         const totalPaidInPeriod = expenseRecords
           .filter(r => r.type === 'Expense' && r.category.toLowerCase() === cat.toLowerCase() && horizonMonths.some(m => r.date && r.date.startsWith(m)))
           .reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
 
-        totalHorizonReq += monthlyReq;
+        totalHorizonReq += displayRequired;
         totalHorizonPlanned += customPlanned;
         totalHorizonPaid += totalPaidInPeriod;
 
@@ -3076,14 +3235,14 @@
                 <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/20 text-purple-200 font-mono-val">${progressPct}% Paid</span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
-                Baseline Required: <b class="text-slate-300 font-mono-val">${formatINR(monthlyReq)}</b> 
-                (${formatINR(monthlyReq / count)}/mo × ${count})
+                Required: <b class="text-slate-300 font-mono-val">${formatINR(displayRequired)}</b>
+                (${formatINR(customRequiredMonthly)}/mo × ${count})
               </span>
             </div>
             <div class="text-right">
               <span class="text-xs font-bold text-purple-300 font-mono-val block">Horizon Goal: ${formatINR(customPlanned)}</span>
-              <button type="button" onclick="editHorizonGoalPrompt('${cat}', '${spanType}', ${customPlanned})" class="text-[10px] text-indigo-400 hover:underline">
-                <i class="fa-solid fa-pen-to-square"></i> Set Custom Goal
+              <button type="button" onclick="editHorizonGoalPrompt('${cat.replace(/'/g, "\\'")}', '${spanType}', ${customRequiredMonthly}, ${customPlanned})" class="text-[10px] text-indigo-400 hover:underline">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Required & Planned
               </button>
             </div>
           </div>
@@ -3107,17 +3266,8 @@
       document.getElementById('kpiHorizonTotalPaid').innerText = formatINR(totalHorizonPaid);
     }
 
-    function editHorizonGoalPrompt(cat, spanType, currentVal) {
-      const val = prompt(`Set total ${spanType} planned allocation for ${cat} (e.g. 20000):`, currentVal);
-      if (val !== null) {
-        const parsed = parseFloat(val);
-        if (!isNaN(parsed) && parsed >= 0) {
-          horizonBudgets[`${spanType}_${cat}`] = parsed;
-          saveMonthlyBudgetStorage();
-          renderHorizonPlanner();
-          notify(`Updated ${cat} ${spanType} goal`);
-        }
-      }
+    function editHorizonGoalPrompt(cat, spanType, currentRequiredMonthly, currentPlanned) {
+      openBudgetEditor(cat, currentRequiredMonthly, currentPlanned, 'horizon', spanType);
     }
 
     function renderPlannerMultiMonthHistory() {
@@ -3870,163 +4020,175 @@
     // -------------------------------------------------------------
     // EXPORT & IMPORT ENGINES
     // -------------------------------------------------------------
+    let pendingImportMode = 'append';
+
     function triggerImportFileInput() {
-      const input = document.getElementById('universalFileInput');
-      if (input) input.click();
+      showModal('importModeModal');
+    }
+
+    function chooseImportMode(mode) {
+      pendingImportMode = mode === 'replace' ? 'replace' : 'append';
+      hideModal('importModeModal');
+      if (pendingImportMode === 'replace' && !confirm('Replace all current FinTrack data with the selected file? This cannot be undone unless you have a backup.')) return;
+      document.getElementById('universalFileInput').click();
     }
 
     function handleImportFileSelected(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-      const fileName = file.name.toLowerCase();
-
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const content = e.target.result;
         try {
-          if (fileName.endsWith('.json')) {
-            importJSONContent(content);
-          } else if (fileName.endsWith('.csv')) {
-            importCSVContent(content);
-          } else {
-            if (content.trim().startsWith('{')) {
-              importJSONContent(content);
-            } else {
-              importCSVContent(content);
-            }
-          }
+          if (file.name.endsWith('.json') || content.trim().startsWith('{')) importJSONContent(content, pendingImportMode);
+          else importCSVContent(content, pendingImportMode);
         } catch (err) {
-          notify("Failed to import file: " + err.message);
+          notify('Failed to import file: ' + err.message);
         }
         event.target.value = '';
       };
-
       reader.readAsText(file);
     }
 
-    function importJSONContent(jsonString) {
-      const data = JSON.parse(jsonString);
-      let newSpends = 0;
-      let newLoans = 0;
+    function makePortfolioBackup() {
+      return {
+        format: 'FinTrackFullBackup', version: '3.1', exportedAt: new Date().toISOString(),
+        debtCategories: categories, debtRecords, expenseCategories, incomeCategories, accountsList, expenseRecords,
+        monthlyBudgets, horizonBudgets, appConfig, firebaseWebConfig: JSON.parse(localStorage.getItem('firebase_web_config') || 'null'),
+        summaries: { accountBalances: calculateAccountBalances(), expenseCategorySummary: buildExpenseCategorySummary(), debtStatus: buildDebtStatusSummary() }
+      };
+    }
 
+    function buildExpenseCategorySummary() {
+      const summary = {};
+      expenseRecords.filter(r => r && r.type === 'Expense').forEach(r => { summary[r.category || 'Uncategorised'] = (summary[r.category || 'Uncategorised'] || 0) + (Number(r.amount) || 0); });
+      return summary;
+    }
+
+    function buildDebtStatusSummary() {
+      const latestByLoan = {};
+      debtRecords.forEach(r => {
+        const key = String(r.metric || r.id);
+        if (!latestByLoan[key] || String(r.month || '') > String(latestByLoan[key].month || '')) latestByLoan[key] = r;
+      });
+      return Object.values(latestByLoan).map(r => ({ metric: r.metric, category: r.category, balance: r.balance, emi: r.emi, rate: r.rate, monthsLeft: r.monthsLeft, month: r.month, priority: r.priority }));
+    }
+
+    function importJSONContent(jsonString, mode = 'append') {
+      const data = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+      if (!data || typeof data !== 'object') throw new Error('Unsupported backup format.');
+      let newSpends = 0, newLoans = 0;
+      if (mode === 'replace') {
+        expenseRecords = []; debtRecords = []; monthlyBudgets = {}; horizonBudgets = {};
+        expenseCategories = []; incomeCategories = []; accountsList = []; categories = [];
+      }
       if (Array.isArray(data.expenseRecords)) {
         const existingIds = new Set(expenseRecords.map(r => String(r.id)));
         data.expenseRecords.forEach(item => {
-          if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
-            expenseRecords.push(item);
-            newSpends++;
-          }
+          if (!item || item.id === undefined) return;
+          if (mode === 'replace' || !existingIds.has(String(item.id))) { expenseRecords.push(item); existingIds.add(String(item.id)); newSpends++; }
         });
       }
-
       if (Array.isArray(data.debtRecords)) {
         const existingIds = new Set(debtRecords.map(r => String(r.id)));
         data.debtRecords.forEach(item => {
-          if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
-            debtRecords.push(item);
-            newLoans++;
-          }
+          if (!item || item.id === undefined) return;
+          if (mode === 'replace' || !existingIds.has(String(item.id))) { debtRecords.push(item); existingIds.add(String(item.id)); newLoans++; }
         });
       }
-
       if (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') {
-        monthlyBudgets = { ...data.monthlyBudgets, ...monthlyBudgets };
+        if (mode === 'replace') monthlyBudgets = data.monthlyBudgets;
+        else {
+          Object.entries(data.monthlyBudgets).forEach(([monthKey, importedRows]) => {
+            if (!Array.isArray(importedRows)) return;
+            if (!Array.isArray(monthlyBudgets[monthKey])) monthlyBudgets[monthKey] = [];
+            importedRows.forEach(importedItem => {
+              if (!importedItem || !importedItem.category) return;
+              const idx = monthlyBudgets[monthKey].findIndex(existing => String(existing.category).toLowerCase() === String(importedItem.category).toLowerCase());
+              if (idx === -1) monthlyBudgets[monthKey].push(importedItem);
+            });
+          });
+        }
       }
-      if (data.horizonBudgets && typeof data.horizonBudgets === 'object') {
-        horizonBudgets = { ...data.horizonBudgets, ...horizonBudgets };
-      }
-
-      if (Array.isArray(data.expenseCategories)) {
-        expenseCategories = Array.from(new Set([...expenseCategories, ...data.expenseCategories]));
-      }
-      if (Array.isArray(data.incomeCategories)) {
-        incomeCategories = Array.from(new Set([...incomeCategories, ...data.incomeCategories]));
-      }
+      if (data.horizonBudgets && typeof data.horizonBudgets === 'object') horizonBudgets = mode === 'replace' ? data.horizonBudgets : { ...data.horizonBudgets, ...horizonBudgets };
+      if (Array.isArray(data.expenseCategories)) expenseCategories = mode === 'replace' ? [...new Set(data.expenseCategories)] : Array.from(new Set([...expenseCategories, ...data.expenseCategories]));
+      if (Array.isArray(data.incomeCategories)) incomeCategories = mode === 'replace' ? [...new Set(data.incomeCategories)] : Array.from(new Set([...incomeCategories, ...data.incomeCategories]));
+      if (Array.isArray(data.debtCategories)) categories = mode === 'replace' ? [...new Set(data.debtCategories)] : Array.from(new Set([...categories, ...data.debtCategories]));
+      else if (Array.isArray(data.categories)) categories = mode === 'replace' ? [...new Set(data.categories)] : Array.from(new Set([...categories, ...data.categories]));
       if (Array.isArray(data.accountsList)) {
-        const accNames = new Set(accountsList.map(a => a.name));
-        data.accountsList.forEach(acc => {
-          if (!accNames.has(acc.name)) accountsList.push(acc);
-        });
+        if (mode === 'replace') accountsList = data.accountsList.map(a => typeof a === 'string' ? ({ name: a, initialBalance: 0 }) : a);
+        else {
+          const accNames = new Set(accountsList.map(a => a.name));
+          data.accountsList.forEach(acc => { const normalized = typeof acc === 'string' ? { name: acc, initialBalance: 0 } : acc; if (normalized && normalized.name && !accNames.has(normalized.name)) { accountsList.push(normalized); accNames.add(normalized.name); } });
+        }
       }
-
-      saveExpenseStorage();
-      saveDebtStorage();
-      saveMonthlyBudgetStorage();
-      populateExpenseElements();
-      populateCategoryElements();
-      renderHubOverview();
-      notify(`Imported ${newSpends} spends & ${newLoans} commitments!`);
+      if (data.appConfig && typeof data.appConfig === 'object') appConfig = mode === 'replace' ? { ...DEFAULT_APP_CONFIG, ...data.appConfig } : { ...appConfig, ...data.appConfig };
+      let firebaseConfigChanged = false;
+      if (data.firebaseWebConfig && typeof data.firebaseWebConfig === 'object' && data.firebaseWebConfig.apiKey) {
+        const existingFirebaseConfig = localStorage.getItem('firebase_web_config') || '';
+        const importedFirebaseConfig = JSON.stringify(data.firebaseWebConfig);
+        if (mode === 'replace' || !existingFirebaseConfig) {
+          localStorage.setItem('firebase_web_config', importedFirebaseConfig);
+          firebaseConfigChanged = existingFirebaseConfig !== importedFirebaseConfig;
+        }
+      }
+      if (mode === 'replace') {
+        if (!expenseCategories.length) expenseCategories = [...DEFAULT_EXPENSE_CATEGORIES];
+        if (!incomeCategories.length) incomeCategories = [...DEFAULT_INCOME_CATEGORIES];
+        if (!categories.length) categories = [...DEFAULT_DEBT_CATEGORIES];
+        if (!accountsList.length) accountsList = [...DEFAULT_ACCOUNTS];
+      }
+      localStorage.setItem('fintrack_app_config', JSON.stringify(appConfig));
+      saveExpenseStorage(); saveDebtStorage(); saveMonthlyBudgetStorage(false);
+      localStorage.setItem('expense_categories', JSON.stringify(expenseCategories));
+      localStorage.setItem('income_categories', JSON.stringify(incomeCategories));
+      localStorage.setItem('expense_accounts', JSON.stringify(accountsList));
+      localStorage.setItem('debt_categories', JSON.stringify(categories));
+      populateExpenseElements(); populateCategoryElements(); updateConfigUI();
+      renderHubOverview(); renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary();
+      pushAllDataToCloud();
+      notify(`${mode === 'replace' ? 'Replaced portfolio with' : 'Appended'} ${newSpends} transactions and ${newLoans} debt records. Budgets, accounts, categories, EMI records and settings were also processed.`);
       closeSettingsModal();
+      if (firebaseConfigChanged) setTimeout(() => { if (confirm('The backup included Firebase connection settings. Reload now to initialize them?')) location.reload(); }, 300);
     }
 
-    function importCSVContent(csvString) {
+    function importCSVContent(csvString, mode = 'append') {
       const lines = csvString.split(/\r?\n/).filter(line => line.trim().length > 0);
-      if (lines.length <= 1) return notify("CSV file is empty!");
-
-      let newSpends = 0;
-      let newLoans = 0;
-
+      if (lines.length <= 1) return notify('CSV file is empty!');
+      const firstRow = parseCSVLine(lines[1]);
+      if (firstRow && String(firstRow[0] || '').replace(/^"|"$/g, '') === 'FinTrackFullBackup' && firstRow[1]) {
+        importJSONContent(decodeURIComponent(String(firstRow[1]).replace(/^"|"$/g, '')), mode);
+        return;
+      }
+      // Legacy transaction/debt CSV support. This older format cannot contain all planner settings.
+      if (mode === 'replace' && !confirm('This is a legacy CSV containing transactions and debt rows only. Replace current portfolio with those rows? Planner/category/account settings are not present in this file.')) return;
+      let newSpends = 0, newLoans = 0;
+      if (mode === 'replace') { expenseRecords = []; debtRecords = []; }
       for (let i = 1; i < lines.length; i++) {
         const cols = parseCSVLine(lines[i]);
         if (!cols || cols.length < 5) continue;
-
-        const mod = cols[0].replace(/"/g, '').trim();
-        const rowId = cols[1] ? cols[1].replace(/"/g, '').trim() : '';
-        const dateOrMonth = cols[2].replace(/"/g, '').trim();
-        const titleOrType = cols[3].replace(/"/g, '').trim();
-        const category = cols[4].replace(/"/g, '').trim();
-        const amount = parseFloat(cols[5]) || 0;
-        const emi = parseFloat(cols[6]) || 0;
-        const rate = parseFloat(cols[7]) || 0;
+        const mod = (cols[0] || '').replace(/^"|"$/g, '').trim();
+        const rowId = (cols[1] || '').replace(/^"|"$/g, '').trim();
+        const dateOrMonth = (cols[2] || '').replace(/^"|"$/g, '').trim();
+        const titleOrType = (cols[3] || '').replace(/^"|"$/g, '').trim();
+        const category = (cols[4] || '').replace(/^"|"$/g, '').trim();
+        const amount = parseFloat(cols[5]) || 0, emi = parseFloat(cols[6]) || 0, rate = parseFloat(cols[7]) || 0;
         const monthsLeft = parseInt(cols[8]) || 12;
-        const account = (cols[9] || '').replace(/"/g, '').trim();
-        const toAccount = (cols[10] || '').replace(/"/g, '').trim();
-        const priority = (cols[11] || 'Normal').replace(/"/g, '').trim();
-        const notes = (cols[12] || '').replace(/"/g, '').trim();
-
+        const account = (cols[9] || '').replace(/^"|"$/g, '').trim();
+        const toAccount = (cols[10] || '').replace(/^"|"$/g, '').trim();
+        const priority = (cols[11] || 'Normal').replace(/^"|"$/g, '').trim();
+        const notes = (cols[12] || '').replace(/^"|"$/g, '').trim();
         if (mod === 'Daily') {
-          const duplicate = expenseRecords.some(r => (rowId && String(r.id) === rowId) || (r.date === dateOrMonth && r.amount === amount && r.category === category));
-          if (!duplicate) {
-            expenseRecords.push({
-              id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
-              type: titleOrType || 'Expense',
-              date: dateOrMonth,
-              category: category,
-              amount: amount,
-              account: account || 'Cash Wallet',
-              toAccount: toAccount || '',
-              note: notes
-            });
-            newSpends++;
-          }
+          const duplicate = expenseRecords.some(r => (rowId && String(r.id) === rowId) || (r.date === dateOrMonth && r.amount === amount && r.category === category && r.type === titleOrType));
+          if (!duplicate) { expenseRecords.push({ id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i, type: titleOrType || 'Expense', date: dateOrMonth, category, amount, account: account || 'Cash Wallet', toAccount, note: notes }); newSpends++; }
         } else if (mod === 'Debt') {
           const duplicate = debtRecords.some(r => (rowId && String(r.id) === rowId) || (r.month === dateOrMonth && r.metric === titleOrType));
-          if (!duplicate) {
-            debtRecords.push({
-              id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
-              month: dateOrMonth,
-              metric: titleOrType,
-              category: category,
-              balance: amount,
-              emi: emi || Math.round(amount / (monthsLeft || 12)),
-              rate: rate,
-              monthsLeft: monthsLeft,
-              priority: priority || 'Normal',
-              notes: notes
-            });
-            newLoans++;
-          }
+          if (!duplicate) { debtRecords.push({ id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i, month: dateOrMonth, metric: titleOrType, category, balance: amount, emi: emi || Math.round(amount / monthsLeft), rate, monthsLeft, priority: priority || 'Normal', notes }); newLoans++; }
         }
       }
-
-      saveExpenseStorage();
-      saveDebtStorage();
-      populateExpenseElements();
-      populateCategoryElements();
-      renderHubOverview();
-      notify(`Imported ${newSpends} transactions & ${newLoans} commitments!`);
-      closeSettingsModal();
+      saveExpenseStorage(); saveDebtStorage();
+      populateExpenseElements(); populateCategoryElements(); renderHubOverview(); pushAllDataToCloud();
+      notify(`Imported ${newSpends} transactions and ${newLoans} commitments.`); closeSettingsModal();
     }
 
     function parseCSVLine(text) {
@@ -4057,39 +4219,39 @@
       notify(`Exported ${filename}`);
     }
 
+    function csvEscape(value) {
+      const str = value === null || value === undefined ? '' : (typeof value === 'object' ? JSON.stringify(value) : String(value));
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+
     function exportToCSV() {
-      if (debtRecords.length === 0 && expenseRecords.length === 0) return notify("No data to export!");
-      
-      let csv = 'RecordType,ID,DateOrMonth,Title,Category,Amount,EMI,Rate,MonthsLeft,Account,ToAccount,Priority,Notes\r\n';
-      
-      debtRecords.forEach(r => {
-        csv += `"Debt","${r.id || ''}","${r.month || ''}","${(r.metric || '').replace(/"/g, '""')}","${(r.category || '').replace(/"/g, '""')}",${r.balance || 0},${r.emi || 0},${r.rate || 0},${r.monthsLeft || ''},"","","${r.priority || 'Normal'}","${(r.notes || '').replace(/"/g, '""')}"\r\n`;
-      });
-
-      expenseRecords.forEach(r => {
-        csv += `"Daily","${r.id || ''}","${r.date || ''}","${(r.type || 'Expense')}","${(r.category || '').replace(/"/g, '""')}",${r.amount || 0},0,0,0,"${(r.account || '').replace(/"/g, '""')}","${(r.toAccount || '').replace(/"/g, '""')}","Normal","${(r.note || '').replace(/"/g, '""')}"\r\n`;
-      });
-
-      const fileName = `FinTrack_Portfolio_${new Date().toISOString().slice(0, 10)}.csv`;
+      const backup = makePortfolioBackup();
+      const payload = encodeURIComponent(JSON.stringify(backup));
+      const rows = [
+        ['RecordType', 'Payload', 'ID', 'Date / Month', 'Name / Category', 'Amount / Balance', 'Account', 'Destination', 'Details'],
+        ['FinTrackFullBackup', payload, '', '', '', '', '', '', 'Complete lossless backup payload; import this file to restore all data']
+      ];
+      (backup.accountsList || []).forEach(a => rows.push(['Account', '', '', '', a.name || '', a.initialBalance || 0, '', '', a]));
+      (backup.expenseRecords || []).forEach(r => rows.push(['Transaction', '', r.id, r.date || '', r.category || r.type || '', r.amount || 0, r.account || '', r.toAccount || '', r]));
+      (backup.debtRecords || []).forEach(r => rows.push(['Debt/EMI', '', r.id, r.month || '', r.metric || r.category || '', r.balance || 0, '', '', r]));
+      Object.entries(backup.monthlyBudgets || {}).forEach(([month, items]) => (items || []).forEach(b => rows.push(['Monthly Budget', '', '', month, b.category || '', b.plannedAmount || 0, '', '', { requiredAmount: b.requiredAmount, plannedAmount: b.plannedAmount, ...b }])));
+      Object.entries(backup.horizonBudgets || {}).forEach(([key, value]) => rows.push(['Horizon Budget', '', '', key, key.split('_').slice(1).join('_'), value && typeof value === 'object' ? value.plannedAmount : value, '', '', value]));
+      (backup.expenseCategories || []).forEach(c => rows.push(['Expense Category', '', '', '', c, '', '', '', '']));
+      (backup.incomeCategories || []).forEach(c => rows.push(['Income Category', '', '', '', c, '', '', '', '']));
+      (backup.debtCategories || []).forEach(c => rows.push(['Debt Category', '', '', '', c, '', '', '', '']));
+      rows.push(['App Settings', '', '', '', 'appConfig', '', '', '', backup.appConfig || {}]);
+      rows.push(['Firebase Web Config', '', '', '', 'firebaseWebConfig', '', '', '', backup.firebaseWebConfig || {}]);
+      rows.push(['Account Summary', '', '', '', 'accountBalances', '', '', '', backup.summaries.accountBalances || {}]);
+      rows.push(['Category Summary', '', '', '', 'expenseCategorySummary', '', '', '', backup.summaries.expenseCategorySummary || {}]);
+      rows.push(['EMI Status Summary', '', '', '', 'debtStatus', '', '', '', backup.summaries.debtStatus || []]);
+      const csv = rows.map(row => row.map(csvEscape).join(',')).join('\r\n');
+      const fileName = `FinTrack_Full_Backup_${new Date().toISOString().slice(0, 10)}.csv`;
       downloadBlobWithFallback(csv, fileName, 'text/csv;charset=utf-8;');
     }
 
     function exportJSONBackup() {
-      const backup = {
-        version: "2.9",
-        exportedAt: new Date().toISOString(),
-        debtCategories: categories,
-        debtRecords,
-        expenseCategories,
-        incomeCategories,
-        accountsList,
-        expenseRecords,
-        monthlyBudgets,
-        horizonBudgets,
-        appConfig
-      };
-      const jsonStr = JSON.stringify(backup, null, 2);
-      const fileName = `FinTrack_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      const jsonStr = JSON.stringify(makePortfolioBackup(), null, 2);
+      const fileName = `FinTrack_Full_Backup_${new Date().toISOString().slice(0, 10)}.json`;
       downloadBlobWithFallback(jsonStr, fileName, 'application/json;charset=utf-8;');
     }
 
@@ -4133,10 +4295,11 @@
       populateCategoryElements();
       populateExpenseElements();
       checkSecurityOnLaunch();
-      initFirebaseClient();
       updateConfigUI();
 
+      // Render the locally saved portfolio immediately; cloud sync runs afterward in the background.
       navigateToHub(false);
+      initFirebaseClient();
     });
   </script>
 </body>
