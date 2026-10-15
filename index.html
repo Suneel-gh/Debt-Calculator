@@ -73,6 +73,7 @@
       position: relative;
     }
 
+    /* Ambient Aurora Canvas */
     .aurora-bg {
       position: fixed;
       inset: 0;
@@ -114,6 +115,7 @@
       100% { transform: translate(-30px, -40px) scale(0.95); }
     }
 
+    /* 3D Page Turn & Perspective Transition System */
     .view-stage {
       perspective: 1200px;
       transform-style: preserve-3d;
@@ -127,15 +129,28 @@
     }
 
     @keyframes pageTurnForward {
-      0% { opacity: 0; transform: rotateY(-18deg) translateX(35px) scale(0.96); }
-      100% { opacity: 1; transform: rotateY(0deg) translateX(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: rotateY(-18deg) translateX(35px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) translateX(0) scale(1);
+      }
     }
 
     @keyframes pageTurnBackward {
-      0% { opacity: 0; transform: rotateY(18deg) translateX(-35px) scale(0.96); }
-      100% { opacity: 1; transform: rotateY(0deg) translateX(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: rotateY(18deg) translateX(-35px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) translateX(0) scale(1);
+      }
     }
 
+    /* Tactile Glass & Bento Surfaces */
     .glass-card {
       background: linear-gradient(145deg, rgba(17, 28, 48, 0.65) 0%, rgba(9, 15, 28, 0.88) 100%);
       backdrop-filter: blur(24px);
@@ -239,6 +254,14 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.debug('SW Notice:', err));
+      });
+    }
+  </script>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white pb-28">
 
@@ -249,7 +272,7 @@
     <div class="aurora-orb orb-tertiary"></div>
   </div>
 
-  <!-- PIN Security Lock Screen -->
+  <!-- ================= 4-DIGIT PIN VAULT SCREEN ================= -->
   <div id="pinLockOverlay" class="fixed inset-0 z-50 bg-[#030712]/98 backdrop-blur-3xl flex flex-col items-center justify-center p-6" style="display: none;">
     <div class="max-w-xs w-full text-center space-y-6">
       <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500/25 to-blue-500/20 text-indigo-300 flex items-center justify-center text-3xl mx-auto border border-indigo-400/30 shadow-2xl">
@@ -284,7 +307,7 @@
     </div>
   </div>
 
-  <!-- Header -->
+  <!-- ================= TOP APP BAR ================= -->
   <header class="sticky top-0 z-30 bg-[#030712]/85 backdrop-blur-2xl border-b border-white/[0.07] px-4 py-3 safe-top">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer group" onclick="openInteractiveTitleSheet()">
@@ -315,10 +338,10 @@
     </div>
   </header>
 
-  <!-- Main Viewport -->
+  <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
   <main class="max-w-md mx-auto w-full px-4 pt-3 flex-1 view-stage">
 
-    <!-- MODULE 0: BENTO HUB -->
+    <!-- MODULE 0: ASYMMETRIC BENTO HUB -->
     <div id="hubViewContainer" class="space-y-3.5 page-turn-in">
       <div onclick="openLiquidAccountsBreakdown()" class="bento-hero-vault rounded-[28px] p-5">
         <div class="flex justify-between items-center mb-1.5">
@@ -361,7 +384,6 @@
         </div>
       </div>
 
-      <!-- Bento Tiles -->
       <div class="grid grid-cols-12 gap-3.5">
         <div onclick="navigateToModule('daily')" class="col-span-12 bento-tile-emerald rounded-[26px] p-4.5 cursor-pointer group glass-card">
           <i class="fa-solid fa-wallet tile-watermark text-emerald-400"></i>
@@ -460,7 +482,7 @@
       </div>
     </div>
 
-    <!-- MODULE 1: DAILY SPENDS -->
+    <!-- MODULE 1: DAILY SPENDS WORKSPACE -->
     <div id="dailyModuleContainer" class="hidden space-y-3.5">
       <section id="dailyEntryScreen" class="daily-screen space-y-3.5">
         <div class="glass-card rounded-2xl p-3 flex items-center justify-between gap-2">
@@ -669,12 +691,12 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 2: STATUS & CUMULATIVE ROLL-FORWARD -->
+      <!-- PLANNER VIEW 2: DASHBOARD WITH COLOR CODED STATUS -->
       <section id="plannerDashboardScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
             <h2 class="text-base font-black text-white">Budget vs. Actual Status</h2>
-            <p class="text-xs text-slate-400">Cumulative roll-forward arrears</p>
+            <p class="text-xs text-slate-400">Strict variance & arrears tracking</p>
           </div>
           <input type="month" id="plannerDashMonthSelector" onchange="onPlannerDashMonthChanged()" class="bg-slate-900 border border-white/10 text-purple-300 font-bold rounded-xl px-2.5 py-1.5 text-xs outline-none cursor-pointer">
         </div>
@@ -696,12 +718,12 @@
 
           <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10">
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] uppercase font-bold block" id="kpiPaidLabel">Paid (Actual)</span>
-              <span id="kpiPlannerTotalActualSpent" class="text-base font-black mt-0.5 block font-mono-val">₹0</span>
+              <span class="text-[9px] text-slate-400 uppercase font-bold block">Paid (Actual)</span>
+              <span id="kpiPlannerTotalActualSpent" class="text-base font-black text-amber-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
             <div class="bg-black/35 p-3 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] uppercase font-bold block" id="kpiBufferLabel">Net Planned Buffer / Lag</span>
-              <span id="kpiPlannerTotalRemainingBuffer" class="text-base font-black mt-0.5 block font-mono-val">₹0</span>
+              <span class="text-[9px] text-slate-400 uppercase font-bold block">Net Planned Buffer / Lag</span>
+              <span id="kpiPlannerTotalRemainingBuffer" class="text-base font-black text-emerald-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
           </div>
         </div>
@@ -712,17 +734,17 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 3: HORIZONS (QUARTERLY, HALF-YEARLY, ANNUALLY) -->
+      <!-- PLANNER VIEW 3: HORIZONS -->
       <section id="plannerHorizonScreen" class="planner-screen hidden space-y-4">
         <div class="flex items-center justify-between px-1">
           <div>
             <h2 class="text-base font-black text-white">Multi-Period Horizons</h2>
-            <p class="text-xs text-slate-400">Automatic multi-month scaling</p>
+            <p class="text-xs text-slate-400">Quarterly (×3), Half-Yearly (×6), Annually (×12)</p>
           </div>
           <select id="horizonSpanSelector" onchange="renderHorizonPlanner()" class="bg-slate-900 border border-white/10 text-purple-300 font-bold rounded-xl px-2.5 py-1.5 text-xs outline-none cursor-pointer">
-            <option value="quarterly" selected>Quarterly (×3 Mos)</option>
-            <option value="halfyearly">Half-Yearly (×6 Mos)</option>
-            <option value="annually">Annually (×12 Mos)</option>
+            <option value="quarterly" selected>Quarterly (3 Mos)</option>
+            <option value="halfyearly">Half-Yearly (6 Mos)</option>
+            <option value="annually">Annually (12 Mos)</option>
           </select>
         </div>
 
@@ -742,7 +764,7 @@
               <span id="kpiHorizonTotalPlanned" class="text-xs font-black text-purple-200 mt-0.5 block font-mono-val">₹0</span>
             </div>
             <div class="bg-black/35 p-2 rounded-2xl border border-white/[0.06]">
-              <span class="text-[9px] text-amber-400 uppercase font-semibold block">Paid in Period</span>
+              <span class="text-[9px] text-amber-400 uppercase font-semibold block">Paid to Date</span>
               <span id="kpiHorizonTotalPaid" class="text-xs font-black text-amber-400 mt-0.5 block font-mono-val">₹0</span>
             </div>
           </div>
@@ -757,7 +779,7 @@
         </div>
       </section>
 
-      <!-- PLANNER VIEW 4: PROGRESS / HISTORY -->
+      <!-- PLANNER VIEW 4: MULTI-MONTH HISTORY -->
       <section id="plannerHistoryScreen" class="planner-screen hidden space-y-4">
         <div class="glass-card rounded-3xl p-4">
           <span class="text-xs font-bold text-slate-200 block mb-2">Planned Target vs. Actual Outflow</span>
@@ -928,127 +950,82 @@
 
   </main>
 
-  <!-- Left: Tactile Home FAB -->
+  <!-- ================= TACTILE FLOATING BUTTONS ================= -->
   <div id="floatingHomeBtnContainer" class="fixed bottom-24 left-5 z-40 max-w-md mx-auto pointer-events-auto">
     <button type="button" onclick="navigateToHub()" class="w-14 h-14 rounded-[22px] bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-800 hover:from-indigo-900 hover:to-slate-700 text-indigo-300 hover:text-white fab-btn-shadow border border-indigo-400/30 flex items-center justify-center text-xl transition-all duration-200 active:scale-90 cursor-pointer" title="Go to Hub">
       <i class="fa-solid fa-house"></i>
     </button>
   </div>
 
-  <!-- Right: Floating Plus FAB -->
   <div id="floatingAddBtnContainer" class="fixed bottom-24 right-5 z-40 max-w-md mx-auto pointer-events-auto">
     <button type="button" onclick="triggerFloatingAdd()" class="w-14 h-14 rounded-[22px] bg-gradient-to-tr from-rose-500 via-pink-600 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white fab-add-shadow border border-white/30 flex items-center justify-center text-2xl transition-all duration-200 active:scale-90 cursor-pointer" title="Add Entry">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
 
-  <!-- Bottom Navigation Dock -->
   <nav id="bottomNavBar" class="fixed bottom-3 left-4 right-4 z-30 max-w-md mx-auto bg-[#0b1322]/90 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-2xl px-2 py-1.5 hidden">
     <div id="bottomNavRow" class="flex items-center justify-around gap-1"></div>
   </nav>
 
-  <!-- Hidden File Input -->
   <input type="file" id="universalFileInput" accept=".json,.csv" onchange="handleImportFileSelected(event)" class="hidden">
 
-  <!-- ================= MODALS & POPUPS ================= -->
-
-  <!-- Liquid Capital Account Breakdown Modal -->
-  <div id="liquidAccountsModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-md mx-auto my-auto mt-10 glass-card rounded-3xl p-5 space-y-4 border border-indigo-500/30 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 text-lg">
-            <i class="fa-solid fa-building-columns"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-black text-white">Liquid Capital Distribution</h3>
-            <p class="text-[11px] text-slate-400">Click any account to see all transactions</p>
-          </div>
-        </div>
-        <button type="button" onclick="hideModal('liquidAccountsModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
-      </div>
-
-      <div class="p-3.5 bg-black/40 rounded-2xl border border-white/[0.08] flex justify-between items-center">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Net Liquid</span>
-        <span id="modalTotalLiquidVal" class="text-lg font-black text-white font-mono-val">₹0</span>
-      </div>
-
-      <div id="liquidModalAccountsList" class="space-y-2.5 max-h-72 overflow-y-auto no-scrollbar"></div>
-
-      <div class="pt-2 border-t border-white/10 flex justify-between items-center">
-        <button type="button" onclick="hideModal('liquidAccountsModal'); openAccountModal();" class="text-xs text-cyan-400 hover:underline flex items-center gap-1 font-semibold cursor-pointer">
-          <i class="fa-solid fa-pen-to-square"></i> Manage Accounts
-        </button>
-        <button type="button" onclick="hideModal('liquidAccountsModal')" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl cursor-pointer">
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Account Specific Transactions Drilldown Modal -->
+  <!-- ================= DIALOGS & SPECIALIZED MODALS ================= -->
+  
+  <!-- MODAL: ACCOUNT DRILLDOWN TRANSACTION FEED -->
   <div id="accountTransactionsModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
     <div class="max-w-md mx-auto my-auto mt-8 glass-card rounded-3xl p-5 space-y-4 border border-cyan-500/30 shadow-2xl">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
-          <button type="button" onclick="closeAccountTransactionsModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
+          <button type="button" onclick="hideModal('accountTransactionsModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
             <i class="fa-solid fa-arrow-left text-xs"></i>
           </button>
           <div>
-            <h3 id="accountTxModalTitle" class="text-sm font-black text-white">Account Transactions</h3>
-            <p id="accountTxModalSubtitle" class="text-[11px] text-slate-400 font-mono-val">Current Balance: ₹0</p>
+            <h3 id="accountTxModalTitle" class="text-sm font-black text-white">Account Ledger</h3>
+            <p id="accountTxModalSubtitle" class="text-[11px] text-slate-400 font-mono-val">Live institutional transactions</p>
           </div>
         </div>
-        <button type="button" onclick="closeAccountTransactionsModal()" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-sm"></i>
-        </button>
+        <span id="accountTxModalBalance" class="text-xs font-black px-2.5 py-1 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono-val">₹0</span>
       </div>
 
-      <div id="accountTransactionsContainer" class="space-y-2.5 max-h-96 overflow-y-auto no-scrollbar"></div>
+      <div id="accountTxModalList" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar"></div>
 
-      <div class="pt-2 border-t border-white/10 flex justify-end">
-        <button type="button" onclick="closeAccountTransactionsModal()" class="px-4 py-2 bg-white/10 text-white text-xs font-semibold rounded-xl cursor-pointer">
-          Done
-        </button>
-      </div>
+      <button type="button" onclick="hideModal('accountTransactionsModal')" class="w-full py-2.5 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl cursor-pointer">
+        Back to Accounts
+      </button>
     </div>
   </div>
 
-  <!-- Budget Target Full Edit Modal -->
-  <div id="budgetTargetEditModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-14 glass-card rounded-3xl p-5 space-y-4 border border-purple-500/30 shadow-2xl">
+  <!-- MODAL: DETAILED BUDGET TARGETS EDIT -->
+  <div id="targetEditModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-5 space-y-4 mx-auto my-auto mt-16 border border-purple-500/30">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
-        <div>
-          <h3 class="text-sm font-black text-white">Edit Budget Target</h3>
-          <p class="text-[11px] text-slate-400" id="editBudgetTargetMonthLabel">Month</p>
-        </div>
-        <button type="button" onclick="hideModal('budgetTargetEditModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-xs"></i>
+        <h3 class="text-sm font-black text-white">Edit Category Target</h3>
+        <button type="button" onclick="hideModal('targetEditModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <form onsubmit="handleSaveTargetEdit(event)" class="space-y-3">
-        <input type="hidden" id="editTargetOriginalCat" value="">
+      <form id="targetEditForm" onsubmit="submitTargetEditModal(event)" class="space-y-3">
+        <input type="hidden" id="editTargetOrigCat">
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category Name</label>
-          <input type="text" id="editTargetCatName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+          <label class="block text-[11px] text-slate-400 font-semibold mb-1">Category Name</label>
+          <input type="text" id="editTargetCatName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
         </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Required Minimum (₹)</label>
-          <input type="number" id="editTargetRequired" step="any" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono-val focus:outline-none focus:border-purple-500">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-400 font-semibold mb-1">Required (Compulsory)</label>
+            <input type="number" id="editTargetRequired" step="any" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono-val">
+          </div>
+          <div>
+            <label class="block text-[11px] text-purple-300 font-semibold mb-1">Planned Goal</label>
+            <input type="number" id="editTargetPlanned" step="any" min="0" required class="w-full bg-slate-900 border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white font-mono-val">
+          </div>
         </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-purple-300 mb-1">Planned Target Goal (₹)</label>
-          <input type="number" id="editTargetPlanned" step="any" min="0" required class="w-full bg-slate-900 border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white font-mono-val focus:outline-none focus:border-purple-500">
-        </div>
-
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="handleDeleteBudgetTarget()" class="px-3 py-2 rounded-xl bg-rose-600/20 text-rose-300 border border-rose-500/30 text-xs font-semibold cursor-pointer">
+          <button type="button" onclick="deleteTargetCategoryItem()" class="px-3 py-2 bg-rose-500/20 text-rose-300 rounded-xl text-xs font-semibold hover:bg-rose-500/30 border border-rose-500/30">
             Delete
           </button>
-          <button type="submit" class="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-lg cursor-pointer">
+          <button type="submit" class="flex-1 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition">
             Save Target
           </button>
         </div>
@@ -1056,85 +1033,82 @@
     </div>
   </div>
 
-  <!-- Horizon Goal Full Edit Modal -->
-  <div id="horizonGoalEditModal" class="fixed inset-0 z-50 bg-[#030712]/92 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-14 glass-card rounded-3xl p-5 space-y-4 border border-purple-500/30 shadow-2xl">
+  <!-- MODAL: HORIZON DETAILS EDIT -->
+  <div id="horizonEditModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-5 space-y-4 mx-auto my-auto mt-16 border border-purple-500/30">
       <div class="flex justify-between items-center border-b border-white/10 pb-3">
         <div>
-          <h3 class="text-sm font-black text-white">Edit Horizon Allocation</h3>
-          <p class="text-[11px] text-slate-400" id="editHorizonSpanLabel">Quarterly Horizon</p>
+          <h3 id="horizonEditModalTitle" class="text-sm font-black text-white">Edit Horizon Allocation</h3>
+          <p id="horizonEditModalSubtitle" class="text-[11px] text-slate-400">Quarterly / Half-Yearly / Annual Goal</p>
         </div>
-        <button type="button" onclick="hideModal('horizonGoalEditModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-300 flex items-center justify-center hover:text-white cursor-pointer">
-          <i class="fa-solid fa-xmark text-xs"></i>
+        <button type="button" onclick="hideModal('horizonEditModal')" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 flex items-center justify-center hover:text-white cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <form onsubmit="handleSaveHorizonEdit(event)" class="space-y-3">
-        <input type="hidden" id="editHorizonCatKey" value="">
-        <input type="hidden" id="editHorizonSpanType" value="">
+      <form id="horizonEditForm" onsubmit="submitHorizonEditModal(event)" class="space-y-3">
+        <input type="hidden" id="editHorizonCat">
+        <input type="hidden" id="editHorizonSpan">
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category</label>
-          <input type="text" id="editHorizonCatName" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400">
+          <label class="block text-[11px] text-slate-400 font-semibold mb-1">Horizon Baseline Required (Auto × Months)</label>
+          <input type="number" id="editHorizonRequired" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 font-mono-val cursor-not-allowed">
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Multiplier Base (Calculated Required)</label>
-          <input type="text" id="editHorizonCalculatedReq" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 font-mono-val">
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Horizon Planned Allocation (₹) *</label>
+          <input type="number" id="editHorizonPlanned" step="any" min="0" required class="w-full bg-slate-900 border border-purple-500/50 rounded-xl px-3 py-2 text-xs text-white font-mono-val">
+          <p class="text-[10px] text-slate-400 mt-1">Lump sum to disburse in any month across the period.</p>
         </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-purple-300 mb-1">Custom Horizon Planned Allocation (₹)</label>
-          <input type="number" id="editHorizonCustomGoal" step="any" min="0" required class="w-full bg-slate-900 border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white font-mono-val focus:outline-none focus:border-purple-500">
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="hideModal('horizonEditModal')" class="flex-1 py-2 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-semibold">
+            Cancel
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition">
+            Apply Goal
+          </button>
         </div>
-
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-lg cursor-pointer mt-2">
-          Update Horizon Allocation
-        </button>
       </form>
     </div>
   </div>
 
-  <!-- Import Mode Selector Modal (Overwrite vs Append) -->
-  <div id="importModeModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 safe-top safe-bottom overflow-y-auto" style="display: none;">
-    <div class="max-w-sm mx-auto my-auto mt-16 glass-card rounded-3xl p-5 space-y-4 border border-indigo-500/40 shadow-2xl">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center border border-indigo-500/40 text-lg">
-          <i class="fa-solid fa-file-shield"></i>
-        </div>
-        <div>
-          <h3 class="text-sm font-black text-white">Import Strategy</h3>
-          <p class="text-[11px] text-slate-400">Choose how to apply this backup</p>
-        </div>
+  <!-- MODAL: IMPORT STRATEGY CONFIRMATION (OVERWRITE VS APPEND) -->
+  <div id="importConfirmModal" class="fixed inset-0 z-50 bg-[#030712]/95 backdrop-blur-2xl p-4 overflow-y-auto" style="display: none;">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-4 mx-auto my-auto mt-20 border border-indigo-500/40 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl mx-auto border border-indigo-400/30">
+        <i class="fa-solid fa-file-shield"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-black text-white">Import Strategy</h3>
+        <p class="text-xs text-slate-300 mt-1">Choose how to integrate data from the imported file into FinTrack.</p>
       </div>
 
-      <div class="p-3 bg-black/40 rounded-2xl border border-white/[0.08] text-xs text-slate-300 space-y-1">
-        <p><b class="text-white">Detected Data:</b> <span id="importSummaryBadge" class="text-indigo-300 font-mono-val">0 Records</span></p>
-        <p class="text-[11px] text-slate-400">Includes Transactions, Loans, Budgets, Horizons, and Configuration.</p>
-      </div>
-
-      <div class="space-y-2 pt-1">
-        <button type="button" onclick="executePendingImport('APPEND')" class="w-full p-3.5 rounded-2xl bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-500/40 hover:border-indigo-400 text-left active:scale-98 transition cursor-pointer">
-          <span class="text-xs font-bold text-white flex items-center gap-1.5">
-            <i class="fa-solid fa-layer-group text-indigo-400"></i> Append / Merge Data
-          </span>
-          <span class="text-[10px] text-slate-400 block mt-0.5">Keeps all current records on this device and adds only new or non-conflicting entries.</span>
+      <div class="space-y-2.5 pt-2 text-left">
+        <button type="button" onclick="executeChosenImportStrategy('append')" class="w-full p-3.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-emerald-500/40 cursor-pointer transition active:scale-98">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><i class="fa-solid fa-plus-circle"></i> Merge & Append</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Safe</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 leading-snug">Preserves all current data and adds only new transactions, categories, and plans from file.</p>
         </button>
 
-        <button type="button" onclick="executePendingImport('OVERWRITE')" class="w-full p-3.5 rounded-2xl bg-rose-950/25 border border-rose-500/40 hover:border-rose-400 text-left active:scale-98 transition cursor-pointer">
-          <span class="text-xs font-bold text-rose-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-rotate text-rose-400"></i> Overwrite Entire Portfolio
-          </span>
-          <span class="text-[10px] text-slate-400 block mt-0.5">Clears all current local records and completely replaces everything with the backup file.</span>
+        <button type="button" onclick="executeChosenImportStrategy('overwrite')" class="w-full p-3.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-rose-500/40 cursor-pointer transition active:scale-98">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-rose-400 flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> Replace & Overwrite Everything</span>
+            <span class="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-bold">Full Reset</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 leading-snug">Removes current local records completely and restores the exact state contained in the file.</p>
         </button>
       </div>
 
-      <div class="pt-2 flex justify-end">
-        <button type="button" onclick="cancelPendingImport()" class="px-4 py-2 bg-white/10 text-white text-xs font-semibold rounded-xl cursor-pointer">
-          Cancel
-        </button>
-      </div>
+      <button type="button" onclick="hideModal('importConfirmModal')" class="w-full py-2 text-xs font-semibold text-slate-400 hover:text-white transition">
+        Cancel Import
+      </button>
     </div>
   </div>
 
-    <script>
+  <!-- CONTINUE IN PART 2 -->
+
+    <!-- ================= APP CONTROLLER SCRIPT (PART 2) ================= -->
+  <script>
     const DEFAULT_DEBT_CATEGORIES = [
       "Gold loan", "Vehicle loan", "Personal loan", "Home loan",
       "Electronics", "Furniture", "Gadgets", "Credit card", "Others"
@@ -1199,7 +1173,7 @@
       carryOver: true
     };
 
-    // Global State
+    // State Variables
     let activeModule = 'hub';
     let currentTransactionType = 'Expense';
     let currentCatModalType = 'Expense';
@@ -1239,7 +1213,7 @@
 
     let pendingImportPayload = null;
 
-    // Charts Handles
+    // Chart Handles
     let debtChart = null, emiChart = null;
     let dailyWeeklyBarChart = null, dailyMonthlyCompareChart = null;
     let dailyCategoryDoughnutChart = null;
@@ -1276,7 +1250,7 @@
     }
 
     // -------------------------------------------------------------
-    // 1. LIQUID CAPITAL DISTRIBUTION & ACCOUNT TRANSACTIONS DRILLDOWN
+    // INTERACTIVE LIQUID CAPITAL & ACCOUNT DRILLDOWN LEDGER
     // -------------------------------------------------------------
     function openLiquidAccountsBreakdown() {
       history.pushState({ modal: 'liquidAccounts' }, '');
@@ -1294,24 +1268,23 @@
         const pct = totalLiquid > 0 ? Math.max(0, ((bal / totalLiquid) * 100)).toFixed(1) : 0;
         
         const card = document.createElement('div');
-        card.onclick = () => openAccountTransactionsView(acc.name);
-        card.className = "p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.07] hover:border-cyan-500/40 flex justify-between items-center cursor-pointer transition";
+        card.className = "p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.07] flex justify-between items-center cursor-pointer transition active:scale-98";
+        card.onclick = () => openAccountTransactionsModal(acc.name, bal);
         card.innerHTML = `
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-xs text-indigo-300 font-bold">
-              <i class="fa-solid fa-building-columns"></i>
+              <i class="fa-solid fa-wallet"></i>
             </div>
             <div>
               <span class="text-xs font-bold text-white block">${acc.name}</span>
-              <span class="text-[10px] text-slate-400 font-mono-val">${pct}% of capital • View transactions</span>
+              <span class="text-[10px] text-slate-400 font-mono-val">${pct}% of liquid capital</span>
             </div>
           </div>
           <div class="text-right flex items-center gap-2">
             <div>
               <span class="text-xs font-black ${bal >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-mono-val block">${formatINR(bal)}</span>
-              <span class="text-[9px] text-slate-500 font-medium">Reconciled</span>
+              <span class="text-[9px] text-indigo-300 font-medium">View Ledger <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </div>
-            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
           </div>
         `;
         listContainer.appendChild(card);
@@ -1320,90 +1293,283 @@
       showModal('liquidAccountsModal');
     }
 
-    function openAccountTransactionsView(accountName) {
+    function openAccountTransactionsModal(accountName, currentBalance) {
       history.pushState({ modal: 'accountTransactions' }, '');
-      const balanceMap = calculateAccountBalances();
-      const currentBal = balanceMap[accountName] || 0;
-
       document.getElementById('accountTxModalTitle').innerText = `${accountName} Transactions`;
-      document.getElementById('accountTxModalSubtitle').innerText = `Current Ledger Balance: ${formatINR(currentBal)}`;
+      document.getElementById('accountTxModalSubtitle').innerText = `Reconciled Balance across ledger`;
+      document.getElementById('accountTxModalBalance').innerText = formatINR(currentBalance);
 
-      const container = document.getElementById('accountTransactionsContainer');
-      container.innerHTML = '';
+      const list = document.getElementById('accountTxModalList');
+      list.innerHTML = '';
 
-      const matchedRecords = expenseRecords.filter(r => {
-        if (!r) return false;
-        if (r.type === 'Transfer') {
-          return r.account === accountName || r.toAccount === accountName;
-        }
-        return r.account === accountName;
-      });
+      const matched = expenseRecords.filter(r => r.account === accountName || r.toAccount === accountName);
+      matched.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || 0) - (a.id || 0));
 
-      matchedRecords.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || 0) - (a.id || 0));
-
-      if (matchedRecords.length === 0) {
-        container.innerHTML = `
-          <div class="p-6 text-center text-xs text-slate-400 glass-card rounded-2xl">
-            No transactions logged under ${accountName} yet.
-          </div>
-        `;
+      if (matched.length === 0) {
+        list.innerHTML = '<div class="text-xs text-slate-500 text-center py-6">No recorded transactions for this account.</div>';
       } else {
-        matchedRecords.forEach(r => {
-          const itemEl = document.createElement('div');
-          itemEl.className = "p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex justify-between items-center text-xs";
-          
-          let sign = '-';
-          let color = 'text-amber-400';
-          let icon = 'fa-receipt';
-          let iconBg = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
-          let label = r.category;
+        matched.forEach(tx => {
+          let impactText = '';
+          let impactClass = '';
+          let typeIcon = '';
 
-          if (r.type === 'Income') {
-            sign = '+';
-            color = 'text-emerald-400';
-            icon = 'fa-arrow-down';
-            iconBg = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
-          } else if (r.type === 'Transfer') {
-            icon = 'fa-arrow-right-arrow-left';
-            if (r.account === accountName) {
-              sign = '-';
-              color = 'text-rose-400';
-              iconBg = 'bg-rose-500/15 text-rose-400 border-rose-500/30';
-              label = `Transfer to ${r.toAccount}`;
+          if (tx.type === 'Income') {
+            impactText = `+${formatINR(tx.amount)}`;
+            impactClass = 'text-emerald-400';
+            typeIcon = 'fa-arrow-down text-emerald-400';
+          } else if (tx.type === 'Expense') {
+            impactText = `-${formatINR(tx.amount)}`;
+            impactClass = 'text-amber-400';
+            typeIcon = 'fa-arrow-up text-amber-400';
+          } else if (tx.type === 'Transfer') {
+            if (tx.account === accountName) {
+              impactText = `-${formatINR(tx.amount)}`;
+              impactClass = 'text-amber-400';
+              typeIcon = 'fa-arrow-right text-indigo-400';
             } else {
-              sign = '+';
-              color = 'text-emerald-400';
-              iconBg = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
-              label = `Transfer from ${r.account}`;
+              impactText = `+${formatINR(tx.amount)}`;
+              impactClass = 'text-emerald-400';
+              typeIcon = 'fa-arrow-left text-indigo-400';
             }
           }
 
-          itemEl.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-xl ${iconBg} border flex items-center justify-center text-xs">
-                <i class="fa-solid ${icon}"></i>
+          const row = document.createElement('div');
+          row.className = "p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05] flex justify-between items-center text-xs";
+          row.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-[10px]">
+                <i class="fa-solid ${typeIcon}"></i>
               </div>
               <div>
-                <span class="font-bold text-white block">${r.note || label}</span>
-                <span class="text-[10px] text-slate-400 font-mono-val">${r.date} • ${r.type}</span>
+                <span class="font-bold text-white block text-xs">${tx.note || tx.category}</span>
+                <span class="text-[10px] text-slate-400">${tx.date} • ${tx.category}</span>
               </div>
             </div>
-            <span class="font-black ${color} font-mono-val text-sm">${sign}₹ ${parseFloat(r.amount).toLocaleString('en-IN')}</span>
+            <span class="font-bold ${impactClass} font-mono-val">${impactText}</span>
           `;
-          container.appendChild(itemEl);
+          list.appendChild(row);
         });
       }
 
       showModal('accountTransactionsModal');
     }
 
-    function closeAccountTransactionsModal() {
-      hideModal('accountTransactionsModal');
+    // -------------------------------------------------------------
+    // SWIPE GESTURE ENGINE (PWA & APK HARDWARE BACKWARD FLIP)
+    // -------------------------------------------------------------
+    let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+
+    window.addEventListener('touchstart', e => {
+      if (e.touches && e.touches[0]) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchEndX = touchStartX;
+        touchEndY = touchStartY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+      if (e.touches && e.touches[0]) {
+        touchEndX = e.touches[0].clientX;
+        touchEndY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    function handleResolvedSwipe() {
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) > 65 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
+        if (deltaX > 0) {
+          if (history.state) {
+            history.back();
+          } else if (activeModule !== 'hub') {
+            navigateToHub();
+          }
+        } else {
+          cycleTabsForward();
+        }
+      }
+    }
+
+    window.addEventListener('touchend', handleResolvedSwipe, { passive: true });
+    window.addEventListener('touchcancel', handleResolvedSwipe, { passive: true });
+
+    function cycleTabsForward() {
+      if (activeModule === 'daily') {
+        const screens = ['dailyEntryScreen', 'dailySummaryScreen', 'dailyTrendsScreen', 'dailyCalendarScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchDailyScreen(screens[curIdx + 1]);
+      } else if (activeModule === 'planner') {
+        const screens = ['plannerInputScreen', 'plannerDashboardScreen', 'plannerHorizonScreen', 'plannerHistoryScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchPlannerScreen(screens[curIdx + 1]);
+      } else if (activeModule === 'debt') {
+        const screens = ['entryScreen', 'dashboardScreen', 'trendsScreen', 'plannerScreen'];
+        const curIdx = screens.findIndex(s => !document.getElementById(s).classList.contains('hidden'));
+        if (curIdx !== -1 && curIdx < screens.length - 1) switchDebtScreen(screens[curIdx + 1]);
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      const openModals = [
+        'accountTransactionsModal', 'targetEditModal', 'horizonEditModal', 'importConfirmModal',
+        'titleDetailModal', 'liquidAccountsModal', 'configModal', 'spendPopupModal', 
+        'debtPopupModal', 'authModal', 'settingsPopupModal', 'categoryModal', 
+        'expenseCatModal', 'accountModal'
+      ];
+      for (const mId of openModals) {
+        const el = document.getElementById(mId);
+        if (el && el.style.display !== 'none' && !el.classList.contains('hidden')) {
+          el.style.display = 'none';
+          return;
+        }
+      }
+
+      if (activeModule !== 'hub') {
+        navigateToHub(false);
+      }
+    });
+
+    // -------------------------------------------------------------
+    // NAVIGATION ROUTER
+    // -------------------------------------------------------------
+    function navigateToHub(pushHistory = true) {
+      activeModule = 'hub';
+      if (pushHistory) history.pushState({ page: 'hub' }, '');
+
+      const hubContainer = document.getElementById('hubViewContainer');
+      hubContainer.className = "space-y-3.5 page-turn-back";
+      hubContainer.classList.remove('hidden');
+
+      document.getElementById('dailyModuleContainer').classList.add('hidden');
+      document.getElementById('plannerModuleContainer').classList.add('hidden');
+      document.getElementById('debtModuleContainer').classList.add('hidden');
+      document.getElementById('bottomNavBar').classList.add('hidden');
+
+      document.getElementById('appTitleText').innerHTML = 'Finance Hub <span class="text-[9px] font-extrabold bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded-full border border-indigo-400/30">Executive</span>';
+      document.getElementById('appSubtitleText').innerText = 'Wealth & Liability Command';
+      document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-compass"></i>';
+      document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white font-bold text-base shadow-lg";
+
+      renderHubOverview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function navigateToModule(moduleName, pushHistory = true) {
+      activeModule = moduleName;
+      if (pushHistory) history.pushState({ page: 'module', module: moduleName }, '');
+
+      document.getElementById('hubViewContainer').classList.add('hidden');
+      document.getElementById('bottomNavBar').classList.remove('hidden');
+
+      const debtContainer = document.getElementById('debtModuleContainer');
+      const plannerContainer = document.getElementById('plannerModuleContainer');
+      const dailyContainer = document.getElementById('dailyModuleContainer');
+
+      debtContainer.classList.add('hidden');
+      plannerContainer.classList.add('hidden');
+      dailyContainer.classList.add('hidden');
+
+      if (moduleName === 'daily') {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-bolt"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Daily Spends <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Live Feed</span>';
+        document.getElementById('appSubtitleText').innerText = 'Inflow, outflow & accounts';
+
+        dailyContainer.className = "space-y-3.5 page-turn-in";
+        dailyContainer.classList.remove('hidden');
+        renderBottomNav('daily');
+        switchDailyScreen('dailyEntryScreen');
+      } else if (moduleName === 'planner') {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-chart-pie"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Budget Planner <span class="text-[9px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">Targets</span>';
+        document.getElementById('appSubtitleText').innerText = 'Planned targets, Arrears & Horizons';
+
+        plannerContainer.className = "space-y-3.5 page-turn-in";
+        plannerContainer.classList.remove('hidden');
+        renderBottomNav('planner');
+        switchPlannerScreen('plannerInputScreen');
+      } else {
+        document.getElementById('modeIcon').className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-600 flex items-center justify-center text-slate-950 font-bold text-base shadow-lg";
+        document.getElementById('modeIcon').innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+        document.getElementById('appTitleText').innerHTML = 'Debt & EMI <span class="text-[9px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">Commitments</span>';
+        document.getElementById('appSubtitleText').innerText = 'Tenor, APR & amortizations';
+
+        debtContainer.className = "space-y-3.5 page-turn-in";
+        debtContainer.classList.remove('hidden');
+        renderBottomNav('debt');
+        switchDebtScreen('entryScreen');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // -------------------------------------------------------------
-    // 2. DYNAMIC THREE-METRIC ENGINE & CUMULATIVE ROLL-FORWARD
+    // FINANCIAL THRESHOLDS & BALANCES
     // -------------------------------------------------------------
+    function renderHubOverview() {
+      const balanceMap = calculateAccountBalances();
+      let totalLiquid = 0;
+      Object.values(balanceMap).forEach(b => totalLiquid += b);
+
+      const totalOutflow = expenseRecords.filter(r => r.type === 'Expense').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const totalInflow = expenseRecords.filter(r => r.type === 'Income').reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const surplus = totalInflow - totalOutflow;
+
+      document.getElementById('hubNetLiquid').innerText = formatINR(totalLiquid);
+      document.getElementById('hubMonthInflow').innerText = formatINR(totalInflow);
+      document.getElementById('hubMonthOutflow').innerText = formatINR(totalOutflow);
+      document.getElementById('hubMonthSurplus').innerText = formatINR(surplus);
+      document.getElementById('tileSpendThisMonth').innerText = formatINR(totalOutflow);
+
+      const surplusValEl = document.getElementById('hubMonthSurplus');
+      const surplusBox = document.getElementById('hubSurplusBox');
+
+      if (surplus < 0) {
+        surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-rose-400";
+        surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40";
+      } else if (totalInflow > 0) {
+        const surplusRatio = (surplus / totalInflow) * 100;
+        if (surplusRatio < 50) {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-emerald-300";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-emerald-400/30";
+        } else if (surplusRatio >= 50 && surplusRatio <= 99) {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-amber-500";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-amber-600/40";
+        } else {
+          surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-rose-500";
+          surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-rose-500/40";
+        }
+      } else {
+        surplusValEl.className = "text-xs font-black mt-1 block font-mono-val text-slate-300";
+        surplusBox.className = "bg-black/35 backdrop-blur-md p-2.5 rounded-2xl border border-white/10";
+      }
+
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const plannedList = getOrInitializeMonthBudget(currentMonth);
+      const totalPlanned = plannedList.reduce((s, it) => s + (parseFloat(it.plannedAmount) || 0), 0);
+      const completionPct = totalPlanned > 0 ? ((totalOutflow / totalPlanned) * 100).toFixed(0) : 0;
+      document.getElementById('tilePlannerTarget').innerText = formatINR(totalPlanned);
+      document.getElementById('tilePlannerSpent').innerText = `${formatINR(totalOutflow)} (${completionPct}%)`;
+      document.getElementById('tilePlannerPctBadge').innerText = `${completionPct}% Used`;
+
+      const { items: debtItems } = getDebtDatasetForMonth('ALL', 'ALL');
+      const totalDebtEmi = debtItems.reduce((s, it) => s + (parseFloat(it.emi) || 0), 0);
+      const totalDebtPending = debtItems.reduce((s, it) => s + (parseFloat(it.balance) || 0), 0);
+      document.getElementById('tileDebtEmi').innerText = `${formatINR(totalDebtEmi)}/mo`;
+      document.getElementById('tileDebtTotalPending').innerText = formatINR(totalDebtPending);
+    }
+
+    // -------------------------------------------------------------
+    // PLANNER LOGIC & ARREARS RECONCILIATION
+    // -------------------------------------------------------------
+    function saveMonthlyBudgetStorage(pushCloud = true) {
+      localStorage.setItem('monthly_budgets_v1', JSON.stringify(monthlyBudgets));
+      localStorage.setItem('horizon_budgets_v1', JSON.stringify(horizonBudgets));
+      if (pushCloud) pushAllDataToCloud();
+    }
+
     function getOrInitializeMonthBudget(monthKey) {
       if (monthlyBudgets[monthKey] && monthlyBudgets[monthKey].length > 0) {
         monthlyBudgets[monthKey].forEach(b => {
@@ -1464,7 +1630,7 @@
           <div>
             <span class="text-xs font-bold text-white block">${item.category}</span>
             <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-400">
-              <span>Required: <b class="text-slate-300 font-mono-val">${formatINR(required)}</b></span>
+              <span>Req: <b class="text-slate-300 font-mono-val">${formatINR(required)}</b></span>
               <span>•</span>
               <span>Planned: <b class="text-purple-300 font-mono-val">${formatINR(item.plannedAmount)}</b></span>
               <span>•</span>
@@ -1472,13 +1638,13 @@
             </div>
             <div class="mt-1 text-[10px]">
               ${totalPendingWithArrears > 0 
-                ? `<span class="text-rose-400 font-bold font-mono-val">Pending: ${formatINR(totalPendingWithArrears)}${pastArrears > 0 ? `(includes ${formatINR(pastArrears)} rolled lag)` : ''}</span>`
-                : `<span class="text-emerald-400 font-bold font-mono-val">✓ Fully Met & Cleared</span>`
+                ? `<span class="text-rose-400 font-bold font-mono-val">Pending: ${formatINR(totalPendingWithArrears)}${pastArrears > 0 ? `(includes ${formatINR(pastArrears)} prior)` : ''}</span>`
+                : `<span class="text-emerald-400 font-bold font-mono-val">✓ Target Fully Met / Cleared</span>`
               }
             </div>
           </div>
-          <button type="button" onclick="openTargetEditModal('${item.category}', ${required}, ${item.plannedAmount})" class="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 hover:text-white flex items-center justify-center cursor-pointer">
-            <i class="fa-solid fa-pen-to-square text-xs"></i>
+          <button type="button" onclick="openTargetEditModal('${item.category}', ${required}, ${item.plannedAmount})" class="text-indigo-400 text-xs font-semibold p-1 cursor-pointer">
+            <i class="fa-solid fa-pen-to-square"></i>
           </button>
         `;
         container.appendChild(card);
@@ -1486,56 +1652,51 @@
       document.getElementById('plannerAllocationsCount').innerText = `${plannedList.length} Categories`;
     }
 
-    function openTargetEditModal(category, required, planned) {
+    function openTargetEditModal(cat, req, planned) {
       history.pushState({ modal: 'targetEdit' }, '');
-      const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-      document.getElementById('editBudgetTargetMonthLabel').innerText = `Period: ${monthKey}`;
-      document.getElementById('editTargetOriginalCat').value = category;
-      document.getElementById('editTargetCatName').value = category;
-      document.getElementById('editTargetRequired').value = required;
+      document.getElementById('editTargetOrigCat').value = cat;
+      document.getElementById('editTargetCatName').value = cat;
+      document.getElementById('editTargetRequired').value = req;
       document.getElementById('editTargetPlanned').value = planned;
-      showModal('budgetTargetEditModal');
+      showModal('targetEditModal');
     }
 
-    function handleSaveTargetEdit(e) {
+    function submitTargetEditModal(e) {
       e.preventDefault();
       const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-      const origCat = document.getElementById('editTargetOriginalCat').value;
+      const origCat = document.getElementById('editTargetOrigCat').value;
       const newCat = document.getElementById('editTargetCatName').value.trim();
       const newReq = parseFloat(document.getElementById('editTargetRequired').value) || 0;
       const newPlan = parseFloat(document.getElementById('editTargetPlanned').value) || 0;
 
-      const list = getOrInitializeMonthBudget(monthKey);
-      const target = list.find(b => b.category === origCat);
+      const target = monthlyBudgets[monthKey].find(b => b.category.toLowerCase() === origCat.toLowerCase());
       if (target) {
         target.category = newCat;
         target.requiredAmount = newReq;
         target.plannedAmount = newPlan;
         saveMonthlyBudgetStorage();
+        hideModal('targetEditModal');
         renderBudgetPlanner();
         renderHubOverview();
-        hideModal('budgetTargetEditModal');
-        notify(`Updated ${newCat}`);
+        notify(`Updated ${newCat} targets`);
       }
     }
 
-    function handleDeleteBudgetTarget() {
-      if (confirm("Remove this category from the planned monthly budget?")) {
-        const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
-        const origCat = document.getElementById('editTargetOriginalCat').value;
-        if (monthlyBudgets[monthKey]) {
-          monthlyBudgets[monthKey] = monthlyBudgets[monthKey].filter(b => b.category !== origCat);
-          saveMonthlyBudgetStorage();
-          renderBudgetPlanner();
-          renderHubOverview();
-          hideModal('budgetTargetEditModal');
-          notify("Target removed.");
-        }
+    function deleteTargetCategoryItem() {
+      const monthKey = document.getElementById('plannerMonthSelector').value || new Date().toISOString().slice(0, 7);
+      const origCat = document.getElementById('editTargetOrigCat').value;
+      if (confirm(`Remove allocation for ${origCat}?`)) {
+        monthlyBudgets[monthKey] = monthlyBudgets[monthKey].filter(b => b.category.toLowerCase() !== origCat.toLowerCase());
+        saveMonthlyBudgetStorage();
+        hideModal('targetEditModal');
+        renderBudgetPlanner();
+        renderHubOverview();
+        notify(`Removed ${origCat}`);
       }
     }
 
     // -------------------------------------------------------------
-    // 3. COLOR-CODED STATUS TAB (PAID & BUFFER RULES)
+    // PLANNER DASHBOARD: STATUS COLOR THRESHOLDING
     // -------------------------------------------------------------
     function renderPlannerDashboard() {
       const monthKey = document.getElementById('plannerDashMonthSelector').value || new Date().toISOString().slice(0, 7);
@@ -1554,35 +1715,33 @@
         const plannedAmt = parseFloat(item.plannedAmount) || 0;
         const pastArrears = calculateCategoryArrears(item.category, monthKey);
         const effectiveGoal = plannedAmt + Math.max(0, pastArrears);
-        const remainingBuffer = plannedAmt - catActual; // buffer/lag
+        const bufferOrLag = effectiveGoal - catActual;
 
-        // Rule for Paid Color:
-        // Amber if paid <= planned budget, Red if paid > planned budget
-        const paidColor = catActual <= plannedAmt ? 'text-amber-400' : 'text-rose-500';
+        // Requirement 4: Paid Color Code (Amber if <= planned, Red if > planned)
+        const paidColor = catActual <= plannedAmt ? 'text-amber-400' : 'text-rose-400';
 
-        // Rule for Net Planned Buffer / Lag Color:
-        // Green if buffer > 50% of planned
-        // Amber if buffer <= 50% of planned and > 0
-        // Red for 0 and negative values
-        let bufferColor = 'text-emerald-400';
-        let bufferBadgeText = 'Healthy Buffer';
-        let bufferBadgeClass = 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300';
+        // Requirement 4: Net Planned Buffer / Lag Color Code
+        // Green if > 50% of planned, Amber if < 50%, Red if 0 or negative
+        let bufferColor = 'text-rose-400';
+        let bufferBadgeText = `${formatINR(bufferOrLag)} Lag`;
+        let barColor = 'bg-rose-500';
 
-        if (remainingBuffer <= 0) {
-          bufferColor = 'text-rose-500';
-          bufferBadgeText = 'Exhausted / Lag';
-          bufferBadgeClass = 'border-rose-500/30 bg-rose-500/15 text-rose-300';
-        } else if (remainingBuffer <= (plannedAmt * 0.50)) {
-          bufferColor = 'text-amber-400';
-          bufferBadgeText = '<50% Remaining';
-          bufferBadgeClass = 'border-amber-500/30 bg-amber-500/15 text-amber-300';
-        } else {
-          bufferColor = 'text-emerald-400';
-          bufferBadgeText = '>50% Buffer';
-          bufferBadgeClass = 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300';
+        if (bufferOrLag <= 0) {
+          bufferColor = 'text-rose-400';
+          bufferBadgeText = `Deficit: ${formatINR(Math.abs(bufferOrLag))}`;
+          barColor = 'bg-rose-500';
+        } else if (plannedAmt > 0) {
+          const bufferRatio = (bufferOrLag / plannedAmt) * 100;
+          if (bufferRatio > 50) {
+            bufferColor = 'text-emerald-400';
+            bufferBadgeText = `Buffer: ${formatINR(bufferOrLag)}`;
+            barColor = 'bg-emerald-500';
+          } else {
+            bufferColor = 'text-amber-400';
+            bufferBadgeText = `Buffer: ${formatINR(bufferOrLag)}`;
+            barColor = 'bg-amber-500';
+          }
         }
-
-        const completionPct = plannedAmt > 0 ? Math.min(100, Math.round((catActual / plannedAmt) * 100)) : 0;
 
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-4 space-y-2.5";
@@ -1591,47 +1750,48 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-white">${item.category}</span>
-                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${bufferBadgeClass} font-mono-val">${bufferBadgeText}</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.04] text-slate-300 font-mono-val">
+                  Planned: ${formatINR(plannedAmt)}
+                </span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
-                Required: <b class="text-slate-300 font-mono-val">${formatINR(item.requiredAmount || item.plannedAmount)}</b> • 
-                Planned: <b class="text-purple-200 font-mono-val">${formatINR(plannedAmt)}</b>
+                Required Min: <b class="text-slate-300 font-mono-val">${formatINR(item.requiredAmount || plannedAmt)}</b>
+                ${pastArrears > 0 ? `• <span class="text-amber-400">Past Lag: ${formatINR(pastArrears)}</span>` : ''}
               </span>
-              ${pastArrears > 0 ? `<span class="text-[10px] text-amber-400 font-medium font-mono-val block">Prior Unpaid Lag: ${formatINR(pastArrears)}</span>` : ''}
             </div>
             <div class="text-right">
-              <span class="text-xs font-extrabold ${bufferColor} block font-mono-val">
-                ${remainingBuffer >= 0 ? '+' + formatINR(remainingBuffer) : formatINR(remainingBuffer)}
+              <span class="text-xs font-extrabold ${paidColor} block font-mono-val">
+                Paid: ${formatINR(catActual)}
               </span>
-              <span class="text-[10px] text-slate-400 mt-0.5 block">
-                Paid: <b class="${paidColor} font-mono-val">${formatINR(catActual)}</b>
+              <span class="text-[10px] font-bold ${bufferColor} mt-0.5 block font-mono-val">
+                ${bufferBadgeText}
               </span>
             </div>
           </div>
           <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-white/10">
-            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: ${completionPct}%"></div>
+            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${Math.min(100, (catActual / (effectiveGoal || 1)) * 100)}%"></div>
           </div>
         `;
         container.appendChild(card);
       });
 
       const totalBurnPct = totalPlanned > 0 ? ((totalActual / totalPlanned) * 100).toFixed(0) : 0;
-      const overallBuffer = totalPlanned - totalActual;
+      const totalRemaining = totalPlanned - totalActual;
 
       document.getElementById('kpiTotalPlannedBudget').innerText = formatINR(totalPlanned);
       
-      const overallPaidEl = document.getElementById('kpiPlannerTotalActualSpent');
-      overallPaidEl.innerText = formatINR(totalActual);
-      overallPaidEl.className = `text-base font-black mt-0.5 block font-mono-val ${totalActual <= totalPlanned ? 'text-amber-400' : 'text-rose-500'}`;
+      const kpiPaidEl = document.getElementById('kpiPlannerTotalActualSpent');
+      kpiPaidEl.innerText = formatINR(totalActual);
+      kpiPaidEl.className = `text-base font-black mt-0.5 block font-mono-val ${totalActual <= totalPlanned ? 'text-amber-400' : 'text-rose-400'}`;
 
-      const overallBufferEl = document.getElementById('kpiPlannerTotalRemainingBuffer');
-      overallBufferEl.innerText = (overallBuffer >= 0 ? '+' : '') + formatINR(overallBuffer);
-      if (overallBuffer <= 0) {
-        overallBufferEl.className = 'text-base font-black mt-0.5 block font-mono-val text-rose-500';
-      } else if (overallBuffer <= (totalPlanned * 0.5)) {
-        overallBufferEl.className = 'text-base font-black mt-0.5 block font-mono-val text-amber-400';
+      const kpiBufferEl = document.getElementById('kpiPlannerTotalRemainingBuffer');
+      kpiBufferEl.innerText = formatINR(totalRemaining);
+      if (totalRemaining <= 0) {
+        kpiBufferEl.className = "text-base font-black mt-0.5 block font-mono-val text-rose-400";
+      } else if (totalPlanned > 0 && (totalRemaining / totalPlanned) * 100 > 50) {
+        kpiBufferEl.className = "text-base font-black mt-0.5 block font-mono-val text-emerald-400";
       } else {
-        overallBufferEl.className = 'text-base font-black mt-0.5 block font-mono-val text-emerald-400';
+        kpiBufferEl.className = "text-base font-black mt-0.5 block font-mono-val text-amber-400";
       }
 
       document.getElementById('kpiBudgetOverallBurnBadge').innerText = `${totalBurnPct}% Used`;
@@ -1639,7 +1799,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. MULTI-PERIOD HORIZON MULTIPLIERS & COMPLETE EDITING
+    // HORIZONS ENGINE: MULTIPLIER (×3, ×6, ×12) & HORIZON MODAL EDIT
     // -------------------------------------------------------------
     function renderHorizonPlanner() {
       const spanType = document.getElementById('horizonSpanSelector').value;
@@ -1647,7 +1807,7 @@
       const spanTitle = spanType === 'quarterly' ? 'Quarterly (3 Months)' : (spanType === 'halfyearly' ? 'Half-Yearly (6 Months)' : 'Annual (12 Months)');
       
       document.getElementById('horizonKpiTitle').innerText = `${spanTitle} Horizon`;
-      document.getElementById('horizonMonthsSpanBadge').innerText = `${multiplier} Months Window (×${multiplier})`;
+      document.getElementById('horizonMonthsSpanBadge').innerText = `${multiplier} Months Scope`;
 
       const now = new Date();
       const horizonMonths = [];
@@ -1665,30 +1825,30 @@
       let totalHorizonPaid = 0;
 
       activeCategories.forEach(cat => {
-        const currentMonthKey = now.toISOString().slice(0, 7);
-        const currentPlans = getOrInitializeMonthBudget(currentMonthKey);
-        const catBase = currentPlans.find(b => b.category.toLowerCase() === cat.toLowerCase());
+        const currentMonthKey = horizonMonths[0];
+        const curList = getOrInitializeMonthBudget(currentMonthKey);
+        const curItem = curList.find(b => b.category.toLowerCase() === cat.toLowerCase());
+        
+        const baseMonthlyReq = curItem ? (parseFloat(curItem.requiredAmount) || parseFloat(curItem.plannedAmount) || 0) : 0;
+        const baseMonthlyPlan = curItem ? (parseFloat(curItem.plannedAmount) || 0) : 0;
 
-        const baseMonthlyReq = catBase ? (parseFloat(catBase.requiredAmount) || parseFloat(catBase.plannedAmount) || 0) : 0;
-        const baseMonthlyPlan = catBase ? (parseFloat(catBase.plannedAmount) || 0) : 0;
-
-        // Auto multiply by 3, 6, or 12
-        const calculatedHorizonReq = baseMonthlyReq * multiplier;
-        const calculatedHorizonPlan = baseMonthlyPlan * multiplier;
+        // Requirement 3: Multiplier calculation (multiply by 3, 6, 12)
+        const periodComputedRequired = baseMonthlyReq * multiplier;
+        const periodComputedPlannedDefault = baseMonthlyPlan * multiplier;
 
         const horizonKey = `${spanType}_${cat}`;
-        const finalHorizonPlanned = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : calculatedHorizonPlan;
+        const finalPlannedHorizon = horizonBudgets[horizonKey] !== undefined ? horizonBudgets[horizonKey] : periodComputedPlannedDefault;
 
         const totalPaidInPeriod = expenseRecords
           .filter(r => r.type === 'Expense' && r.category.toLowerCase() === cat.toLowerCase() && horizonMonths.some(m => r.date && r.date.startsWith(m)))
           .reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
 
-        totalHorizonReq += calculatedHorizonReq;
-        totalHorizonPlanned += finalHorizonPlanned;
+        totalHorizonReq += periodComputedRequired;
+        totalHorizonPlanned += finalPlannedHorizon;
         totalHorizonPaid += totalPaidInPeriod;
 
-        const remainingToDisburse = finalHorizonPlanned - totalPaidInPeriod;
-        const progressPct = finalHorizonPlanned > 0 ? Math.min(100, Math.round((totalPaidInPeriod / finalHorizonPlanned) * 100)) : 0;
+        const remainingToDisburse = finalPlannedHorizon - totalPaidInPeriod;
+        const progressPct = finalPlannedHorizon > 0 ? Math.min(100, Math.round((totalPaidInPeriod / finalPlannedHorizon) * 100)) : 0;
 
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-4 space-y-2.5";
@@ -1697,16 +1857,16 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-xs font-bold text-white">${cat}</span>
-                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/20 text-purple-200 font-mono-val">${progressPct}% Disbursed</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/30 bg-purple-500/20 text-purple-200 font-mono-val">${progressPct}% Paid</span>
               </div>
               <span class="text-[11px] text-slate-400 mt-1 block">
-                Required (${multiplier}×): <b class="text-slate-200 font-mono-val">${formatINR(calculatedHorizonReq)}</b> 
-                (${formatINR(baseMonthlyReq)}/mo)
+                Required (${multiplier}M): <b class="text-slate-300 font-mono-val">${formatINR(periodComputedRequired)}</b> 
+                (${formatINR(baseMonthlyReq)}/mo × ${multiplier})
               </span>
             </div>
             <div class="text-right">
-              <span class="text-xs font-bold text-purple-300 font-mono-val block">${formatINR(finalHorizonPlanned)} Planned</span>
-              <button type="button" onclick="openHorizonEditModal('${cat}', '${spanType}', ${calculatedHorizonReq}, ${finalHorizonPlanned})" class="text-[10px] text-indigo-400 hover:text-indigo-200 flex items-center gap-1 justify-end mt-0.5 cursor-pointer">
+              <span class="text-xs font-bold text-purple-300 font-mono-val block">Horizon Goal: ${formatINR(finalPlannedHorizon)}</span>
+              <button type="button" onclick="openHorizonEditModal('${cat}', '${spanType}', ${periodComputedRequired}, ${finalPlannedHorizon})" class="text-[10px] text-indigo-400 hover:underline">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Details
               </button>
             </div>
@@ -1717,9 +1877,9 @@
           </div>
 
           <div class="flex justify-between items-center text-[10px] pt-1 border-t border-white/[0.06]">
-            <span class="text-slate-400">Paid to date: <b class="text-amber-400 font-mono-val">${formatINR(totalPaidInPeriod)}</b></span>
+            <span class="text-slate-400">Total Paid: <b class="text-amber-400 font-mono-val">${formatINR(totalPaidInPeriod)}</b></span>
             <span class="${remainingToDisburse <= 0 ? 'text-emerald-400' : 'text-purple-300'} font-bold font-mono-val">
-              ${remainingToDisburse <= 0 ? '✓ Horizon Target Cleared' : `${formatINR(remainingToDisburse)} remaining to pay`}
+              ${remainingToDisburse <= 0 ? '✓ Goal Cleared' : `${formatINR(remainingToDisburse)} remaining to pay any month`}
             </span>
           </div>
         `;
@@ -1731,74 +1891,33 @@
       document.getElementById('kpiHorizonTotalPaid').innerText = formatINR(totalHorizonPaid);
     }
 
-    function openHorizonEditModal(cat, spanType, calculatedReq, currentGoal) {
+    function openHorizonEditModal(cat, spanType, reqVal, planVal) {
       history.pushState({ modal: 'horizonEdit' }, '');
-      document.getElementById('editHorizonSpanLabel').innerText = `Horizon: ${spanType.toUpperCase()}`;
-      document.getElementById('editHorizonCatKey').value = cat;
-      document.getElementById('editHorizonSpanType').value = spanType;
-      document.getElementById('editHorizonCatName').value = cat;
-      document.getElementById('editHorizonCalculatedReq').value = formatINR(calculatedReq);
-      document.getElementById('editHorizonCustomGoal').value = currentGoal;
-      showModal('horizonGoalEditModal');
+      document.getElementById('editHorizonCat').value = cat;
+      document.getElementById('editHorizonSpan').value = spanType;
+      document.getElementById('horizonEditModalTitle').innerText = `Edit ${cat} Horizon`;
+      document.getElementById('horizonEditModalSubtitle').innerText = `${spanType.toUpperCase()} Horizon Settings`;
+      document.getElementById('editHorizonRequired').value = reqVal;
+      document.getElementById('editHorizonPlanned').value = planVal;
+      showModal('horizonEditModal');
     }
 
-    function handleSaveHorizonEdit(e) {
+    function submitHorizonEditModal(e) {
       e.preventDefault();
-      const cat = document.getElementById('editHorizonCatKey').value;
-      const spanType = document.getElementById('editHorizonSpanType').value;
-      const goal = parseFloat(document.getElementById('editHorizonCustomGoal').value) || 0;
+      const cat = document.getElementById('editHorizonCat').value;
+      const spanType = document.getElementById('editHorizonSpan').value;
+      const newPlanned = parseFloat(document.getElementById('editHorizonPlanned').value) || 0;
 
-      horizonBudgets[`${spanType}_${cat}`] = goal;
+      horizonBudgets[`${spanType}_${cat}`] = newPlanned;
       saveMonthlyBudgetStorage();
+      hideModal('horizonEditModal');
       renderHorizonPlanner();
-      hideModal('horizonGoalEditModal');
-      notify(`Updated ${cat} ${spanType} allocation`);
+      notify(`Updated ${cat} ${spanType} horizon allocation!`);
     }
 
     // -------------------------------------------------------------
-    // 5. UNIVERSAL EXPORT & IMPORT ENGINE (OVERWRITE VS APPEND)
+    // UNIVERSAL BACKUP & SMART IMPORT (OVERWRITE VS MERGE/APPEND)
     // -------------------------------------------------------------
-    function exportJSONBackup() {
-      const backup = {
-        version: "3.0",
-        appTitle: "FinTrack Executive Hub Portfolio",
-        exportedAt: new Date().toISOString(),
-        expenseRecords,
-        debtRecords,
-        monthlyBudgets,
-        horizonBudgets,
-        expenseCategories,
-        incomeCategories,
-        debtCategories: categories,
-        accountsList,
-        appConfig
-      };
-      const jsonStr = JSON.stringify(backup, null, 2);
-      const fileName = `FinTrack_Full_Portfolio_${new Date().toISOString().slice(0, 10)}.json`;
-      downloadBlobWithFallback(jsonStr, fileName, 'application/json;charset=utf-8;');
-    }
-
-    function exportToCSV() {
-      let csv = 'RecordType,ID,DateOrMonth,Title,Category,Amount,RequiredOrEMI,Rate,MonthsLeft,Account,ToAccount,Priority,Notes\r\n';
-      
-      debtRecords.forEach(r => {
-        csv += `"Debt","${r.id || ''}","${r.month || ''}","${(r.metric || '').replace(/"/g, '""')}","${(r.category || '').replace(/"/g, '""')}",${r.balance || 0},${r.emi || 0},${r.rate || 0},${r.monthsLeft || ''},"","","${r.priority || 'Normal'}","${(r.notes || '').replace(/"/g, '""')}"\r\n`;
-      });
-
-      expenseRecords.forEach(r => {
-        csv += `"Daily","${r.id || ''}","${r.date || ''}","${(r.type || 'Expense')}","${(r.category || '').replace(/"/g, '""')}",${r.amount || 0},0,0,0,"${(r.account || '').replace(/"/g, '""')}","${(r.toAccount || '').replace(/"/g, '""')}","Normal","${(r.note || '').replace(/"/g, '""')}"\r\n`;
-      });
-
-      Object.entries(monthlyBudgets).forEach(([mKey, list]) => {
-        list.forEach(b => {
-          csv += `"Budget","","${mKey}","","${b.category}",${b.plannedAmount || 0},${b.requiredAmount || 0},0,0,"","","Normal",""\r\n`;
-        });
-      });
-
-      const fileName = `FinTrack_Universal_Spreadsheet_${new Date().toISOString().slice(0, 10)}.csv`;
-      downloadBlobWithFallback(csv, fileName, 'text/csv;charset=utf-8;');
-    }
-
     function triggerImportFileInput() {
       const input = document.getElementById('universalFileInput');
       if (input) input.click();
@@ -1815,12 +1934,13 @@
         const content = e.target.result;
         try {
           if (fileName.endsWith('.json') || content.trim().startsWith('{')) {
-            const data = JSON.parse(content);
-            prepareImportDataPayload(data, 'JSON');
+            pendingImportPayload = { type: 'JSON', data: JSON.parse(content) };
           } else {
-            const data = parseCSVToPayload(content);
-            prepareImportDataPayload(data, 'CSV');
+            pendingImportPayload = { type: 'CSV', data: content };
           }
+          closeSettingsModal();
+          history.pushState({ modal: 'importConfirm' }, '');
+          showModal('importConfirmModal');
         } catch (err) {
           notify("Failed to parse file: " + err.message);
         }
@@ -1830,149 +1950,55 @@
       reader.readAsText(file);
     }
 
-    function parseCSVToPayload(csvString) {
-      const lines = csvString.split(/\r?\n/).filter(line => line.trim().length > 0);
-      const parsedExpenses = [];
-      const parsedDebts = [];
-      const parsedBudgets = {};
-
-      for (let i = 1; i < lines.length; i++) {
-        const cols = parseCSVLine(lines[i]);
-        if (!cols || cols.length < 5) continue;
-
-        const mod = cols[0].replace(/"/g, '').trim();
-        const rowId = cols[1] ? cols[1].replace(/"/g, '').trim() : '';
-        const dateOrMonth = cols[2].replace(/"/g, '').trim();
-        const titleOrType = cols[3].replace(/"/g, '').trim();
-        const category = cols[4].replace(/"/g, '').trim();
-        const amount = parseFloat(cols[5]) || 0;
-        const requiredOrEmi = parseFloat(cols[6]) || 0;
-        const rate = parseFloat(cols[7]) || 0;
-        const monthsLeft = parseInt(cols[8]) || 12;
-        const account = (cols[9] || '').replace(/"/g, '').trim();
-        const toAccount = (cols[10] || '').replace(/"/g, '').trim();
-        const priority = (cols[11] || 'Normal').replace(/"/g, '').trim();
-        const notes = (cols[12] || '').replace(/"/g, '').trim();
-
-        if (mod === 'Daily') {
-          parsedExpenses.push({
-            id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
-            type: titleOrType || 'Expense',
-            date: dateOrMonth,
-            category: category,
-            amount: amount,
-            account: account || 'Cash Wallet',
-            toAccount: toAccount || '',
-            note: notes
-          });
-        } else if (mod === 'Debt') {
-          parsedDebts.push({
-            id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
-            month: dateOrMonth,
-            metric: titleOrType,
-            category: category,
-            balance: amount,
-            emi: requiredOrEmi,
-            rate: rate,
-            monthsLeft: monthsLeft,
-            priority: priority,
-            notes: notes
-          });
-        } else if (mod === 'Budget') {
-          if (!parsedBudgets[dateOrMonth]) parsedBudgets[dateOrMonth] = [];
-          parsedBudgets[dateOrMonth].push({
-            category,
-            requiredAmount: requiredOrEmi,
-            plannedAmount: amount
-          });
-        }
-      }
-
-      return {
-        expenseRecords: parsedExpenses,
-        debtRecords: parsedDebts,
-        monthlyBudgets: parsedBudgets
-      };
-    }
-
-    function prepareImportDataPayload(payload, format) {
-      pendingImportPayload = payload;
-      const countExp = (payload.expenseRecords || []).length;
-      const countDebt = (payload.debtRecords || []).length;
-      const countBudgets = Object.keys(payload.monthlyBudgets || {}).length;
-
-      document.getElementById('importSummaryBadge').innerText = 
-        `${countExp} Spends, ${countDebt} Loans, ${countBudgets} Budgeted Months (${format})`;
-
-      showModal('importModeModal');
-    }
-
-    function cancelPendingImport() {
-      pendingImportPayload = null;
-      hideModal('importModeModal');
-    }
-
-    function executePendingImport(mode) {
+    function executeChosenImportStrategy(strategy) {
       if (!pendingImportPayload) return;
-      const data = pendingImportPayload;
+      hideModal('importConfirmModal');
 
-      if (mode === 'OVERWRITE') {
-        // Clear all current datasets
+      if (pendingImportPayload.type === 'JSON') {
+        processJSONImport(pendingImportPayload.data, strategy);
+      } else {
+        processCSVImport(pendingImportPayload.data, strategy);
+      }
+      pendingImportPayload = null;
+    }
+
+    function processJSONImport(data, strategy) {
+      if (strategy === 'overwrite') {
         expenseRecords = Array.isArray(data.expenseRecords) ? data.expenseRecords : [];
         debtRecords = Array.isArray(data.debtRecords) ? data.debtRecords : [];
-        monthlyBudgets = (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') ? data.monthlyBudgets : {};
-        horizonBudgets = (data.horizonBudgets && typeof data.horizonBudgets === 'object') ? data.horizonBudgets : {};
-        
-        if (Array.isArray(data.expenseCategories)) expenseCategories = data.expenseCategories;
-        if (Array.isArray(data.incomeCategories)) incomeCategories = data.incomeCategories;
-        if (Array.isArray(data.debtCategories)) categories = data.debtCategories;
-        if (Array.isArray(data.accountsList)) accountsList = data.accountsList;
-        if (data.appConfig) appConfig = data.appConfig;
-
-        notify("Portfolio overwritten successfully!");
+        monthlyBudgets = data.monthlyBudgets && typeof data.monthlyBudgets === 'object' ? data.monthlyBudgets : {};
+        horizonBudgets = data.horizonBudgets && typeof data.horizonBudgets === 'object' ? data.horizonBudgets : {};
+        expenseCategories = Array.isArray(data.expenseCategories) ? data.expenseCategories : DEFAULT_EXPENSE_CATEGORIES;
+        incomeCategories = Array.isArray(data.incomeCategories) ? data.incomeCategories : DEFAULT_INCOME_CATEGORIES;
+        accountsList = Array.isArray(data.accountsList) ? data.accountsList : DEFAULT_ACCOUNTS;
+        categories = Array.isArray(data.debtCategories) ? data.debtCategories : DEFAULT_DEBT_CATEGORIES;
+        notify("All data replaced with imported portfolio!");
       } else {
-        // APPEND / MERGE MODE
-        let mergedSpends = 0;
-        let mergedLoans = 0;
-
+        let addedSpends = 0, addedLoans = 0;
         if (Array.isArray(data.expenseRecords)) {
-          const existingExpIds = new Set(expenseRecords.map(r => String(r.id)));
+          const existingIds = new Set(expenseRecords.map(r => String(r.id)));
           data.expenseRecords.forEach(item => {
-            if (item && !existingExpIds.has(String(item.id))) {
+            if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
               expenseRecords.push(item);
-              mergedSpends++;
+              addedSpends++;
             }
           });
         }
-
         if (Array.isArray(data.debtRecords)) {
-          const existingDebtIds = new Set(debtRecords.map(r => String(r.id)));
+          const existingIds = new Set(debtRecords.map(r => String(r.id)));
           data.debtRecords.forEach(item => {
-            if (item && !existingDebtIds.has(String(item.id))) {
+            if (item && item.id !== undefined && !existingIds.has(String(item.id))) {
               debtRecords.push(item);
-              mergedLoans++;
+              addedLoans++;
             }
           });
         }
-
         if (data.monthlyBudgets && typeof data.monthlyBudgets === 'object') {
-          Object.entries(data.monthlyBudgets).forEach(([mKey, list]) => {
-            if (!monthlyBudgets[mKey]) {
-              monthlyBudgets[mKey] = list;
-            } else {
-              list.forEach(b => {
-                if (!monthlyBudgets[mKey].some(ex => ex.category.toLowerCase() === b.category.toLowerCase())) {
-                  monthlyBudgets[mKey].push(b);
-                }
-              });
-            }
-          });
+          monthlyBudgets = { ...monthlyBudgets, ...data.monthlyBudgets };
         }
-
         if (data.horizonBudgets && typeof data.horizonBudgets === 'object') {
-          horizonBudgets = { ...data.horizonBudgets, ...horizonBudgets };
+          horizonBudgets = { ...horizonBudgets, ...data.horizonBudgets };
         }
-
         if (Array.isArray(data.expenseCategories)) {
           expenseCategories = Array.from(new Set([...expenseCategories, ...data.expenseCategories]));
         }
@@ -1985,8 +2011,7 @@
             if (!accNames.has(acc.name)) accountsList.push(acc);
           });
         }
-
-        notify(`Merged ${mergedSpends} transactions & ${mergedLoans} commitments!`);
+        notify(`Merged: +${addedSpends} transactions & +${addedLoans} loans!`);
       }
 
       saveExpenseStorage();
@@ -1995,39 +2020,115 @@
       populateExpenseElements();
       populateCategoryElements();
       renderHubOverview();
-      renderDailySummary();
-
-      pendingImportPayload = null;
-      hideModal('importModeModal');
-      closeSettingsModal();
     }
 
-    function parseCSVLine(text) {
-      let row = [''], r = 0, q = false;
-      for (let ch of text) {
-        if (ch === '"') {
-          q = !q;
-        } else if (ch === ',' && !q) {
-          row[++r] = '';
-        } else {
-          row[r] += ch;
+    function processCSVImport(csvString, strategy) {
+      const lines = csvString.split(/\r?\n/).filter(line => line.trim().length > 0);
+      if (lines.length <= 1) return notify("CSV file is empty!");
+
+      if (strategy === 'overwrite') {
+        expenseRecords = [];
+        debtRecords = [];
+      }
+
+      let addedSpends = 0, addedLoans = 0;
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        if (!cols || cols.length < 5) continue;
+
+        const mod = cols[0].replace(/"/g, '').trim();
+        const rowId = cols[1] ? cols[1].replace(/"/g, '').trim() : '';
+        const dateOrMonth = cols[2].replace(/"/g, '').trim();
+        const titleOrType = cols[3].replace(/"/g, '').trim();
+        const category = cols[4].replace(/"/g, '').trim();
+        const amount = parseFloat(cols[5]) || 0;
+        const emi = parseFloat(cols[6]) || 0;
+        const rate = parseFloat(cols[7]) || 0;
+        const monthsLeft = parseInt(cols[8]) || 12;
+        const account = (cols[9] || '').replace(/"/g, '').trim();
+        const toAccount = (cols[10] || '').replace(/"/g, '').trim();
+        const priority = (cols[11] || 'Normal').replace(/"/g, '').trim();
+        const notes = (cols[12] || '').replace(/"/g, '').trim();
+
+        if (mod === 'Daily') {
+          const duplicate = strategy === 'append' && expenseRecords.some(r => (rowId && String(r.id) === rowId) || (r.date === dateOrMonth && r.amount === amount && r.category === category));
+          if (!duplicate) {
+            expenseRecords.push({
+              id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
+              type: titleOrType || 'Expense',
+              date: dateOrMonth,
+              category: category,
+              amount: amount,
+              account: account || 'Cash Wallet',
+              toAccount: toAccount || '',
+              note: notes
+            });
+            addedSpends++;
+          }
+        } else if (mod === 'Debt') {
+          const duplicate = strategy === 'append' && debtRecords.some(r => (rowId && String(r.id) === rowId) || (r.month === dateOrMonth && r.metric === titleOrType));
+          if (!duplicate) {
+            debtRecords.push({
+              id: rowId ? Number(rowId) || Date.now() + i : Date.now() + i,
+              month: dateOrMonth,
+              metric: titleOrType,
+              category: category,
+              balance: amount,
+              emi: emi || Math.round(amount / (monthsLeft || 12)),
+              rate: rate,
+              monthsLeft: monthsLeft,
+              priority: priority || 'Normal',
+              notes: notes
+            });
+            addedLoans++;
+          }
         }
       }
-      return row;
+
+      saveExpenseStorage();
+      saveDebtStorage();
+      populateExpenseElements();
+      populateCategoryElements();
+      renderHubOverview();
+      notify(`Import complete: ${addedSpends} spends & ${addedLoans} commitments!`);
     }
 
-    function downloadBlobWithFallback(content, filename, mimeType) {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.setAttribute('download', filename);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      notify(`Exported ${filename}`);
+    function exportJSONBackup() {
+      // Requirement 5: Include complete system state
+      const backup = {
+        version: "3.0",
+        exportedAt: new Date().toISOString(),
+        debtCategories: categories,
+        debtRecords,
+        expenseCategories,
+        incomeCategories,
+        accountsList,
+        expenseRecords,
+        monthlyBudgets,
+        horizonBudgets,
+        appConfig
+      };
+      const jsonStr = JSON.stringify(backup, null, 2);
+      const fileName = `FinTrack_Full_Portfolio_${new Date().toISOString().slice(0, 10)}.json`;
+      downloadBlobWithFallback(jsonStr, fileName, 'application/json;charset=utf-8;');
+    }
+
+    function exportToCSV() {
+      if (debtRecords.length === 0 && expenseRecords.length === 0) return notify("No data to export!");
+      
+      let csv = 'RecordType,ID,DateOrMonth,Title,Category,Amount,EMI,Rate,MonthsLeft,Account,ToAccount,Priority,Notes\r\n';
+      
+      debtRecords.forEach(r => {
+        csv += `"Debt","${r.id || ''}","${r.month || ''}","${(r.metric || '').replace(/"/g, '""')}","${(r.category || '').replace(/"/g, '""')}",${r.balance || 0},${r.emi || 0},${r.rate || 0},${r.monthsLeft || ''},"","","${r.priority || 'Normal'}","${(r.notes || '').replace(/"/g, '""')}"\r\n`;
+      });
+
+      expenseRecords.forEach(r => {
+        csv += `"Daily","${r.id || ''}","${r.date || ''}","${(r.type || 'Expense')}","${(r.category || '').replace(/"/g, '""')}",${r.amount || 0},0,0,0,"${(r.account || '').replace(/"/g, '""')}","${(r.toAccount || '').replace(/"/g, '""')}","Normal","${(r.note || '').replace(/"/g, '""')}"\r\n`;
+      });
+
+      const fileName = `FinTrack_Portfolio_${new Date().toISOString().slice(0, 10)}.csv`;
+      downloadBlobWithFallback(csv, fileName, 'text/csv;charset=utf-8;');
     }
 
     // -------------------------------------------------------------
