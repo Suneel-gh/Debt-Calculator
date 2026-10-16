@@ -2122,10 +2122,16 @@
     }
 
     function updateConfigUI() {
-      document.getElementById('cfgCarryOverBadge').innerText = appConfig.carryOver ? 'ON' : 'OFF';
-      document.getElementById('cfgPasscodeBadge').innerText = storedPin ? 'ON' : 'OFF';
-      document.getElementById('cfgMainCurrency').value = appConfig.mainCurrency;
-      document.getElementById('cfgStartScreen').value = appConfig.startScreen;
+      // Settings controls are not all mounted while the Settings modal is closed.
+      // Keep cloud hydration/sync independent of whether those controls exist in the DOM.
+      const carryOverBadge = document.getElementById('cfgCarryOverBadge');
+      const passcodeBadge = document.getElementById('cfgPasscodeBadge');
+      const mainCurrency = document.getElementById('cfgMainCurrency');
+      const startScreen = document.getElementById('cfgStartScreen');
+      if (carryOverBadge) carryOverBadge.innerText = appConfig.carryOver ? 'ON' : 'OFF';
+      if (passcodeBadge) passcodeBadge.innerText = storedPin ? 'ON' : 'OFF';
+      if (mainCurrency) mainCurrency.value = appConfig.mainCurrency;
+      if (startScreen) startScreen.value = appConfig.startScreen;
     }
 
     function toggleConfigItem(key) {
@@ -2187,6 +2193,7 @@
     }
 
     async function manualSyncNow() {
+      if (cloudSyncInProgress) { const existingResult = document.getElementById('manualSyncResult'); if (existingResult) existingResult.textContent = 'A sync is already in progress. Please wait for it to finish.'; return; }
       const btn = document.getElementById('manualSyncButton');
       const result = document.getElementById('manualSyncResult');
       const setResult = (message, color='text-slate-400') => { if (result) { result.className = `text-[10px] ${color}`; result.textContent = message; } };
@@ -2211,6 +2218,7 @@
           return;
         }
       }
+      cloudSyncInProgress = true;
       if (btn) { btn.disabled = true; btn.textContent = 'Syncing…'; btn.classList.add('opacity-60'); }
       setResult('Sync in progress…', 'text-amber-300');
       updateCloudStatusUI(true, user.email || '', 'Syncing');
@@ -2222,7 +2230,7 @@
         if (snap.exists) {
           const cloudData = snap.data() || {};
           // Append-safe import is the app's existing merge path; hydrate cloud data first.
-          importJSONContent(JSON.stringify(cloudData), 'append');
+          importJSONContent(JSON.stringify(cloudData), 'append', { skipCloudPush: true, quiet: true });
         }
         const saved = await pushAllDataToCloud(user.uid, { updateStatus: false });
         if (!saved) throw new Error('Cloud backup did not complete. Check Firestore rules and the browser console.');
@@ -2235,6 +2243,7 @@
         updateCloudStatusUI(false, user.email || '', 'Offline');
         setResult(`Sync failed: ${err.message || 'Unknown cloud error'}`, 'text-rose-300');
       } finally {
+        cloudSyncInProgress = false;
         if (btn) { btn.disabled = false; btn.textContent = 'Sync data now'; btn.classList.remove('opacity-60'); }
       }
     }
@@ -2399,7 +2408,7 @@
     async function syncWithCloudDatabase(uid) {
       if (!firestoreDB || !uid) {
         updateCloudStatusUI(false, '', 'Offline');
-        return;
+        return false;
       }
       cloudSyncInProgress = true;
       updateCloudStatusUI(true, firebaseUser?.email || '', 'Syncing');
@@ -2408,7 +2417,7 @@
         const docSnap = await docRef.get();
         if (docSnap.exists) {
           const cloudData = docSnap.data();
-          if (cloudData) importJSONContent(JSON.stringify(cloudData));
+          if (cloudData) importJSONContent(JSON.stringify(cloudData), 'append', { skipCloudPush: true, quiet: true });
           // importJSONContent may trigger a background push; after the cloud read and
           // local hydration succeed, restore the stable Connected state.
           cloudHydrationPending = false;
@@ -2417,14 +2426,19 @@
           try { renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary(); } catch (renderErr) { console.warn('Some workspace summaries will refresh when opened:', renderErr); }
           updateCloudStatusUI(true, firebaseUser?.email || '', 'Connected');
         } else {
-          await pushAllDataToCloud(uid, { updateStatus: false });
+          const saved = await pushAllDataToCloud(uid, { updateStatus: false });
+          if (!saved) throw new Error('Initial portfolio backup failed.');
           cloudHydrationPending = false;
           updateCloudStatusUI(true, firebaseUser?.email || '', 'Connected');
         }
+        return true;
       } catch (err) {
         cloudHydrationPending = false;
-        updateCloudStatusUI(false, '', 'Offline');
+        updateCloudStatusUI(false, firebaseUser?.email || '', 'Offline');
         console.error('FinTrack cloud sync failed:', err);
+        return false;
+      } finally {
+        cloudSyncInProgress = false;
       }
     }
 
@@ -4345,7 +4359,7 @@
       return Object.values(latestByLoan).map(r => ({ metric: r.metric, category: r.category, balance: r.balance, emi: r.emi, rate: r.rate, monthsLeft: r.monthsLeft, month: r.month, priority: r.priority }));
     }
 
-    function importJSONContent(jsonString, mode = 'append') {
+    function importJSONContent(jsonString, mode = 'append', options = {}) {
       const data = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
       if (!data || typeof data !== 'object') throw new Error('Unsupported backup format.');
       let newSpends = 0, newLoans = 0;
@@ -4417,10 +4431,12 @@
       localStorage.setItem('debt_categories', JSON.stringify(categories));
       populateExpenseElements(); populateCategoryElements(); updateConfigUI();
       renderHubOverview(); renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary();
-      pushAllDataToCloud();
-      notify(`${mode === 'replace' ? 'Replaced portfolio with' : 'Appended'} ${newSpends} transactions and ${newLoans} debt records. Budgets, accounts, categories, EMI records and settings were also processed.`);
-      closeSettingsModal();
-      if (firebaseConfigChanged) setTimeout(() => { if (confirm('The backup included Firebase connection settings. Reload now to initialize them?')) location.reload(); }, 300);
+      // Cloud hydration during sync must not start a second, unawaited write.
+      // Normal user imports retain the existing cloud-backup behavior.
+      if (!options.skipCloudPush) pushAllDataToCloud();
+      if (!options.quiet) notify(`${mode === 'replace' ? 'Replaced portfolio with' : 'Appended'} ${newSpends} transactions and ${newLoans} debt records. Budgets, accounts, categories, EMI records and settings were also processed.`);
+      if (!options.quiet) closeSettingsModal();
+      if (firebaseConfigChanged && !options.quiet) setTimeout(() => { if (confirm('The backup included Firebase connection settings. Reload now to initialize them?')) location.reload(); }, 300);
     }
 
     function importCSVContent(csvString, mode = 'append') {
