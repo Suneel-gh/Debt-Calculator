@@ -2243,7 +2243,7 @@
         // Update the visible state immediately, then let the real Firestore result
         // determine whether the final state is Synced or Sync failed.
         const signedInUser = firebase.auth().currentUser;
-        updateCloudStatusUI(true, signedInUser?.email || email, 'Syncing…');
+        updateCloudStatusUI(true, signedInUser?.email || email, 'Syncing');
         if (signedInUser) {
           await syncWithCloudDatabase(signedInUser.uid);
           notify("Authenticated. Cloud sync finished — check the status label.");
@@ -2262,43 +2262,42 @@
     }
 
     function initFirebaseClient() {
-      const storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null');
-      if (storedConfig && storedConfig.apiKey) {
-        updateCloudStatusUI(false, '', 'Connecting…');
-        try {
-          // Check for [DEFAULT] specifically; firebase.apps.length can be
-          // non-zero when only a named app exists, causing this bug.
-          ensureFirebaseDefaultApp(storedConfig);
-          firestoreDB = firebase.firestore();
-          const auth = firebase.auth();
-          // Explicit LOCAL persistence makes the session survive reloads and app updates.
-          // It is cleared only when the user signs out or the browser/site storage is cleared.
-          auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .then(() => {
-              auth.onAuthStateChanged(user => {
-                if (user) {
-                  firebaseUser = user;
-                  updateCloudStatusUI(true, user.email || '', 'Syncing…');
-                  syncWithCloudDatabase(user.uid);
-                } else {
-                  firebaseUser = null;
-                  const currentLabel = document.getElementById('cloudStatusLabel')?.innerText || '';
-                  if (!['Syncing…', 'Connecting…'].includes(currentLabel)) {
-                    updateCloudStatusUI(false);
-                  }
-                }
-              });
-            })
-            .catch(err => {
-              updateCloudStatusUI(false, '', 'Session persistence failed');
-              console.error('FinTrack Firebase session persistence failed:', err);
-            });
-        } catch (err) {
-          updateCloudStatusUI(false);
-          console.error('FinTrack Firebase initialization failed:', err);
-        }
-      } else {
-        updateCloudStatusUI(false);
+      let storedConfig;
+      try { storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null'); }
+      catch (e) { console.error('Invalid saved Firebase configuration:', e); storedConfig = null; }
+      if (!storedConfig || !storedConfig.apiKey) {
+        firebaseUser = null;
+        updateCloudStatusUI(false, '', 'Offline');
+        return;
+      }
+      updateCloudStatusUI(false, '', 'Offline');
+      try {
+        ensureFirebaseDefaultApp(storedConfig);
+        firestoreDB = firebase.firestore();
+        const auth = firebase.auth();
+        // Persist the existing session across reloads. Wait for persistence to be set
+        // before registering the observer, then let the observer restore the session.
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+          auth.onAuthStateChanged(async user => {
+            if (!user) {
+              firebaseUser = null;
+              updateCloudStatusUI(false, '', 'Offline');
+              return;
+            }
+            firebaseUser = user;
+            updateCloudStatusUI(true, user.email || '', 'Syncing');
+            await syncWithCloudDatabase(user.uid);
+          });
+        }).catch(err => {
+          firebaseUser = null;
+          updateCloudStatusUI(false, '', 'Offline');
+          console.error('FinTrack Firebase session persistence failed:', err);
+        });
+      } catch (err) {
+        firebaseUser = null;
+        firestoreDB = null;
+        updateCloudStatusUI(false, '', 'Offline');
+        console.error('FinTrack Firebase initialization failed:', err);
       }
     }
 
@@ -2306,69 +2305,71 @@
       const icon = document.getElementById('cloudStatusIcon');
       const label = document.getElementById('cloudStatusLabel');
       const button = document.getElementById('cloudStatusBtn');
-      if (isOnline) {
-        const text = statusText || "Connected";
-        if (icon) icon.className = text.toLowerCase().includes('fail') || text.toLowerCase().includes('error') ? "fa-solid fa-cloud-bolt text-rose-400" : "fa-solid fa-cloud text-emerald-400";
-        if (label) label.innerText = text;
-        if (button) button.title = `${email ? `Signed in as ${email}. ` : ''}${text}`;
-      } else {
-        const text = statusText || "Offline";
-        if (icon) icon.className = text.toLowerCase().includes('fail') || text.toLowerCase().includes('error') ? "fa-solid fa-cloud-bolt text-rose-400" : "fa-solid fa-cloud text-slate-500";
-        if (label) label.innerText = text;
-        if (button) button.title = text === 'Offline' ? 'Not signed in to cloud sync' : text;
-      }
+      const raw = String(statusText || (isOnline ? 'Connected' : 'Offline')).toLowerCase();
+      // Only three user-facing states: Offline, Syncing, Connected.
+      const failed = raw.includes('fail') || raw.includes('error') || raw.includes('offline');
+      const inProgress = raw === 'syncing' || raw.startsWith('syncing ') || raw === 'connecting' || raw.startsWith('connecting ');
+      const state = failed ? 'Offline' : (inProgress ? 'Syncing' : (isOnline ? 'Connected' : 'Offline'));
+      if (label) label.innerText = state;
+      if (icon) icon.className = state === 'Connected'
+        ? 'fa-solid fa-cloud text-emerald-400'
+        : state === 'Syncing'
+          ? 'fa-solid fa-cloud-arrow-up text-amber-400'
+          : 'fa-solid fa-cloud text-slate-500';
+      if (button) button.title = `${email ? `Signed in as ${email}. ` : ''}${state}`;
+      if (button) button.setAttribute('aria-label', `Cloud status: ${state}`);
     }
 
     async function syncWithCloudDatabase(uid) {
-      if (!firestoreDB || !uid) return;
+      if (!firestoreDB || !uid) {
+        updateCloudStatusUI(false, '', 'Offline');
+        return;
+      }
+      updateCloudStatusUI(true, firebaseUser?.email || '', 'Syncing');
       try {
         const docRef = firestoreDB.collection('users').doc(uid).collection('portfolio').doc('main');
         const docSnap = await docRef.get();
         if (docSnap.exists) {
           const cloudData = docSnap.data();
-          if (cloudData) {
-            importJSONContent(JSON.stringify(cloudData));
-          }
-          updateCloudStatusUI(true, firebaseUser?.email || '', 'Synced');
+          if (cloudData) importJSONContent(JSON.stringify(cloudData));
+          // importJSONContent may trigger a background push; after the cloud read and
+          // local hydration succeed, restore the stable Connected state.
+          cloudHydrationPending = false;
+          refreshNetLiquidCapitalValue();
+          renderHubOverview();
+          try { renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary(); } catch (renderErr) { console.warn('Some workspace summaries will refresh when opened:', renderErr); }
+          updateCloudStatusUI(true, firebaseUser?.email || '', 'Connected');
         } else {
-          await pushAllDataToCloud(uid);
-          updateCloudStatusUI(true, firebaseUser?.email || '', 'Synced');
+          await pushAllDataToCloud(uid, { updateStatus: false });
+          cloudHydrationPending = false;
+          updateCloudStatusUI(true, firebaseUser?.email || '', 'Connected');
         }
-        cloudHydrationPending = false;
-        refreshNetLiquidCapitalValue();
-        renderHubOverview();
-        // Recompute hidden workspace summaries too, so opening a module never shows stale defaults.
-        try { renderBudgetPlanner(); renderPlannerDashboard(); renderHorizonPlanner(); renderDailySummary(); } catch (renderErr) { console.warn('Some workspace summaries will refresh when opened:', renderErr); }
       } catch (err) {
         cloudHydrationPending = false;
-        updateCloudStatusUI(false, '', 'Sync failed');
+        updateCloudStatusUI(false, '', 'Offline');
         console.error('FinTrack cloud sync failed:', err);
-        renderHubOverview();
       }
     }
 
-    async function pushAllDataToCloud(uid = null) {
-      if (!firestoreDB) return;
+    async function pushAllDataToCloud(uid = null, options = {}) {
+      if (!firestoreDB) return false;
       const targetUid = uid || (firebaseUser ? firebaseUser.uid : null);
-      if (!targetUid) return;
+      if (!targetUid) return false;
+      const updateStatus = options.updateStatus !== false;
+      if (updateStatus) updateCloudStatusUI(true, firebaseUser?.email || '', 'Syncing');
       try {
         const payload = {
-          expenseRecords,
-          debtRecords,
-          monthlyBudgets,
-          horizonBudgets,
-          expenseCategories,
-          incomeCategories,
-          accountsList,
-          categories,
-          appConfig,
+          expenseRecords, debtRecords, monthlyBudgets, horizonBudgets,
+          expenseCategories, incomeCategories, accountsList, categories, appConfig,
           lastUpdated: new Date().toISOString()
         };
         await firestoreDB.collection('users').doc(targetUid).collection('portfolio').doc('main').set(payload, { merge: true });
-        updateCloudStatusUI(true, firebaseUser?.email || '', 'Synced');
+        if (updateStatus) updateCloudStatusUI(true, firebaseUser?.email || '', 'Connected');
+        return true;
       } catch (err) {
-        updateCloudStatusUI(false, '', 'Sync failed');
+        if (updateStatus) updateCloudStatusUI(false, '', 'Offline');
         console.error('FinTrack cloud save failed:', err);
+        return false;
       }
     }
 
