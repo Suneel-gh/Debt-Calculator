@@ -2243,13 +2243,17 @@
         // Update the visible state immediately, then let the real Firestore result
         // determine whether the final state is Synced or Sync failed.
         const signedInUser = firebase.auth().currentUser;
-        updateCloudStatusUI(true, signedInUser?.email || email, 'Syncing');
         if (signedInUser) {
+          // Set the shared session immediately. The auth-state observer may fire
+          // shortly afterward; it must not overwrite this valid signed-in session
+          // with a stale initial null event.
+          firebaseUser = signedInUser;
+          updateCloudStatusUI(true, signedInUser.email || email, 'Syncing');
           await syncWithCloudDatabase(signedInUser.uid);
-          notify("Authenticated. Cloud sync finished — check the status label.");
+          notify("Authentication complete. Cloud sync result is shown in the status label.");
         } else {
-          updateCloudStatusUI(false, '', 'Authentication state pending');
-          notify("Authenticated. Waiting for Firebase session confirmation.");
+          updateCloudStatusUI(false, '', 'Offline');
+          notify("Sign-in completed, but Firebase did not return an active session. Please retry.");
         }
       } catch (err) {
         alert(err.message || "Authentication error.");
@@ -2279,14 +2283,21 @@
         // before registering the observer, then let the observer restore the session.
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
           auth.onAuthStateChanged(async user => {
-            if (!user) {
+            // Firebase can emit an initial null while restoring persistence. If a
+            // current user is already available, do not let that stale event mark
+            // an authenticated session Offline.
+            const activeUser = user || auth.currentUser;
+            if (!activeUser) {
               firebaseUser = null;
               updateCloudStatusUI(false, '', 'Offline');
               return;
             }
-            firebaseUser = user;
-            updateCloudStatusUI(true, user.email || '', 'Syncing');
-            await syncWithCloudDatabase(user.uid);
+            firebaseUser = activeUser;
+            if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+              updateCloudStatusUI(false, activeUser.email || '', 'Offline');
+              return;
+            }
+            await syncWithCloudDatabase(activeUser.uid);
           });
         }).catch(err => {
           firebaseUser = null;
@@ -2306,6 +2317,9 @@
       const label = document.getElementById('cloudStatusLabel');
       const button = document.getElementById('cloudStatusBtn');
       const raw = String(statusText || (isOnline ? 'Connected' : 'Offline')).toLowerCase();
+      // Browser connectivity is a hard constraint: never show Connected/Syncing
+      // when the device has no network connection.
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) isOnline = false;
       // Only three user-facing states: Offline, Syncing, Connected.
       const failed = raw.includes('fail') || raw.includes('error') || raw.includes('offline');
       const inProgress = raw === 'syncing' || raw.startsWith('syncing ') || raw === 'connecting' || raw.startsWith('connecting ');
@@ -4502,6 +4516,16 @@
       navigateToHub(false);
       renderHubOverview();
       initFirebaseClient();
+      window.addEventListener('offline', () => updateCloudStatusUI(false, firebaseUser?.email || '', 'Offline'));
+      window.addEventListener('online', () => {
+        const activeUser = (typeof firebase !== 'undefined' && firebase.apps?.length) ? firebase.auth().currentUser : null;
+        if (activeUser) {
+          firebaseUser = activeUser;
+          syncWithCloudDatabase(activeUser.uid);
+        } else {
+          updateCloudStatusUI(false, '', 'Offline');
+        }
+      });
     });
   </script>
 </body>
