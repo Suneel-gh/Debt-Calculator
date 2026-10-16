@@ -2224,6 +2224,10 @@
       }
 
       try {
+        // Preserve the original sign-up/sign-in flow, but guarantee the default
+        // Firebase app exists before calling firebase.auth(). A non-default
+        // named app alone is not sufficient for firebase.auth() without args.
+        ensureFirebaseDefaultApp(stored);
         if (authMode === 'signup') {
           const cred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
           if (name && cred.user) await cred.user.updateProfile({ displayName: name });
@@ -2246,7 +2250,9 @@
       const storedConfig = JSON.parse(localStorage.getItem('firebase_web_config') || 'null');
       if (storedConfig && storedConfig.apiKey) {
         try {
-          if (!firebase.apps.length) firebase.initializeApp(storedConfig);
+          // Check for [DEFAULT] specifically; firebase.apps.length can be
+          // non-zero when only a named app exists, causing this bug.
+          ensureFirebaseDefaultApp(storedConfig);
           firestoreDB = firebase.firestore();
           firebase.auth().onAuthStateChanged(user => {
             if (user) {
@@ -2260,6 +2266,7 @@
           });
         } catch (err) {
           updateCloudStatusUI(false);
+          console.error('FinTrack Firebase initialization failed:', err);
         }
       } else {
         updateCloudStatusUI(false);
