@@ -2235,7 +2235,18 @@
           await firebase.auth().signInWithEmailAndPassword(email, pass);
         }
         closeAuthModal();
-        notify("Authenticated & synchronized!");
+        // Authentication success does not by itself mean the portfolio has synced.
+        // Update the visible state immediately, then let the real Firestore result
+        // determine whether the final state is Synced or Sync failed.
+        const signedInUser = firebase.auth().currentUser;
+        updateCloudStatusUI(true, signedInUser?.email || email, 'Syncing…');
+        if (signedInUser) {
+          await syncWithCloudDatabase(signedInUser.uid);
+          notify("Authenticated. Cloud sync finished — check the status label.");
+        } else {
+          updateCloudStatusUI(false, '', 'Authentication state pending');
+          notify("Authenticated. Waiting for Firebase session confirmation.");
+        }
       } catch (err) {
         alert(err.message || "Authentication error.");
       }
@@ -2258,11 +2269,16 @@
           firebase.auth().onAuthStateChanged(user => {
             if (user) {
               firebaseUser = user;
-              updateCloudStatusUI(true, user.email);
+              updateCloudStatusUI(true, user.email, 'Syncing…');
               syncWithCloudDatabase(user.uid);
             } else {
               firebaseUser = null;
-              updateCloudStatusUI(false);
+              // Do not overwrite an active sign-in/sync status with Offline while
+              // Firebase is still resolving the session immediately after login.
+              const currentLabel = document.getElementById('cloudStatusLabel')?.innerText || '';
+              if (!['Syncing…', 'Connecting…'].includes(currentLabel)) {
+                updateCloudStatusUI(false);
+              }
             }
           });
         } catch (err) {
@@ -2279,12 +2295,13 @@
       const label = document.getElementById('cloudStatusLabel');
       const button = document.getElementById('cloudStatusBtn');
       if (isOnline) {
-        if (icon) icon.className = "fa-solid fa-cloud text-emerald-400";
-        if (label) label.innerText = statusText || "Synced";
-        if (button) button.title = email ? `Cloud connected: ${email}` : 'Cloud connected';
+        const text = statusText || "Connected";
+        if (icon) icon.className = text.toLowerCase().includes('fail') || text.toLowerCase().includes('error') ? "fa-solid fa-cloud-bolt text-rose-400" : "fa-solid fa-cloud text-emerald-400";
+        if (label) label.innerText = text;
+        if (button) button.title = `${email ? `Signed in as ${email}. ` : ''}${text}`;
       } else {
         const text = statusText || "Offline";
-        if (icon) icon.className = text.includes('fail') || text.includes('error') ? "fa-solid fa-cloud-bolt text-rose-400" : "fa-solid fa-cloud text-slate-500";
+        if (icon) icon.className = text.toLowerCase().includes('fail') || text.toLowerCase().includes('error') ? "fa-solid fa-cloud-bolt text-rose-400" : "fa-solid fa-cloud text-slate-500";
         if (label) label.innerText = text;
         if (button) button.title = text === 'Offline' ? 'Not signed in to cloud sync' : text;
       }
