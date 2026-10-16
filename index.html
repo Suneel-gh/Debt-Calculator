@@ -2228,11 +2228,15 @@
         // Firebase app exists before calling firebase.auth(). A non-default
         // named app alone is not sufficient for firebase.auth() without args.
         ensureFirebaseDefaultApp(stored);
+        const auth = firebase.auth();
+        // Keep this device signed in across reloads and app deployments.
+        // Firebase LOCAL persistence stores the session in this browser's site storage.
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         if (authMode === 'signup') {
-          const cred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+          const cred = await auth.createUserWithEmailAndPassword(email, pass);
           if (name && cred.user) await cred.user.updateProfile({ displayName: name });
         } else {
-          await firebase.auth().signInWithEmailAndPassword(email, pass);
+          await auth.signInWithEmailAndPassword(email, pass);
         }
         closeAuthModal();
         // Authentication success does not by itself mean the portfolio has synced.
@@ -2266,21 +2270,29 @@
           // non-zero when only a named app exists, causing this bug.
           ensureFirebaseDefaultApp(storedConfig);
           firestoreDB = firebase.firestore();
-          firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-              firebaseUser = user;
-              updateCloudStatusUI(true, user.email, 'Syncing…');
-              syncWithCloudDatabase(user.uid);
-            } else {
-              firebaseUser = null;
-              // Do not overwrite an active sign-in/sync status with Offline while
-              // Firebase is still resolving the session immediately after login.
-              const currentLabel = document.getElementById('cloudStatusLabel')?.innerText || '';
-              if (!['Syncing…', 'Connecting…'].includes(currentLabel)) {
-                updateCloudStatusUI(false);
-              }
-            }
-          });
+          const auth = firebase.auth();
+          // Explicit LOCAL persistence makes the session survive reloads and app updates.
+          // It is cleared only when the user signs out or the browser/site storage is cleared.
+          auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+              auth.onAuthStateChanged(user => {
+                if (user) {
+                  firebaseUser = user;
+                  updateCloudStatusUI(true, user.email || '', 'Syncing…');
+                  syncWithCloudDatabase(user.uid);
+                } else {
+                  firebaseUser = null;
+                  const currentLabel = document.getElementById('cloudStatusLabel')?.innerText || '';
+                  if (!['Syncing…', 'Connecting…'].includes(currentLabel)) {
+                    updateCloudStatusUI(false);
+                  }
+                }
+              });
+            })
+            .catch(err => {
+              updateCloudStatusUI(false, '', 'Session persistence failed');
+              console.error('FinTrack Firebase session persistence failed:', err);
+            });
         } catch (err) {
           updateCloudStatusUI(false);
           console.error('FinTrack Firebase initialization failed:', err);
