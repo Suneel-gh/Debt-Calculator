@@ -1102,6 +1102,14 @@
       </div>
 
       <div class="space-y-1">
+        <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Online Sync</span>
+        <div class="glass-card rounded-2xl p-3.5 space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-3"><div><div class="font-bold text-slate-100">Cloud backup</div><div id="manualSyncHelp" class="text-[10px] text-slate-400 mt-1">Sync this device's portfolio with your signed-in Firebase account.</div></div><button id="manualSyncButton" type="button" onclick="manualSyncNow()" class="shrink-0 px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold">Sync data now</button></div>
+          <div id="manualSyncResult" role="status" class="text-[10px] text-slate-400">Automatic sync remains enabled.</div>
+        </div>
+      </div>
+
+      <div class="space-y-1">
         <span class="text-[10px] font-bold text-indigo-300/70 uppercase tracking-wider px-2">Category Setup</span>
         <div class="glass-card rounded-2xl divide-y divide-white/[0.06] overflow-hidden text-xs">
           <div onclick="openExpenseCategoryModal('Income')" class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-white/[0.04]">
@@ -1598,6 +1606,8 @@
     let appConfig = JSON.parse(localStorage.getItem('fintrack_app_config')) || DEFAULT_APP_CONFIG;
     // Dashboard renders from the existing local portfolio immediately; cloud sync refreshes it later.
     let cloudHydrationPending = false;
+    let cloudSyncInProgress = false;
+    let authObserverReady = false;
 
     function setHubMetricsLoading(isLoading) {
       const ids = ['hubNetLiquid','hubMonthInflow','hubMonthOutflow','hubMonthSurplus','tileSpendThisMonth','tilePlannerTarget','tilePlannerSpent','tileDebtEmi','tileDebtTotalPending'];
@@ -2176,6 +2186,59 @@
       setTimeout(() => location.reload(), 500);
     }
 
+    async function manualSyncNow() {
+      const btn = document.getElementById('manualSyncButton');
+      const result = document.getElementById('manualSyncResult');
+      const setResult = (message, color='text-slate-400') => { if (result) { result.className = `text-[10px] ${color}`; result.textContent = message; } };
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        updateCloudStatusUI(false, firebaseUser?.email || '', 'Offline');
+        setResult('Device is offline. Connect to the internet and retry.', 'text-rose-300');
+        return;
+      }
+      let user = firebaseUser;
+      try {
+        if (typeof firebase !== 'undefined' && firebase.apps?.length) user = firebase.auth().currentUser || user;
+      } catch (e) { console.warn('Unable to read Firebase session:', e); }
+      if (!user) {
+        setResult('Not signed in. Sign in to your Firebase account first.', 'text-amber-300');
+        updateCloudStatusUI(false, '', 'Offline');
+        return;
+      }
+      if (!firestoreDB) {
+        try { firestoreDB = firebase.firestore(); } catch (e) {
+          setResult('Cloud database is not initialized. Check Firebase setup.', 'text-rose-300');
+          updateCloudStatusUI(false, user.email || '', 'Offline');
+          return;
+        }
+      }
+      if (btn) { btn.disabled = true; btn.textContent = 'Syncing…'; btn.classList.add('opacity-60'); }
+      setResult('Sync in progress…', 'text-amber-300');
+      updateCloudStatusUI(true, user.email || '', 'Syncing');
+      try {
+        // Pull first, then push the hydrated portfolio. This makes the manual action
+        // explicit and avoids blindly overwriting cloud data with an empty local state.
+        const ref = firestoreDB.collection('users').doc(user.uid).collection('portfolio').doc('main');
+        const snap = await ref.get();
+        if (snap.exists) {
+          const cloudData = snap.data() || {};
+          // Append-safe import is the app's existing merge path; hydrate cloud data first.
+          importJSONContent(JSON.stringify(cloudData), 'append');
+        }
+        const saved = await pushAllDataToCloud(user.uid, { updateStatus: false });
+        if (!saved) throw new Error('Cloud backup did not complete. Check Firestore rules and the browser console.');
+        firebaseUser = user;
+        updateCloudStatusUI(true, user.email || '', 'Connected');
+        setResult(`Sync completed successfully at ${new Date().toLocaleTimeString()}.`, 'text-emerald-300');
+        notify('Manual cloud sync completed.');
+      } catch (err) {
+        console.error('FinTrack manual sync failed:', err);
+        updateCloudStatusUI(false, user.email || '', 'Offline');
+        setResult(`Sync failed: ${err.message || 'Unknown cloud error'}`, 'text-rose-300');
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Sync data now'; btn.classList.remove('opacity-60'); }
+      }
+    }
+
     function setAuthMode(mode) {
       authMode = mode;
       const bIn = document.getElementById('tabAuthSignIn');
@@ -2283,13 +2346,12 @@
         // before registering the observer, then let the observer restore the session.
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
           auth.onAuthStateChanged(async user => {
-            // Firebase can emit an initial null while restoring persistence. If a
-            // current user is already available, do not let that stale event mark
-            // an authenticated session Offline.
-            const activeUser = user || auth.currentUser;
+            authObserverReady = true;
+            // Wait for Firebase's persistence restoration before deciding that no
+            // session exists. Never let a null callback overwrite a known active user.
+            const activeUser = user || auth.currentUser || firebaseUser;
             if (!activeUser) {
-              firebaseUser = null;
-              updateCloudStatusUI(false, '', 'Offline');
+              if (!cloudSyncInProgress) { firebaseUser = null; updateCloudStatusUI(false, '', 'Offline'); }
               return;
             }
             firebaseUser = activeUser;
@@ -2297,7 +2359,7 @@
               updateCloudStatusUI(false, activeUser.email || '', 'Offline');
               return;
             }
-            await syncWithCloudDatabase(activeUser.uid);
+            if (!cloudSyncInProgress) await syncWithCloudDatabase(activeUser.uid);
           });
         }).catch(err => {
           firebaseUser = null;
@@ -2339,6 +2401,7 @@
         updateCloudStatusUI(false, '', 'Offline');
         return;
       }
+      cloudSyncInProgress = true;
       updateCloudStatusUI(true, firebaseUser?.email || '', 'Syncing');
       try {
         const docRef = firestoreDB.collection('users').doc(uid).collection('portfolio').doc('main');
